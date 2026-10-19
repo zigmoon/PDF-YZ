@@ -25,6 +25,7 @@ import '../styles/14-notes-find-prefs.css';
 import '../styles/15-text-editor-thumbs.css';
 import '../styles/16-imposition-crop.css';
 import '../styles/17-prehome.css';
+import '../styles/18-theme.css';
 ---
 
 <!DOCTYPE html>
@@ -32,6 +33,22 @@ import '../styles/17-prehome.css';
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ─── Thème avant le premier rendu ───
+         Le thème par défaut est le JOUR. Le script est ici, en tête de document,
+         parce qu'il doit s'exécuter avant la première peinture : posé plus bas, la
+         page apparaîtrait claire puis basculerait, ce qui se voit.
+         Il ne fait qu'une chose : lire le choix enregistré et le poser sur <html>.
+         `data-theme` pilote la feuille 18-theme.css ; la pré-accueil, elle, en
+         déduit ses propres jetons. Aucune préférence système n'est consultée : le
+         défaut est le jour, et c'est l'utilisateur qui décide. -->
+    <script is:inline>
+        (function () {
+            var theme = 'light';
+            try { if (localStorage.getItem('pdfz-theme') === 'dark') theme = 'dark'; } catch (_) {}
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 
     <!-- ─── SEO Core ─── -->
     <title>PDF-YZ — Free Online PDF Editor | Edit, Annotate, Imposition &amp; Export</title>
@@ -264,6 +281,7 @@ import '../styles/17-prehome.css';
      src/scripts/app.js, la pop-in de don reste un script classique exécuté
      avant lui, exactement comme dans l'application d'origine. -->
 <script>
+	import '../scripts/theme.js';
 	import '../scripts/app.js';
 </script>
 <script is:inline src="donate-popin.js?v=2026-05-04b"></script>

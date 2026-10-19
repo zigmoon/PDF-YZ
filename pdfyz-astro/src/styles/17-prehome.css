@@ -1,52 +1,62 @@
-/* pré-accueil — REFONTE (feuille écrite à la main, chargée après les tranches)
+/* pré-accueil — JOUR par défaut, NUIT à la demande
    ---------------------------------------------------------------------------
-   Ce fichier n'est pas un découpage de `index.html` : il redéfinit la
-   pré-accueil — marque, import, sessions récentes — sans toucher au balisage.
-   C'est un choix, pas une paresse :
+   Feuille écrite à la main, chargée après les tranches découpées. Elle n'est pas
+   un découpage de `index.html` : la pré-accueil y est redessinée, pas recopiée.
 
-     · les seize tranches restent la copie fidèle de l'application historique,
-       donc `tools/split-legacy.mjs --force` ne détruit rien ;
-     · la refonte tient dans des sélecteurs de même spécificité, chargés plus
-       tard : la cascade suffit, aucun `!important` n'est nécessaire ;
-     · si la refonte doit disparaître, on retire son import — rien d'autre.
+   Parti pris : une colonne étroite, beaucoup d'air, et des éléments plus petits
+   qu'avant. Une pré-accueil n'a pas à impressionner — elle a deux choses à
+   proposer (ouvrir un fichier, reprendre une séance) et une marque à montrer.
+   Tout ce qui dépassait ce rôle est parti : badges pleins, ombres appuyées,
+   boutons larges, zone de dépôt haute.
 
-   Le parti pris est vertical : une colonne étroite et haute, la marque en
-   hauteur, et une grille de séances sur deux colonnes. Le fond est sombre
-   parce que la marque est blanche : c'est elle qui porte le contraste, et
-   aucune icône n'a besoin d'un carré noir pour être lisible.
+   Le thème suit `data-theme` posé sur `<html>` : les jetons `--pre-*` sont
+   déclarés ici en clair, puis redéfinis pour la nuit. Choisir le sombre sur cette
+   page assombrit donc tout le logiciel, sans qu'aucune autre feuille n'ait à le
+   savoir.
 
-   Tous les jetons sont portés par `.splash-screen` : la feuille ne fuit pas
-   hors de la pré-accueil.                                               */
+   Les sélecteurs ci-dessous ont la même spécificité que ceux des tranches et
+   arrivent plus tard : la cascade suffit, aucun `!important`.                  */
+
+/* ── Jetons : JOUR ────────────────────────────────────────────────────────── */
 
 .splash-screen {
-    --pre-ink: #f6f6f8;
-    --pre-dim: #a6a6b1;
-    --pre-faint: #85858f;
-    --pre-line: rgba(255, 255, 255, 0.09);
-    --pre-line-strong: rgba(255, 255, 255, 0.2);
-    --pre-surface: rgba(255, 255, 255, 0.035);
-    --pre-surface-2: rgba(255, 255, 255, 0.065);
-    --pre-radius: 14px;
+    --pre-bg: #f2f2f4;
+    --pre-grid: rgba(12, 12, 15, 0.045);
+    --pre-shell: #ffffff;
+    --pre-ink: #14141a;
+    /* Hiérarchie des gris mesurée sur le fond de la coque, pas choisie à l'œil :
+       --pre-dim  6,5:1  (sous-titre, libellés de cartes)
+       --pre-faint 4,7:1 (indications, placeholders, titres de section)
+       Le seuil AA pour du petit texte est 4,5:1 ; un gris « élégant » à 2,8:1
+       n'est pas discret, il est illisible. */
+    --pre-dim: #5c5c66;
+    --pre-faint: #71717b;
+    --pre-line: rgba(12, 12, 15, 0.09);
+    --pre-line-strong: rgba(12, 12, 15, 0.16);
+    --pre-surface: #fafafb;
+    --pre-surface-2: #f2f2f4;
+    --pre-accent: #14141a;
+    --pre-on-accent: #ffffff;
+    --pre-radius: 12px;
 
-    background: #08080a;
-    padding: clamp(8px, 2vh, 24px);
+    padding: clamp(16px, 4vh, 52px);
+    background: var(--pre-bg);
 }
 
-/* La grille : 48 px, effacée en cercle pour ne pas cerner la fenêtre. Une
-   grille qui va jusqu'aux bords se lit comme un défaut d'alignement ; une
-   grille qui s'éteint se lit comme un fond. */
+/* La grille : 40 px, effacée en cercle. Une grille qui va jusqu'aux bords se lit
+   comme un défaut d'alignement ; une grille qui s'éteint se lit comme un fond. */
 .splash-screen::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     background-image:
-        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 48px 48px;
+        linear-gradient(to right, var(--pre-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--pre-grid) 1px, transparent 1px);
+    background-size: 40px 40px;
     background-position: center;
-    -webkit-mask-image: radial-gradient(circle at 50% 40%, #000 0%, rgba(0, 0, 0, 0.5) 46%, transparent 76%);
-    mask-image: radial-gradient(circle at 50% 40%, #000 0%, rgba(0, 0, 0, 0.5) 46%, transparent 76%);
+    -webkit-mask-image: radial-gradient(circle at 50% 38%, #000 0%, rgba(0, 0, 0, 0.45) 48%, transparent 78%);
+    mask-image: radial-gradient(circle at 50% 38%, #000 0%, rgba(0, 0, 0, 0.45) 48%, transparent 78%);
 }
 
 /* Une seule tache de lumière, derrière la marque. */
@@ -55,30 +65,55 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(58% 42% at 50% 26%, rgba(255, 255, 255, 0.075), transparent 72%);
+    background: radial-gradient(56% 40% at 50% 24%, rgba(255, 255, 255, 0.9), transparent 72%);
 }
 
-/* ── Coque ──────────────────────────────────────────────────────────────
-   Étroite et haute. 600 px : au-delà, le regard doit balayer la largeur pour
-   relier la marque aux séances. La hauteur, elle, est libre. */
+/* ── Jetons : NUIT ────────────────────────────────────────────────────────── */
+
+:root[data-theme="dark"] .splash-screen {
+    --pre-bg: #08080a;
+    --pre-grid: rgba(255, 255, 255, 0.05);
+    --pre-shell: #0e0e12;
+    --pre-ink: #f6f6f8;
+    /* Sur #0e0e12 : --pre-dim 8,0:1, --pre-faint 5,3:1. */
+    --pre-dim: #a6a6b1;
+    --pre-faint: #85858f;
+    --pre-line: rgba(255, 255, 255, 0.09);
+    --pre-line-strong: rgba(255, 255, 255, 0.2);
+    --pre-surface: rgba(255, 255, 255, 0.035);
+    --pre-surface-2: rgba(255, 255, 255, 0.065);
+    --pre-accent: #ffffff;
+    --pre-on-accent: #0b0b0e;
+}
+
+:root[data-theme="dark"] .splash-screen::after {
+    background: radial-gradient(56% 40% at 50% 24%, rgba(255, 255, 255, 0.07), transparent 72%);
+}
+
+/* ── Coque ────────────────────────────────────────────────────────────────
+   560 px de large, toute la hauteur disponible : le regard descend au lieu de
+   balayer. Le rayon et l'ombre restent discrets — une carte, pas un meuble. */
 .splash-shell {
     position: relative;
     z-index: 1;
-    width: min(600px, 100%);
-    height: min(880px, 94vh);
-    max-height: 94vh;
-    background: #0e0e12;
+    width: min(560px, 100%);
+    height: min(840px, 92vh);
+    max-height: 92vh;
+    background: var(--pre-shell);
     border: 1px solid var(--pre-line);
-    border-radius: 20px;
+    border-radius: 18px;
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        0 40px 120px -30px #000,
-        0 0 0 1px rgba(0, 0, 0, 0.55);
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 24px 60px -28px rgba(12, 12, 15, 0.28);
 }
 
-/* ── En-tête : la marque en hauteur ─────────────────────────────────────
-   Le balisage place l'image puis le bloc texte : une colonne suffit à en
-   faire un logotype centré, sans toucher au HTML. */
+:root[data-theme="dark"] .splash-shell {
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.05) inset,
+        0 30px 80px -30px #000;
+}
+
+/* ── En-tête : la marque, et rien d'autre ──────────────────────────────── */
 .splash-header {
     position: relative;
     flex-direction: column;
@@ -86,7 +121,7 @@
     justify-content: center;
     gap: 0;
     text-align: center;
-    padding: clamp(26px, 5vh, 46px) 26px clamp(20px, 3.2vh, 30px);
+    padding: clamp(30px, 5vh, 46px) 32px clamp(22px, 3.4vh, 30px);
     background: transparent;
     border-bottom: 0;
 }
@@ -95,54 +130,104 @@
 .splash-header::after {
     content: "";
     position: absolute;
-    left: 14%;
-    right: 14%;
+    left: 16%;
+    right: 16%;
     bottom: 0;
     height: 1px;
     background: linear-gradient(to right, transparent, var(--pre-line-strong), transparent);
 }
 
 .splash-logo {
-    width: clamp(72px, 13vh, 104px);
-    height: clamp(72px, 13vh, 104px);
-    margin-bottom: clamp(12px, 2.2vh, 22px);
-    filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.6));
+    width: clamp(56px, 9.6vh, 72px);
+    height: clamp(56px, 9.6vh, 72px);
+    margin-bottom: clamp(12px, 2vh, 18px);
+    filter: drop-shadow(0 10px 18px rgba(12, 12, 15, 0.1));
+}
+
+:root[data-theme="dark"] .splash-logo {
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
 }
 
 .splash-brand-text {
     align-items: center;
-    gap: 9px;
+    gap: 8px;
 }
 
 .splash-title {
-    font-size: clamp(22px, 3.4vh, 30px);
-    font-weight: 800;
+    font-size: clamp(17px, 2.5vh, 20px);
+    font-weight: 700;
     line-height: 1;
-    letter-spacing: 0.26em;
-    /* L'interlettrage ajoute une chasse après la dernière lettre : on la
-       retire pour que le mot reste optiquement centré. */
-    margin-right: -0.26em;
-    color: #fff;
+    letter-spacing: 0.24em;
+    /* L'interlettrage ajoute une chasse après la dernière lettre : on la retire
+       pour que le mot reste optiquement centré. */
+    margin-right: -0.24em;
+    color: var(--pre-ink);
 }
 
 .splash-sub {
-    max-width: 46ch;
-    font-size: 12px;
-    line-height: 1.55;
+    max-width: 40ch;
+    font-size: 11.5px;
+    line-height: 1.5;
     color: var(--pre-dim);
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
 }
 
-/* ── Corps : une colonne, deux rangées ───────────────────────────────────
+/* ── Bouton jour / nuit ────────────────────────────────────────────────────
+   En haut à droite, à l'écart de la marque. L'icône annonce la direction : en
+   jour on montre la lune, en nuit le soleil (l'état est porté par aria-pressed
+   dans theme.js). */
+.splash-theme {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--pre-faint);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.splash-theme:hover {
+    color: var(--pre-ink);
+    background: var(--pre-surface-2);
+    border-color: var(--pre-line);
+}
+
+.splash-theme:focus-visible {
+    outline: none;
+    color: var(--pre-ink);
+    border-color: var(--pre-line-strong);
+    box-shadow: 0 0 0 3px var(--pre-surface-2);
+}
+
+.splash-theme svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* Jour : la lune propose la nuit. Nuit : le soleil propose le jour. */
+.splash-theme .splash-theme-sun { display: none; }
+.splash-theme .splash-theme-moon { display: block; }
+:root[data-theme="dark"] .splash-theme .splash-theme-sun { display: block; }
+:root[data-theme="dark"] .splash-theme .splash-theme-moon { display: none; }
+
+/* ── Corps : une colonne, deux rangées ────────────────────────────────────
    Import à hauteur fixe, séances sur tout le reste. Une zone de dépôt qui
    s'étire avec la fenêtre devient une cible qu'on ne vise plus. */
 .splash-body {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
-    gap: 14px;
-    padding: 18px 20px 20px;
+    gap: 16px;
+    padding: 20px 32px 24px;
 }
 
 .splash-import {
@@ -152,118 +237,137 @@
 
 .splash-drop-zone {
     flex: 0 0 auto;
-    min-height: clamp(126px, 16vh, 164px);
-    gap: 6px;
-    padding: 20px 18px;
-    border: 1.5px dashed var(--pre-line-strong);
+    min-height: clamp(96px, 12.5vh, 128px);
+    gap: 5px;
+    padding: 16px;
+    border: 1px dashed var(--pre-line-strong);
     border-radius: var(--pre-radius);
     background: var(--pre-surface);
     color: var(--pre-dim);
-    font-size: 12.5px;
+    font-size: 12px;
 }
 
 .splash-drop-zone:hover,
 .splash-drop-zone:focus-visible,
 .splash-drop-zone.drag-over {
-    border-color: rgba(255, 255, 255, 0.55);
+    border-color: var(--pre-faint);
     background: var(--pre-surface-2);
     color: var(--pre-ink);
 }
 
 .splash-drop-zone strong {
-    font-size: 13.5px;
+    font-size: 12.5px;
+    font-weight: 600;
     color: var(--pre-ink);
 }
 
 .splash-drop-icon {
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
     color: var(--pre-faint);
 }
 
 .splash-drop-zone:hover .splash-drop-icon,
 .splash-drop-zone.drag-over .splash-drop-icon {
-    color: #fff;
+    color: var(--pre-ink);
 }
 
 .splash-drop-hint {
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--pre-faint);
 }
 
+.splash-btn-row {
+    gap: 8px;
+}
+
 .splash-btn {
-    padding: 12px 14px;
-    border-radius: 11px;
-    border: 1px solid var(--pre-line);
-    background: var(--pre-surface-2);
+    padding: 10px 13px;
+    border-radius: 10px;
+    border: 1px solid var(--pre-line-strong);
+    background: transparent;
     color: var(--pre-ink);
-    font-size: 12px;
+    font-size: 11.5px;
 }
 
 .splash-btn:hover {
-    background: #fff;
-    color: #0b0b0e;
-    border-color: #fff;
+    background: var(--pre-surface-2);
+    color: var(--pre-ink);
+    border-color: var(--pre-line-strong);
 }
 
-/* L'action principale est la seule surface claire de l'écran, avec la marque :
-   deux points blancs, et le regard sait où aller. */
+/* L'action principale est la seule surface pleine de l'écran : deux points
+   sombres (la marque et elle), et le regard sait où aller. */
 .splash-btn.primary {
-    background: #fff;
-    color: #0b0b0e;
-    border-color: #fff;
+    background: var(--pre-accent);
+    color: var(--pre-on-accent);
+    border-color: var(--pre-accent);
 }
 
 .splash-btn.primary:hover {
-    background: #e9e9ee;
-    border-color: #e9e9ee;
+    background: var(--pre-accent);
+    color: var(--pre-on-accent);
+    border-color: var(--pre-accent);
+    opacity: 0.88;
 }
 
 .splash-btn.install {
     flex: 0 0 auto;
-    padding: 12px 14px;
+    padding: 10px 13px;
     background: var(--pre-surface-2);
     color: var(--pre-ink);
     border-color: var(--pre-line);
 }
 
 .splash-btn.install:hover {
-    background: #fff;
-    border-color: #fff;
-    color: #0b0b0e;
+    background: var(--pre-surface-2);
+    border-color: var(--pre-line-strong);
+    color: var(--pre-ink);
 }
 
-/* ── Séances récentes ───────────────────────────────────────────────── */
+/* ── Séances récentes ───────────────────────────────────────────────────── */
 .splash-resume {
     flex: 1;
     min-height: 0;
-    gap: 10px;
+    gap: 9px;
     padding: 12px 12px 10px;
     border: 1px solid var(--pre-line);
     border-radius: var(--pre-radius);
-    background: rgba(255, 255, 255, 0.018);
+    background: transparent;
 }
 
 .splash-resume-title {
-    color: var(--pre-dim);
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--pre-faint);
+}
+
+.splash-resume-title svg {
+    width: 13px;
+    height: 13px;
 }
 
 .splash-count {
-    background: #fff;
-    color: #0b0b0e;
+    font-size: 9.5px;
+    padding: 0 6px;
+    background: var(--pre-surface-2);
+    color: var(--pre-dim);
 }
 
+.splash-count[hidden] { display: none; }
+
 .splash-search {
-    width: 158px;
+    width: 150px;
     height: 28px;
     border: 1px solid var(--pre-line);
     border-radius: 8px;
-    background: var(--pre-surface-2);
+    background: transparent;
 }
 
 .splash-search:focus-within {
-    border-color: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+    border-color: var(--pre-line-strong);
+    box-shadow: 0 0 0 3px var(--pre-surface-2);
 }
 
 .splash-search svg {
@@ -271,6 +375,7 @@
 }
 
 .splash-search input {
+    font-size: 11px;
     color: var(--pre-ink);
 }
 
@@ -281,29 +386,33 @@
 .splash-resume-all {
     height: 28px;
     border: 1px solid var(--pre-line);
-    background: var(--pre-surface-2);
-    color: var(--pre-ink);
+    background: transparent;
+    color: var(--pre-dim);
+    font-size: 11px;
 }
 
 .splash-resume-all:hover {
-    background: #fff;
-    color: #0b0b0e;
-    border-color: #fff;
+    background: var(--pre-surface-2);
+    color: var(--pre-ink);
+    border-color: var(--pre-line-strong);
 }
 
-/* La grille des séances : deux colonnes dans 536 px utiles. `auto-fill` et non
-   `auto-fit` — sur une seule séance, elle garde sa largeur de colonne au lieu
-   de s'étirer sur toute la largeur. */
+/* La grille des séances : deux colonnes dans 496 px utiles. `auto-fill` et non
+   `auto-fit` — sur une seule séance, elle garde sa largeur de colonne au lieu de
+   s'étirer sur toute la largeur. */
 .splash-sessions {
-    grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(166px, 1fr));
     gap: 8px;
-    padding: 2px 2px 4px;
+    padding: 2px;
 }
 
 .splash-session {
+    column-gap: 9px;
+    row-gap: 3px;
+    padding: 8px 9px;
     border: 1px solid var(--pre-line);
-    border-radius: 11px;
-    background: var(--pre-surface);
+    border-radius: 10px;
+    background: transparent;
     color: var(--pre-ink);
 }
 
@@ -313,23 +422,31 @@
 }
 
 .splash-session:focus-visible {
-    border-color: #fff;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    border-color: var(--pre-line-strong);
+    box-shadow: 0 0 0 3px var(--pre-surface-2);
 }
 
 .splash-session.is-current {
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+    border-color: var(--pre-line-strong);
+    box-shadow: inset 0 0 0 1px var(--pre-line-strong);
 }
 
 .splash-session.is-missing {
-    opacity: 0.55;
+    opacity: 0.5;
 }
 
 .splash-session-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
     border: 1px solid var(--pre-line);
     background: var(--pre-surface-2);
-    color: var(--pre-ink);
+    color: var(--pre-dim);
+}
+
+.splash-session-icon svg {
+    width: 14px;
+    height: 14px;
 }
 
 .splash-session.is-missing .splash-session-icon {
@@ -339,91 +456,132 @@
 }
 
 .splash-session-title {
+    font-size: 11.5px;
+    font-weight: 500;
     color: var(--pre-ink);
 }
 
+.splash-session-meta {
+    gap: 4px;
+}
+
 .splash-session-meta > span {
-    border: 1px solid var(--pre-line);
+    font-size: 9px;
+    padding: 0 5px;
+    border: 1px solid transparent;
     background: var(--pre-surface-2);
-    color: var(--pre-dim);
+    color: var(--pre-faint);
 }
 
 .splash-session-meta > .s-ready {
-    background: #fff;
-    border-color: #fff;
-    color: #0b0b0e;
+    background: transparent;
+    border-color: var(--pre-line-strong);
+    color: var(--pre-dim);
+    font-weight: 600;
 }
 
 .splash-session-meta > .s-missing {
-    background: rgba(180, 83, 9, 0.18);
-    border-color: rgba(240, 178, 122, 0.32);
+    background: rgba(180, 83, 9, 0.14);
+    border-color: rgba(180, 83, 9, 0.22);
+    color: #b45309;
+}
+
+:root[data-theme="dark"] .splash-session-meta > .s-missing {
+    background: rgba(180, 83, 9, 0.2);
+    border-color: rgba(240, 178, 122, 0.28);
     color: #f0b27a;
 }
 
 .splash-session-play {
+    padding: 4px 8px;
+    border-radius: 6px;
     border: 1px solid var(--pre-line);
-    background: var(--pre-surface-2);
-    color: var(--pre-ink);
+    background: transparent;
+    color: var(--pre-dim);
+    font-size: 9.5px;
 }
 
 .splash-session:not(.is-missing):hover .splash-session-play,
 .splash-session-play:hover {
-    background: #fff;
-    border-color: #fff;
-    color: #0b0b0e;
+    background: var(--pre-surface-2);
+    border-color: var(--pre-line-strong);
+    color: var(--pre-ink);
 }
 
 .splash-session-del {
+    width: 22px;
+    height: 22px;
     color: var(--pre-faint);
 }
 
 .splash-session-del:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+:root[data-theme="dark"] .splash-session-del:hover {
     background: rgba(220, 38, 38, 0.22);
     color: #fca5a5;
 }
 
-.splash-sessions-empty svg {
+.splash-sessions-empty {
+    gap: 5px;
+    padding: 30px 12px;
     color: var(--pre-faint);
 }
 
+.splash-sessions-empty svg {
+    width: 22px;
+    height: 22px;
+    opacity: 0.45;
+}
+
 .splash-sessions-empty strong {
+    font-size: 11.5px;
     color: var(--pre-dim);
 }
 
 .splash-sessions-empty span {
+    font-size: 10.5px;
     color: var(--pre-faint);
 }
 
-/* ── Chargement ─────────────────────────────────────────────────────── */
+/* ── Chargement ─────────────────────────────────────────────────────────── */
 .splash-loading {
+    padding: 10px 0 2px;
     color: var(--pre-dim);
 }
 
 .splash-loading .loader-spinner {
-    border-color: rgba(255, 255, 255, 0.16);
-    border-top-color: #fff;
+    width: 15px;
+    height: 15px;
+    border-color: var(--pre-line-strong);
+    border-top-color: var(--pre-ink);
 }
 
 .splash-loading-msg {
+    font-size: 12px;
     color: var(--pre-dim);
 }
 
 .splash-loading-pct {
+    font-size: 12px;
     color: var(--pre-ink);
 }
 
 .splash-progress {
-    background: rgba(255, 255, 255, 0.1);
+    height: 4px;
+    background: var(--pre-surface-2);
 }
 
 .splash-progress-bar {
-    background: #fff;
+    background: var(--pre-ink);
 }
 
-/* ── Adaptations ────────────────────────────────────────────────────────
-   En dessous de 640 px la coque occupe la fenêtre : les marges extérieures
-   ne servent plus à rien. */
-@media (max-width: 640px) {
+/* ── Adaptations ────────────────────────────────────────────────────────────
+   En dessous de 620 px la coque occupe la fenêtre : les marges extérieures ne
+   servent plus à rien. */
+@media (max-width: 620px) {
     .splash-screen { padding: 0; }
     .splash-screen::before,
     .splash-screen::after { display: none; }
@@ -435,11 +593,10 @@
         border-radius: 0;
         box-shadow: none;
     }
-    .splash-logo { width: 68px; height: 68px; }
-    .splash-title { font-size: 21px; }
-    .splash-title,
-    .splash-sub { margin-right: 0; }
-    .splash-body { padding: 14px 14px 16px; gap: 12px; }
+    .splash-header { padding: 30px 20px 20px; }
+    .splash-logo { width: 56px; height: 56px; }
+    .splash-title { font-size: 17px; }
+    .splash-body { padding: 16px 16px 18px; gap: 12px; }
     .splash-search { display: none; }
     .splash-sessions { grid-template-columns: 1fr; }
     .splash-session-del { opacity: 1; }
@@ -448,16 +605,19 @@
 /* Fenêtre basse (portable 13 pouces, navigateur avec deux barres) : on rogne
    les respirations avant de rogner les cibles. */
 @media (max-height: 720px) {
-    .splash-header { padding: 20px 22px 16px; }
-    .splash-logo { width: 64px; height: 64px; margin-bottom: 10px; }
-    .splash-title { font-size: 21px; }
-    .splash-sub { font-size: 11px; }
-    .splash-drop-zone { min-height: 112px; padding: 16px; }
-    .splash-body { padding: 14px 16px 16px; }
+    .splash-header { padding: 22px 24px 16px; }
+    .splash-logo { width: 50px; height: 50px; margin-bottom: 10px; }
+    .splash-title { font-size: 16px; }
+    .splash-sub { font-size: 10.5px; }
+    .splash-body { padding: 14px 20px 16px; gap: 12px; }
+    .splash-drop-zone {
+        min-height: 84px;
+        padding: 12px;
+    }
 }
 
 @media (max-height: 560px) {
     .splash-sub { display: none; }
-    .splash-logo { width: 52px; height: 52px; }
-    .splash-drop-zone { min-height: 92px; }
+    .splash-logo { width: 42px; height: 42px; }
+    .splash-drop-zone { min-height: 70px; }
 }

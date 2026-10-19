@@ -1,0 +1,272 @@
+/* thème — JOUR par défaut, NUIT à la demande
+   ---------------------------------------------------------------------------
+   Feuille écrite à la main, chargée après les tranches découpées.
+
+   Principe : une seule règle décide de tout. `data-theme` est posé sur `<html>`
+   par le script en tête de document, avant la première peinture ; ce fichier ne
+   redéfinit que des jetons, donc tout ce qui les utilise — barre d'outils,
+   panneaux, modales, zone de pages — suit sans qu'aucune de ces règles n'ait à
+   être réécrite.
+
+   Les tranches d'origine contiennent encore une centaine de couleurs en dur.
+   Elles sont reprises ici une par une, avec le sélecteur exact de la règle
+   d'origine : même spécificité plus un attribut, donc aucun `!important`.
+
+   Choix de palette : l'accent passe du noir au blanc. C'est ce qui rend le thème
+   cohérent — les boutons principaux, les anneaux de sélection, les barres de
+   progression gardent leur contraste sans être touchés. Corollaire : partout où
+   l'ancienne feuille écrivait `color: #fff` sur un fond `var(--accent)`, il faut
+   `var(--accent-contrast)`, sinon le texte blanc se poserait sur du blanc.     */
+
+/* ── Jetons ───────────────────────────────────────────────────────────────── */
+
+:root[data-theme="dark"] {
+    --bg: #0e0e12;
+    --text: #e9e9ef;
+    --muted: #9c9caa;
+
+    --surface: rgba(23, 23, 28, 0.92);
+    --surface-solid: #17171c;
+    --surface-2: #202027;
+    --border: #2e2e37;
+
+    /* L'accent est la couleur de ce qui « pèse » : bouton principal, sélection,
+       barre de progression. En jour c'est le noir, en nuit c'est le blanc. */
+    --accent: #ffffff;
+    --accent-soft: #dcdce4;
+    --accent-contrast: #0b0b0e;
+    --accent-rgb: 255, 255, 255;
+
+    --toolbar-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    --toolbar-glow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+/* Les widgets natifs (ascenseurs, champs de date, remplissage automatique)
+   suivent `color-scheme` ; le script le pose aussi, ceci couvre le cas où la
+   page est rendue sans JavaScript. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+/* ── Ascenseurs ───────────────────────────────────────────────────────────── */
+
+:root[data-theme="dark"] * {
+    scrollbar-color: #4a4a56 #141419;
+}
+
+:root[data-theme="dark"] *::-webkit-scrollbar,
+:root[data-theme="dark"] *::-webkit-scrollbar-track {
+    background: #141419;
+}
+
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb {
+    background: #4a4a56;
+}
+
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb:hover,
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb:active {
+    background: #6b6b79;
+}
+
+/* ── Toast PWA ────────────────────────────────────────────────────────────── */
+/* Il était noir sur clair ; en nuit il devient une surface élevée, sinon il se
+   confond avec le fond. */
+
+:root[data-theme="dark"] .sw-update-toast {
+    background: var(--surface-solid);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+:root[data-theme="dark"] .sw-update-toast button {
+    background: var(--accent);
+    color: var(--accent-contrast);
+}
+
+:root[data-theme="dark"] .sw-update-toast button.ghost {
+    background: transparent;
+    color: var(--muted);
+}
+
+/* ── Boutons flottants de coin ────────────────────────────────────────────── */
+
+:root[data-theme="dark"] #btnPagesFixed:hover,
+:root[data-theme="dark"] #btnPagesFixed.is-on {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+:root[data-theme="dark"] #btnSaveFixed {
+    background: var(--surface-solid);
+    color: var(--text);
+}
+
+:root[data-theme="dark"] #btnSaveFixed:hover {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+/* ── Bannière .sp et bouton d'ouverture ───────────────────────────────────── */
+
+:root[data-theme="dark"] .sp-done-open {
+    color: var(--accent-contrast);
+}
+
+/* ── Sessions : popin « toutes les sessions » ─────────────────────────────── */
+
+:root[data-theme="dark"] .sessions-box {
+    background: var(--surface-solid);
+}
+
+:root[data-theme="dark"] .sessions-filter.active {
+    color: var(--accent-contrast);
+}
+
+:root[data-theme="dark"] .session-card {
+    background: var(--surface-solid);
+}
+
+:root[data-theme="dark"] .session-card-icon {
+    color: var(--accent-contrast);
+}
+
+:root[data-theme="dark"] .session-card-btn {
+    background: var(--surface-solid);
+    color: var(--muted);
+}
+
+:root[data-theme="dark"] .session-card-btn:hover {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+/* ── Chrome mobile ────────────────────────────────────────────────────────── */
+
+:root[data-theme="dark"] .mobile-footer {
+    background: rgba(20, 20, 25, 0.97);
+    border-top-color: var(--border);
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-theme="dark"] .mobile-footer-btn {
+    color: var(--muted);
+}
+
+:root[data-theme="dark"] .mobile-footer-btn.active {
+    color: var(--text);
+}
+
+:root[data-theme="dark"] .mobile-footer-btn.primary .mobile-footer-icon {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .mobile-footer-btn.primary.active .mobile-footer-icon {
+    background: var(--accent);
+}
+
+:root[data-theme="dark"] .mobile-sheet {
+    background: var(--surface-solid);
+    box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="dark"] .mobile-sheet-handle {
+    background: #3a3a44;
+}
+
+:root[data-theme="dark"] .mobile-sheet-head strong {
+    color: var(--text);
+}
+
+:root[data-theme="dark"] .mobile-tool-action {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+:root[data-theme="dark"] .mobile-tool-action:active {
+    background: #2a2a32;
+}
+
+:root[data-theme="dark"] .mobile-tool-action.emphasis {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+/* ── Recherche / remplacement ─────────────────────────────────────────────── */
+
+:root[data-theme="dark"] .fr-panel {
+    background: rgba(20, 20, 25, 0.97);
+}
+
+:root[data-theme="dark"] .fr-field:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .fr-option.active {
+    border-color: var(--border);
+    box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+:root[data-theme="dark"] .fr-command.primary {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+:root[data-theme="dark"] .fr-command.primary:hover:not(:disabled) {
+    background: var(--accent-soft);
+}
+
+/* ── Tiroir des préférences ───────────────────────────────────────────────── */
+
+:root[data-theme="dark"] .prefs-toggle::after {
+    background: var(--accent-contrast);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Export, recadrage, imposition ────────────────────────────────────────── */
+
+:root[data-theme="dark"] .export-btn-go,
+:root[data-theme="dark"] .crop-btn.apply {
+    color: var(--accent-contrast);
+}
+
+/* La poignée de recadrage est un carré clair cerné d'accent : en nuit l'accent
+   est blanc, donc le carré doit s'inverser pour rester visible. */
+:root[data-theme="dark"] .crop-handle {
+    background: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+/* ── Notes autocollantes ──────────────────────────────────────────────────── */
+/* Elles restent jaunes : c'est du papier, pas de la chrome. Seul le liseré
+   s'assombrit pour ne pas cerner la zone de pages d'un trait clair. */
+
+:root[data-theme="dark"] .el-note {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Aperçus de pages ─────────────────────────────────────────────────────── */
+/* Une vignette représente une feuille : elle reste blanche. C'est aussi ce qui
+   permet de repérer une page vide d'un coup d'œil sur fond sombre. */
+
+:root[data-theme="dark"] .page-thumb {
+    border-color: transparent;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .page-thumb.active {
+    border-color: var(--accent);
+}

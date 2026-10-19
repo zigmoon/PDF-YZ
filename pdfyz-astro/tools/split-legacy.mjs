@@ -78,32 +78,39 @@ const htmlClose = findLine((l) => /^\s*<\/html>\s*$/.test(l), bodyClose, '</html
 
 // ───────────────────────────────────────────────────────────────────────────
 //  Feuille de style — 16 tranches, toutes à la profondeur d'accolades 0
+//
+//  Les positions sont des DÉCALAGES depuis la ligne `<style>`, pas des numéros
+//  de ligne absolus : une ligne ajoutée dans `<head>` décalait tout le fichier et
+//  faisait échouer le découpage sur quinze tranches d'un coup. Ancré sur un
+//  repère, le découpage survit à toute retouche du `<head>`.
 // ───────────────────────────────────────────────────────────────────────────
 
 const CSS_SEGMENTS = [
-  [218, '01-base', 'jetons, corps de page, mise à zéro'],
-  [248, '02-scrollbars', 'ascenseurs carrés'],
-  [283, '03-prehome', 'pré-accueil : marque, import, sessions récentes'],
-  [368, '04-chrome', 'toast PWA, boutons flottants, menus, bannière .sp'],
-  [512, '05-donate', 'pop-in de don'],
-  [618, '06-sessions', 'sessions récentes et popin « toutes les sessions »'],
-  [870, '07-toolbar', 'barre d’outils flottante et mode modification'],
-  [952, '08-tools-mobile', 'menus d’outils et feuilles mobiles'],
-  [1045, '09-canvas-sidebar', 'barre latérale, zone de pages, objets éditables'],
-  [1296, '10-colour-popover', 'sélecteur de couleur et toile de dessin'],
-  [1371, '11-icc-zoom-status', 'profil ICC, zoom, barre d’état'],
-  [1487, '12-properties-toast-loader', 'panneau propriétés, toast, chargeur'],
-  [1588, '13-modals-fabs', 'signature, export, boutons flottants'],
-  [1668, '14-notes-find-prefs', 'notes, recherche, préférences, métadonnées'],
-  [1893, '15-text-editor-thumbs', 'éditeur de texte, vignettes, aide clavier'],
-  [2041, '16-imposition-crop', 'imposition et recadrage visuel'],
+  [1, '01-base', 'jetons, corps de page, mise à zéro'],
+  [31, '02-scrollbars', 'ascenseurs carrés'],
+  [66, '03-prehome', 'pré-accueil : marque, import, sessions récentes'],
+  [151, '04-chrome', 'toast PWA, boutons flottants, menus, bannière .sp'],
+  [295, '05-donate', 'pop-in de don'],
+  [401, '06-sessions', 'sessions récentes et popin « toutes les sessions »'],
+  [653, '07-toolbar', 'barre d’outils flottante et mode modification'],
+  [735, '08-tools-mobile', 'menus d’outils et feuilles mobiles'],
+  [828, '09-canvas-sidebar', 'barre latérale, zone de pages, objets éditables'],
+  [1079, '10-colour-popover', 'sélecteur de couleur et toile de dessin'],
+  [1154, '11-icc-zoom-status', 'profil ICC, zoom, barre d’état'],
+  [1270, '12-properties-toast-loader', 'panneau propriétés, toast, chargeur'],
+  [1371, '13-modals-fabs', 'signature, export, boutons flottants'],
+  [1451, '14-notes-find-prefs', 'notes, recherche, préférences, métadonnées'],
+  [1676, '15-text-editor-thumbs', 'éditeur de texte, vignettes, aide clavier'],
+  [1824, '16-imposition-crop', 'imposition et recadrage visuel'],
 ];
 
 function sliceStyles() {
   const out = [];
   for (let i = 0; i < CSS_SEGMENTS.length; i++) {
-    const [start, name, title] = CSS_SEGMENTS[i];
-    const end = i + 1 < CSS_SEGMENTS.length ? CSS_SEGMENTS[i + 1][0] - 1 : styleClose - 1;
+    const [offset, name, title] = CSS_SEGMENTS[i];
+    const start = styleOpen + offset;
+    const end =
+      i + 1 < CSS_SEGMENTS.length ? styleOpen + CSS_SEGMENTS[i + 1][0] - 1 : styleClose - 1;
     if (start < styleOpen + 1 || end > styleClose - 1) {
       fail(`tranche CSS ${name} hors de la feuille (${start}-${end})`);
       continue;
@@ -258,7 +265,11 @@ async function emit(relPath, text) {
 // redéfinissent la pré-accueil sans toucher au découpage mécanique de
 // `index.html` : les inscrire ici, et non dans le gabarit produit, les fait
 // survivre à un `--force` qui réécrit la coquille.
-const HAND_WRITTEN_STYLES = ['17-prehome.css'];
+const HAND_WRITTEN_STYLES = ['17-prehome.css', '18-theme.css'];
+
+// Scripts écrits à la main, chargés avant `app.js` : le thème doit être appliqué
+// au premier rendu, et l'éditeur n'a aucune raison d'attendre pour démarrer.
+const HAND_WRITTEN_SCRIPTS = ['../scripts/theme.js'];
 
 function layoutMarkup(styles) {
   const imports = [
@@ -296,6 +307,7 @@ ${headInner}
      src/scripts/app.js, la pop-in de don reste un script classique exécuté
      avant lui, exactement comme dans l'application d'origine. -->
 <script>
+${HAND_WRITTEN_SCRIPTS.map((s) => `\timport '${s}';`).join('\n')}
 \timport '../scripts/app.js';
 </script>
 <script is:inline src="donate-popin.js?v=2026-05-04b"></script>
