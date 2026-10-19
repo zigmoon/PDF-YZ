@@ -115,6 +115,13 @@ jobs:
           name: pdfyz-core-wasm
           path: pdfyz-astro/public
 
+      # L'artefact ne transporte que le `.wasm`, qui est un produit de
+      # compilation. La colle `pdfyz-core.js`, elle, est du code source : elle est
+      # versionnée dans `pdfyz-rust/web/` et recopiée ici. Sans cette ligne, la
+      # page chargerait un `pdfyz_core.wasm` que personne n'instancie.
+      - name: Coller le noyau à la page
+        run: cp pdfyz-rust/web/pdfyz-core.js pdfyz-astro/public/pdfyz-core.js
+
       - name: Dépendances
         working-directory: pdfyz-astro
         run: npm ci --no-audit --no-fund
@@ -129,6 +136,15 @@ jobs:
       - name: Build
         working-directory: pdfyz-astro
         run: npm run build
+
+      # Un site sans noyau reste parfaitement fonctionnel — c'est justement le
+      # problème : il calcule en JavaScript, personne ne s'en aperçoit, et la
+      # parité ne sert plus à rien. On refuse ce build plutôt que de le livrer.
+      - name: Contrôle — le noyau est dans la sortie
+        run: |
+          for f in pdfyz-astro/dist/pdfyz_core.wasm pdfyz-astro/dist/pdfyz-core.js; do
+            if [ -s "$f" ]; then echo "ok      $f"; else echo "MANQUE  $f"; exit 1; fi
+          done
 
       - name: Conserver la sortie
         uses: actions/upload-artifact@v6
