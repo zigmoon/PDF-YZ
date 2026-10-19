@@ -4,13 +4,13 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/0.9">
   <url>
     <loc>https://app.zigmoon.com/PDF-YZ/</loc>
-    <lastmod>2026-04-23</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://app.zigmoon.com/PDF-YZ/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://app.zigmoon.com/PDF-YZ/" />
     <image:image>
-      <image:loc>https://app.zigmoon.com/icons/web-app-manifest-512x512.png</image:loc>
+      <image:loc>https://app.zigmoon.com/PDF-YZ/og-image.png</image:loc>
       <image:title>PDF-YZ — Free Online PDF Editor</image:title>
       <image:caption>Edit text, replace images, annotate, sign, crop, imposition and re-export PDFs in the browser.</image:caption>
     </image:image>

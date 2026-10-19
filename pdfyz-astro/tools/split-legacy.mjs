@@ -412,7 +412,13 @@ const PUBLIC_ASSETS = [
   'humans.txt',
   'llms.txt',
   'donate-popin.js',
-  'agent.md',
+  'og-image.png',
+  '404.html',
+  '.htaccess',
+  // `agent.md` n'est VOLONTAIREMENT pas ici : c'est la documentation de travail
+  // du dépôt (structure interne, règles de cache, budget mémoire des outils). La
+  // copier dans `public/` la publiait sur le serveur — donc lisible par tout le
+  // monde, et indexable comme une seconde page du site. Elle reste à la racine.
 ];
 
 if (!CHECK_ONLY) {

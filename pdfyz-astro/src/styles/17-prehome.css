@@ -162,6 +162,24 @@
        pour que le mot reste optiquement centré. */
     margin-right: -0.24em;
     color: var(--pre-ink);
+    white-space: nowrap;
+}
+
+/* Le titre est un <h1> : la page n'en avait aucun, ce qui prive les moteurs du
+   seul indicateur de sujet qu'ils lisent sans hésiter. Le complément de texte
+   reste dans le document (donc indexable) mais hors du dessin, pour que la
+   marque reste seule à l'écran. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
 }
 
 .splash-sub {

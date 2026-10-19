@@ -1,0 +1,98 @@
+# PDF-YZ — configuration serveur (Apache)
+#
+# Ce fichier accompagne le site sous /PDF-YZ/. Il est FACULTATIF : sans lui, le
+# site fonctionne. Il corrige trois choses qui, sinon, se paient en silence :
+#
+#   1. les types MIME — sans `application/wasm`, certains serveurs servent le
+#      noyau Rust en `text/plain` et `WebAssembly.instantiateStreaming` refuse de
+#      l'instancier : l'application retombe sur le JavaScript sans le dire ;
+#   2. la compression — le noyau, le bundle et les 220 fichiers de `vendor/`
+#      passent de 6,4 Mo à moins de 2 Mo transférés ;
+#   3. le cache — `index.html` et `service-worker.js` doivent être revalidés,
+#      sinon une mise à jour met des jours à atteindre les visiteurs.
+#
+# Chaque directive est enveloppée dans un test de module : sur un hébergement
+# restrictif, une directive inconnue ne dégrade pas le site, elle le casse
+# (erreur 500 sur TOUTES les pages). Un fichier de configuration qui tombe en
+# panne vaut moins que pas de fichier du tout.
+#
+# Nginx ignore ce fichier : l'équivalent est donné dans DEPLOIEMENT.txt.
+
+# ── Page par défaut ────────────────────────────────────────────────────────
+DirectoryIndex index.html
+
+# ── Types MIME ─────────────────────────────────────────────────────────────
+<IfModule mod_mime.c>
+    AddType application/wasm              .wasm
+    AddType text/javascript               .js .mjs
+    AddType application/manifest+json     .webmanifest
+    AddType application/json              .json
+    AddType image/svg+xml                 .svg
+    AddType font/woff2                    .woff2
+    AddType font/woff                     .woff
+    AddType font/ttf                      .ttf
+    AddType application/octet-stream      .bcmap
+    AddType text/plain                    .txt
+    AddCharset utf-8                      .html .css .js .mjs .json .svg .txt .webmanifest
+</IfModule>
+
+# ── Compression ────────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE application/manifest+json application/wasm
+    AddOutputFilterByType DEFLATE image/svg+xml application/xml
+</IfModule>
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
+    AddOutputFilterByType BROTLI_COMPRESS application/wasm image/svg+xml
+</IfModule>
+
+# ── Cache ──────────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # 1. Ressources immuables : les noms portent une empreinte (Astro) ou sont
+    #    figés par version (vendor, icônes). Rien ne justifie de les
+    #    retélécharger avant un an.
+    <FilesMatch "\.(js|mjs|css|woff2?|ttf|png|svg|wasm|bcmap)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # 2. Fichiers descriptifs du site : ils peuvent changer sans changer de nom.
+    <FilesMatch "\.(webmanifest|xml|txt)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+
+    # 3. PUIS, et en dernier pour l'emporter : le document et le service worker.
+    #    `no-cache` n'interdit pas de les stocker, il impose de revalider — c'est
+    #    exactement ce qu'il faut ici. Placés avant les règles ci-dessus, la
+    #    règle « immutable » les aurait écrasés et le site serait resté figé.
+    <FilesMatch "^(index\.html|service-worker\.js)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+
+    # ── En-têtes de sécurité ──────────────────────────────────────────────
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+
+    # `X-Frame-Options` est ignoré par les navigateurs récents au profit de
+    # `frame-ancestors`. Les deux sont posés : le premier pour les vieux clients,
+    # le second pour les autres. Aucun `default-src` n'est déclaré : ce site n'a
+    # pas de politique de chargement à imposer, et une CSP mal calibrée casserait
+    # l'éditeur (web workers, blobs, WebAssembly).
+    Header always set Content-Security-Policy "frame-ancestors 'self'; base-uri 'self'"
+</IfModule>
+
+# ── Pages d'erreur ─────────────────────────────────────────────────────────
+# Une 404 servie par la page d'accueil est un « soft 404 » : le moteur croit que
+# toutes les URL existent. Cette page dit franchement non.
+ErrorDocument 404 /PDF-YZ/404.html
+
+# ── Pas de listage de répertoire ───────────────────────────────────────────
+# `Options -Indexes` peut être refusé par un hébergement (AllowOverride) : sans
+# ce garde-fou, il renvoie une 500 sur tout le site. Ici, au pire, il est ignoré.
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>

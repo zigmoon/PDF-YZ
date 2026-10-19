@@ -47,5 +47,5 @@ Allow: /
 # Sitemaps
 Sitemap: https://app.zigmoon.com/PDF-YZ/sitemap.xml
 
-# LLM-friendly index
-# /llms.txt
+# LLM-friendly index (plain text, one URL per line)
+# https://app.zigmoon.com/PDF-YZ/llms.txt

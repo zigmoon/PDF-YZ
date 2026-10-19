@@ -32,8 +32,10 @@
 - `?` or `F1` Help · `Esc` Close panels / deselect
 
 ## Tech stack
-- Vanilla HTML/JS/CSS, no build step, single file.
-- pdf-lib 1.17.1 (modify) + pdf.js 4.9.155 (render).
+- Rust core compiled to WebAssembly (geometry, colour, imposition, session arithmetic),
+  Astro interface, Tauri desktop shell.
+- pdf-lib 1.17.1 (modify) + pdf.js 4.9.155 (render), both served from the same
+  origin — no CDN, so the app works with the network off.
 - PWA: `manifest.webmanifest`, `service-worker.js`, file_handler for `application/pdf`, share_target POST.
 - Storage: `localStorage` for prefs + IndexedDB (`pdfyz-sessions`) for the per-document sessions, 7-day TTL, 10 MB cap per file.
 

@@ -11,8 +11,8 @@ Inter — Rasmus Andersson
 Tailwind CSS — Tailwind Labs
 
 /* SITE */
-Last update: 2026-04-23
+Last update: 2026-10-19
 Language: English
 Standards: HTML5, CSS3, ES2022
 Software: PDF-YZ by Zigmoon
-Version: 0.2.0
+Version: 0.5.0

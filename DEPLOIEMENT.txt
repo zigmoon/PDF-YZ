@@ -1,0 +1,163 @@
+PDF-YZ — mise en ligne
+======================
+
+Ce que contient l'archive
+-------------------------
+
+    PDF-YZ/          <- TOUT le site. C'est ce dossier qu'on envoie.
+    DEPLOIEMENT.txt  <- ce fichier. Il ne va PAS sur le serveur.
+
+Le site est statique : aucun PHP, aucune base de données, aucun Node.js côté
+serveur. Il fonctionne aussi bien en Apache, en Nginx qu'en Caddy.
+
+
+1. Envoi
+--------
+
+Destination : app.zigmoon.com / PDF-YZ
+
+    ftp> cd /PDF-YZ
+    ftp> put -r PDF-YZ/*
+
+Concrètement : ouvrez le dossier local `PDF-YZ`, sélectionnez son CONTENU
+(index.html, .htaccess, _astro/, vendor/, icons/…) et déposez-le dans le
+répertoire /PDF-YZ/ du serveur.
+
+URGENCE — trois erreurs classiques, dans cet ordre :
+
+  a) NE PAS envoyer le dossier `PDF-YZ` lui-même dans /PDF-YZ : on obtiendrait
+     app.zigmoon.com/PDF-YZ/PDF-YZ/index.html, donc une page blanche à l'URL
+     attendue.
+
+  b) VÉRIFIER que le transfert est en MODE BINAIRE. Un .wasm ou un .woff2
+     transféré en ASCII est corrompu — l'éditeur ne démarre pas et le message
+     d'erreur ne dit pas pourquoi.
+
+  c) NE PAS oublier les fichiers cachés : `.htaccess`. Beaucoup de clients FTP
+     masquent les fichiers commençant par un point. Sans lui le site marche
+     quand même, mais sans compression ni types MIME corrects.
+
+Si votre client FTP ne gère pas l'envoi récursif, le plus sûr reste FileZilla :
+glisser-déposer le contenu du dossier, puis vérifier le nombre de fichiers
+(240 attendus).
+
+
+2. Droits
+---------
+
+    Répertoires : 755
+    Fichiers    : 644
+
+Rien n'a besoin d'être exécutable. Aucun dossier n'a besoin d'être inscriptible :
+l'application n'écrit rien sur le serveur, tout se passe dans le navigateur.
+
+
+3. Vérification, une fois en ligne
+----------------------------------
+
+Ouvrez ces URL et vérifiez le code de réponse :
+
+    https://app.zigmoon.com/PDF-YZ/                200
+    https://app.zigmoon.com/PDF-YZ/og-image.png    200  image/png
+    https://app.zigmoon.com/PDF-YZ/pdfyz_core.wasm 200  application/wasm
+    https://app.zigmoon.com/PDF-YZ/robots.txt      200
+    https://app.zigmoon.com/PDF-YZ/sitemap.xml     200
+    https://app.zigmoon.com/PDF-YZ/agent.md        404  (volontaire)
+    https://app.zigmoon.com/PDF-YZ/nimporte-quoi   404  (page maison)
+
+Le point qui compte le plus est le noyau : dans la console du navigateur,
+
+    PdfyzCore.backend      doit répondre "wasm"
+
+S'il répond "none", le .wasm a été servi avec le mauvais type MIME : voir la
+section Nginx ci-dessous, ou vérifiez que .htaccess a bien été transféré.
+
+
+4. Nginx (si votre hébergement n'est pas Apache)
+------------------------------------------------
+
+Le fichier .htaccess est alors ignoré sans dommage. Équivalent à placer dans le
+bloc `server` :
+
+    location /PDF-YZ/ {
+        root /chemin/vers/le/site;
+
+        location ~* \.wasm$ {
+            types { application/wasm wasm; }
+            add_header Cache-Control "public, max-age=31536000, immutable";
+        }
+        location ~* /(index\.html|service-worker\.js)$ {
+            add_header Cache-Control "no-cache, must-revalidate";
+        }
+        location ~* \.(js|mjs|css|woff2?|ttf|png|svg|bcmap)$ {
+            add_header Cache-Control "public, max-age=31536000, immutable";
+        }
+        location ~* \.(webmanifest|xml|txt)$ {
+            add_header Cache-Control "public, max-age=3600";
+        }
+        add_header X-Content-Type-Options nosniff;
+        add_header Referrer-Policy strict-origin-when-cross-origin;
+        try_files $uri $uri/ =404;
+        error_page 404 /PDF-YZ/404.html;
+    }
+
+    gzip on;
+    gzip_types text/html text/css text/javascript application/javascript
+               application/json application/manifest+json application/wasm
+               image/svg+xml application/xml;
+
+
+5. Référencement — ce qui est déjà en place
+-------------------------------------------
+
+Rien à faire de plus côté fichiers. Déjà présent dans l'archive :
+
+  index.html
+    · <title> et <meta name="description"> rédigés pour la requête visée
+    · <h1> réel — la page n'en avait aucun (le titre était un <span>)
+    · canonical, hreflang, Open Graph complet, Twitter card
+    · une image de partage dédiée 1200×630 (og-image.png) — une icône carrée
+      aurait été recadrée par les réseaux sociaux
+    · données structurées JSON-LD : WebApplication, SoftwareApplication,
+      BreadcrumbList, HowTo, FAQPage
+    · theme-color, apple-touch-icon, manifeste PWA
+
+  robots.txt          tous les robots autorisés, y compris les crawlers IA
+  sitemap.xml         une URL, lastmod à jour, image déclarée
+  llms.txt            résumé lisible par les modèles de langage
+  humans.txt          crédits et versions
+
+  .htaccess           types MIME, compression, cache, en-têtes de sécurité
+
+Trois choses restent à faire AILLEURS, une seule fois :
+
+  1. robots.txt à la racine du domaine
+     Les robots lisent https://app.zigmoon.com/robots.txt — jamais
+     /PDF-YZ/robots.txt. Si app.zigmoon.com héberge d'autres applications,
+     ajoutez simplement cette ligne au robots.txt de la racine :
+
+         Sitemap: https://app.zigmoon.com/PDF-YZ/sitemap.xml
+
+  2. Google Search Console
+     Ajoutez la propriété, puis envoyez le sitemap :
+     https://app.zigmoon.com/PDF-YZ/sitemap.xml
+     Demandez l'indexation de https://app.zigmoon.com/PDF-YZ/ une fois.
+
+  3. Bing Webmaster Tools — même chose ; il alimente aussi ChatGPT et Copilot.
+
+Pensez à mettre à jour le lien depuis zigmoon.com vers cette page : un lien
+entrant, c'est ce qui fait découvrir l'URL. Sans lui, l'indexation peut prendre
+des semaines.
+
+
+6. Mettre à jour plus tard
+--------------------------
+
+Uploadez la nouvelle archive en écrasant les fichiers existants. Le
+`service-worker.js` porte un numéro de cache (`CACHE_NAME`) : quand il change,
+les navigateurs récupèrent la nouvelle version au chargement suivant et
+affichent la pastille « mise à jour disponible ».
+
+Ne supprimez jamais le dossier `vendor/` à la main « pour nettoyer » : sans lui
+le site n'a plus ni moteur PDF, ni polices, ni styles Tailwind — et il ne le dit
+pas, il s'affiche simplement cassé.
