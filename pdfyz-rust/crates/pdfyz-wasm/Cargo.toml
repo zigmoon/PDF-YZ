@@ -1,0 +1,21 @@
+[package]
+name = "pdfyz-wasm"
+description = "Surface C du noyau Rust de PDF-YZ, compilee en WebAssembly pour le navigateur (cdylib, sans wasm-bindgen)."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+# Le SEUL crate du workspace produit en `cdylib` (donc en `.wasm` chargeable par
+# un navigateur) en plus du `rlib`. Les trois crates de calcul restent des
+# bibliotheques Rust pures : c'est ici, et uniquement ici, que se trouve le
+# `unsafe` de la frontiere C.
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pdfyz-core = { path = "../pdfyz-core" }
+pdfyz-impose = { path = "../pdfyz-impose" }
+pdfyz-model = { path = "../pdfyz-model" }

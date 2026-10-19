@@ -1,0 +1,120 @@
+/* profil ICC, zoom, barre d’état
+   Découpé de ../index.html, lignes 1371–1486.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── ICC Profile Panel ─── */
+        .icc-panel {
+            position: fixed; top: 0; right: 0; bottom: 0; width: 360px;
+            background: var(--surface-solid); border-left: 1px solid var(--border);
+            box-shadow: -8px 0 30px rgba(0,0,0,0.15); z-index: 75;
+            display: flex; flex-direction: column;
+            transform: translateX(100%); transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+            overflow: hidden;
+        }
+        .icc-panel.visible { transform: translateX(0); }
+        .icc-panel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+        }
+        .icc-panel-header h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 0; }
+        .icc-panel-close {
+            width: 28px; height: 28px; border-radius: 8px; border: none;
+            background: transparent; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icc-panel-close:hover { background: var(--surface-2); color: var(--text); }
+        .icc-panel-close svg { width: 16px; height: 16px; }
+        .icc-panel-body {
+            padding: 14px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;
+            scrollbar-width: thin; scrollbar-color: rgba(12, 12, 15, 0.55) transparent;
+        }
+        .icc-section-title {
+            font-size: 9px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.4px; color: var(--muted); padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+        .icc-profile-list { display: flex; flex-direction: column; gap: 4px; }
+        .icc-profile-item {
+            display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+            border-radius: 8px; border: 1px solid var(--border); cursor: pointer;
+            transition: all 0.15s; background: transparent;
+        }
+        .icc-profile-item:hover { background: var(--surface-2); }
+        .icc-profile-item.active { border-color: var(--accent); background: rgba(var(--accent-rgb),0.06); }
+        .icc-profile-item .icc-radio {
+            width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border);
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        .icc-profile-item.active .icc-radio { border-color: var(--accent); }
+        .icc-profile-item.active .icc-radio::after {
+            content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+        }
+        .icc-profile-info { flex: 1; min-width: 0; }
+        .icc-profile-name { font-size: 12px; font-weight: 500; color: var(--text); }
+        .icc-profile-desc { font-size: 10px; color: var(--muted); line-height: 1.3; margin-top: 1px; }
+        .icc-profile-badge {
+            font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 4px;
+            text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .icc-profile-badge.cmyk { background: rgba(168,85,247,0.12); color: #a855f7; }
+        .icc-profile-badge.rgb { background: rgba(var(--accent-rgb),0.08); color: var(--accent); }
+        .icc-profile-badge.gray { background: rgba(107,114,128,0.12); color: #6b7280; }
+        .icc-upload-btn {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 8px; border-radius: 8px; border: 1px dashed var(--border);
+            background: transparent; color: var(--muted); cursor: pointer;
+            font-size: 11px; font-weight: 500; transition: all 0.15s;
+        }
+        .icc-upload-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(var(--accent-rgb),0.04); }
+        .icc-upload-btn svg { width: 14px; height: 14px; }
+        .icc-status {
+            display: flex; align-items: center; gap: 6px; padding: 8px 10px;
+            border-radius: 8px; background: rgba(var(--accent-rgb),0.06); border: 1px solid rgba(var(--accent-rgb),0.15);
+            font-size: 11px; color: var(--muted);
+        }
+        .icc-status strong { color: var(--text); font-weight: 500; }
+        @media (max-width: 768px) {
+            .icc-panel { width: 100%; border-radius: 0; }
+        }
+
+        /* ─── Zoom + doc-size group (bottom-right) ─── */
+        .zoom-group {
+            position: fixed; bottom: 1.2rem; right: 1.2rem;
+            display: none; flex-direction: column; align-items: flex-end; gap: 4px;
+            z-index: 70;
+        }
+        .zoom-group.visible { display: flex; }
+        .zoom-bar {
+            display: flex; align-items: center; gap: 4px; padding: 4px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            box-shadow: var(--toolbar-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .zoom-bar button {
+            width: 32px; height: 32px; border-radius: 8px; border: none;
+            background: transparent; color: var(--text); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.12s;
+        }
+        .zoom-bar button:hover { background: var(--surface-2); }
+        .zoom-bar button svg { width: 16px; height: 16px; }
+        .zoom-label { font-size: 12px; font-weight: 500; min-width: 40px; text-align: center; color: var(--muted); }
+
+        /* ─── Status mini-bar (bottom-left) ─── */
+        .status-bar {
+            position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+            display: none; align-items: center; gap: 10px; padding: 6px 14px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            font-size: 11px; color: var(--muted); z-index: 70;
+            box-shadow: var(--toolbar-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .status-bar.visible { display: flex; opacity: 1; }
+        .status-bar.fade-out { opacity: 0; }
+        .status-sep { color: var(--border); font-weight: 300; }
+        .save-dot {
+            width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0;
+        }
+        .save-dot.dirty { background: #f59e0b; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }

@@ -1,0 +1,18 @@
+/* TEAM */
+Name: Simon Dupont-Gellert
+Role: Developer & Designer
+Site: https://zigmoon.com
+Location: France
+
+/* THANKS */
+PDF.js — Mozilla (https://mozilla.github.io/pdf.js/)
+pdf-lib — Andrew Dillon (https://pdf-lib.js.org/)
+Inter — Rasmus Andersson
+Tailwind CSS — Tailwind Labs
+
+/* SITE */
+Last update: 2026-04-23
+Language: English
+Standards: HTML5, CSS3, ES2022
+Software: PDF-YZ by Zigmoon
+Version: 0.2.0

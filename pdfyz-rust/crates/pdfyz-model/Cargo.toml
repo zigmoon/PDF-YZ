@@ -1,0 +1,12 @@
+[package]
+name = "pdfyz-model"
+description = "Modele du document PDF-YZ : plage de pages, identifiant de session, empreinte d'objet graphique, echelle de plans."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+# Crate pur Rust : aucune dependance.
+[dependencies]

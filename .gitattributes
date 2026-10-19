@@ -1,0 +1,17 @@
+# Normalisation : le dépôt stocke des fins de ligne LF, quel que soit le poste.
+# Sans cela, un fichier touché sous Windows réécrit des centaines de lignes et
+# le diff devient illisible — le genre de bruit qui fait rater une vraie
+# modification dans une relecture.
+* text=auto eol=lf
+
+# Fichiers que git ne doit jamais toucher : un .ico ou un .wasm réécrit est un
+# fichier corrompu, pas un fichier normalisé.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.icns binary
+*.wasm binary
+*.pdf binary
+*.zip binary

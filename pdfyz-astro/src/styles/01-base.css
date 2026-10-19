@@ -1,0 +1,34 @@
+/* jetons, corps de page, mise à zéro
+   Découpé de ../index.html, lignes 218–247.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #f8f8f8;
+            --text: #1a1a1a;
+            --muted: #6b7280;
+            --surface: rgba(255, 255, 255, 0.92);
+            --surface-solid: #ffffff;
+            --surface-2: #f3f4f6;
+            --border: #dcdcdc;
+            --accent: #0c0c0f;
+            --accent-soft: #1c1c20;
+            --accent-contrast: #ffffff;
+            --accent-rgb: 12, 12, 15;
+            --toolbar-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+            --toolbar-glow: 0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+            --focus-ring: 0 0 0 3px rgba(12, 12, 15, 0.12);
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', 'Inter', ui-monospace, monospace;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh; height: 100dvh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body, .toolbar-container, .sidebar { -webkit-user-select: none; user-select: none; }
+        input, textarea, select, [contenteditable="true"] { -webkit-user-select: text; user-select: text; }

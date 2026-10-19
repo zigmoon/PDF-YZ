@@ -1,0 +1,44 @@
+{
+  "name": "PDF-YZ — Ergonomic PDF Editor",
+  "short_name": "PDF-YZ",
+  "description": "The most ergonomic online PDF editor. Edit text, replace images, annotate, sign, imposition and re-export — 100% in your browser.",
+  "start_url": "/PDF-YZ/",
+  "scope": "/PDF-YZ/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0c0c0f",
+  "background_color": "#0c0c0f",
+  "categories": ["productivity", "utilities", "business"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/PDF-YZ/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "file_handlers": [
+    {
+      "action": "/PDF-YZ/",
+      "accept": {
+        "application/pdf": [".pdf"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "/PDF-YZ/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "pdf",
+          "accept": ["application/pdf", ".pdf"]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,229 @@
+/* notes, recherche, préférences, métadonnées
+   Découpé de ../index.html, lignes 1668–1892.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Sticky note element ─── */
+        .el-note {
+            position: absolute; cursor: grab;
+            min-width: 140px; min-height: 100px;
+            border-radius: 2px 2px 2px 2px;
+            box-shadow: 2px 3px 10px rgba(0,0,0,0.16);
+            border: none;
+            transition: box-shadow 0.15s;
+            display: flex; flex-direction: column;
+        }
+        .el-note:hover { box-shadow: 2px 3px 14px rgba(0,0,0,0.22); }
+        .el-note.selected { box-shadow: 0 0 0 2px var(--accent), 2px 3px 14px rgba(0,0,0,0.22); }
+        .el-note-header {
+            height: 18px; border-radius: 2px 2px 0 0;
+            display: flex; align-items: center; padding: 0 6px;
+            font-size: 9px; font-weight: 700; color: rgba(0,0,0,0.3);
+            cursor: grab; flex-shrink: 0;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .el-note-body {
+            flex: 1; padding: 4px 8px 6px;
+            font-size: 12px; line-height: 1.4;
+            color: rgba(0,0,0,0.75);
+            overflow: hidden; white-space: pre-wrap; word-break: break-word;
+        }
+        .el-note textarea {
+            width: 100%; height: 100%; border: none; outline: none;
+            background: transparent; resize: none;
+            font-size: 12px; line-height: 1.4; color: rgba(0,0,0,0.75);
+            padding: 0; margin: 0; font-family: inherit;
+        }
+        .el-note .resize-h { display: none; }
+        .el-note.selected .resize-h { display: block; }
+
+        .fr-panel {
+            --fr-height: 112px;
+            position: fixed; inset: 0 0 auto; height: var(--fr-height);
+            z-index: 999999; display: flex; align-items: center;
+            background: rgba(255,255,255,0.98); border-bottom: 1px solid var(--border);
+            box-shadow: 0 12px 34px rgba(0,0,0,0.12);
+            transform: translateY(-105%); visibility: hidden; pointer-events: none;
+            transition: transform 0.24s ease, visibility 0.24s;
+        }
+        .fr-panel.visible { transform: translateY(0); visibility: visible; pointer-events: auto; }
+        .fr-shell {
+            width: min(1120px, calc(100% - 32px)); margin: 0 auto;
+            display: grid; grid-template-columns: minmax(260px, 1.45fr) minmax(230px, 1fr) auto;
+            grid-template-areas: "find replace actions" "status status actions";
+            gap: 8px 12px; align-items: center;
+        }
+        .fr-find { grid-area: find; }
+        .fr-replace { grid-area: replace; }
+        .fr-actions { grid-area: actions; display: flex; align-items: center; gap: 4px; }
+        .fr-status { grid-area: status; display: flex; align-items: center; gap: 10px; min-height: 18px; }
+        .fr-field {
+            height: 40px; display: flex; align-items: center; gap: 6px;
+            padding: 0 8px 0 12px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--surface-solid); transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .fr-field:focus-within { border-color: #111827; box-shadow: 0 0 0 3px rgba(17,24,39,0.08); }
+        .fr-field > svg { width: 17px; height: 17px; color: var(--muted); flex: 0 0 auto; }
+        .fr-field input {
+            min-width: 0; flex: 1; height: 100%; padding: 0; border: 0; outline: 0;
+            background: transparent; color: var(--text); font: 12px 'IBM Plex Mono', monospace;
+        }
+        .fr-option, .fr-mini, .fr-command {
+            height: 32px; border: 1px solid transparent; border-radius: 6px;
+            background: transparent; color: var(--muted); cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            font: 600 11px 'IBM Plex Mono', monospace; transition: background 0.12s, color 0.12s;
+        }
+        .fr-option { width: 32px; }
+        .fr-option:hover, .fr-option.active, .fr-mini:hover { background: var(--surface-2); color: var(--text); }
+        .fr-option.active { border-color: #c9cbd0; box-shadow: inset 0 -2px 0 #111827; }
+        .fr-mini { width: 34px; }
+        .fr-mini:disabled, .fr-command:disabled { opacity: 0.3; cursor: default; }
+        .fr-mini svg { width: 16px; height: 16px; }
+        .fr-command { padding: 0 12px; border-color: var(--border); color: var(--text); white-space: nowrap; }
+        .fr-command:hover:not(:disabled) { background: var(--surface-2); }
+        .fr-command.primary { background: #111827; color: #fff; border-color: #111827; }
+        .fr-command.primary:hover:not(:disabled) { background: #000; }
+        .fr-scope {
+            height: 30px; padding: 0 28px 0 9px; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--surface-solid); color: var(--text); font: 10px 'IBM Plex Mono', monospace;
+        }
+        .fr-count { font-size: 10px; color: var(--text); white-space: nowrap; font-weight: 600; }
+        .fr-page { font-size: 10px; color: var(--muted); white-space: nowrap; }
+        body.pdf-search-open .canvas-area { top: var(--fr-shift, 112px); }
+        body.pdf-search-open .sidebar { top: var(--fr-shift, 112px); height: calc(100% - var(--fr-shift, 112px)); }
+        body.pdf-search-open .toolbar-container { top: calc(var(--fr-shift, 112px) + 1rem + 15px); }
+        body.pdf-search-open #btnPagesFixed,
+        body.pdf-search-open #btnSaveFixed { top: calc(var(--fr-shift, 112px) + 12px + env(safe-area-inset-top)); }
+        body.pdf-search-open #modifyBar { top: calc(var(--fr-shift, 112px) + 1rem + 74px); }
+        .canvas-area, .sidebar, .toolbar-container, #btnPagesFixed, #btnSaveFixed, #modifyBar { transition-property: top, height, transform, opacity; }
+        @media (max-width: 820px) {
+            .fr-panel { --fr-height: 164px; }
+            .fr-shell { width: calc(100% - 20px); grid-template-columns: 1fr auto; grid-template-areas: "find actions" "replace replace" "status status"; gap: 7px; }
+            .fr-actions { align-self: center; }
+            .fr-command { padding: 0 9px; }
+            body.pdf-search-open { --fr-shift: 164px; }
+        }
+        @media (max-width: 520px) {
+            .fr-panel { --fr-height: 176px; }
+            .fr-shell { grid-template-columns: minmax(0,1fr) auto; }
+            .fr-field { height: 38px; }
+            .fr-replace .fr-command { font-size: 10px; }
+            .fr-status { overflow-x: auto; }
+            body.pdf-search-open { --fr-shift: 176px; }
+        }
+
+        /* ─── Find/Replace highlights ─── */
+        .el-text.fr-highlight {
+            background: rgba(250, 204, 21, 0.18) !important;
+            border-color: rgba(245, 158, 11, 0.4) !important;
+            border-style: dashed !important;
+            color: var(--text) !important;
+        }
+        .el-text.fr-current {
+            background: rgba(250, 204, 21, 0.45) !important;
+            border-color: #f59e0b !important;
+            border-style: solid !important;
+            color: var(--text) !important;
+            z-index: 5;
+        }
+
+        /* ─── Global drag overlay ─── */
+        .drag-overlay {
+            position: fixed; inset: 0; z-index: 999990;
+            background: rgba(var(--accent-rgb),0.06); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+            display: none; align-items: center; justify-content: center;
+            pointer-events: none;
+        }
+        .drag-overlay.visible { display: flex; }
+        .drag-overlay-card {
+            padding: 28px 40px; border-radius: 16px;
+            border: 2px dashed var(--accent); background: var(--surface-solid);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            color: var(--accent); font-size: 15px; font-weight: 600;
+        }
+        .drag-overlay-card svg { width: 36px; height: 36px; opacity: 0.7; }
+
+        /* ─── Preferences panel ─── */
+        /* ─── Preferences drawer (right side) ─── */
+        .prefs-drawer {
+            position: fixed; top: 0; right: 0; width: 340px; height: 100%;
+            background: var(--surface-solid); border-left: 1px solid var(--border);
+            z-index: 80; transform: translateX(100%); transition: transform 0.25s ease;
+            display: flex; flex-direction: column;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+        }
+        .prefs-drawer.open { transform: translateX(0); }
+        .prefs-drawer-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+        }
+        .prefs-drawer-title { font-size: 13px; font-weight: 600; color: var(--text); }
+        .prefs-drawer-close {
+            width: 28px; height: 28px; border-radius: 8px; border: none;
+            background: transparent; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .prefs-drawer-close:hover { background: var(--surface-2); color: var(--text); }
+        .prefs-drawer-close svg { width: 16px; height: 16px; }
+        .prefs-drawer-body {
+            flex: 1; padding: 18px 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 20px;
+            scrollbar-width: thin; scrollbar-color: rgba(12, 12, 15, 0.55) transparent;
+        }
+        .prefs-drawer-body::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
+        .prefs-drawer-body::-webkit-scrollbar-track { background: transparent; }
+        .prefs-drawer-body::-webkit-scrollbar-thumb {
+            background: #111827; border: none; border-radius: 0;
+        }
+        .prefs-drawer-body::-webkit-scrollbar-thumb:hover { background: #000000; }
+        .prefs-drawer-body::-webkit-scrollbar-button { display: none; }
+        .prefs-section { display: flex; flex-direction: column; gap: 10px; }
+        .prefs-section-title {
+            font-size: 9px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1.4px; color: var(--muted); padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .prefs-row { display: flex; align-items: center; gap: 10px; }
+        .prefs-row label { font-size: 12px; color: var(--muted); min-width: 90px; flex-shrink: 0; }
+        .prefs-row select, .prefs-row input {
+            flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface-2); color: var(--text); font-size: 12px;
+            font-family: 'IBM Plex Mono', 'Inter', monospace; outline: none; transition: border-color 0.15s;
+        }
+        .prefs-row select:focus, .prefs-row input:focus { border-color: var(--accent); }
+        .prefs-toggle {
+            position: relative; width: 36px; height: 20px; border-radius: 10px;
+            background: var(--border); cursor: pointer; transition: background 0.2s;
+            flex-shrink: 0; border: none;
+        }
+        .prefs-toggle.on { background: var(--accent); }
+        .prefs-toggle::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .prefs-toggle.on::after { transform: translateX(16px); }
+
+        /* ─── PDF Metadata list ─── */
+        .pdf-meta-list { display: flex; flex-direction: column; gap: 8px; }
+        .pdf-meta-empty { font-size: 11px; color: var(--muted); font-style: italic; padding: 8px 0; }
+        .pdf-meta-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 10px 12px; font-size: 11px; line-height: 1.6;
+        }
+        .pdf-meta-card-title {
+            font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .pdf-meta-card-title .meta-badge {
+            font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 4px;
+            background: rgba(var(--accent-rgb),0.1); color: var(--accent); text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .pdf-meta-row { display: flex; gap: 6px; color: var(--muted); }
+        .pdf-meta-row .meta-label { font-weight: 500; color: var(--text); min-width: 70px; flex-shrink: 0; }
+        .pdf-meta-row .meta-value { word-break: break-all; }

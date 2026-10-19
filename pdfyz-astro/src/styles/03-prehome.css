@@ -1,0 +1,89 @@
+/* pré-accueil : marque, import, sessions récentes
+   Découpé de ../index.html, lignes 283–367.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Pre-home (splash) — wide two-pane shell ─── */
+        .splash-screen {
+            position: fixed; inset: 0; background: #f4f4f6;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            z-index: 999999; transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+        .splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .splash-shell {
+            width: min(1320px, 96vw);
+            height: min(760px, 92vh);
+            background: #ffffff; border: 1px solid #e4e4e7; border-radius: 18px;
+            box-shadow: 0 26px 70px rgba(0, 0, 0, 0.13);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* Brand bar — full width, keeps the logo out of the working area */
+        .splash-header {
+            display: flex; align-items: center; gap: 14px;
+            padding: 16px 24px; border-bottom: 1px solid #eeeef1; background: #fcfcfd;
+            flex: 0 0 auto;
+        }
+        .splash-logo { width: 44px; height: 44px; flex: 0 0 auto; display: block; }
+        .splash-brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .splash-title {
+            font-size: 14px; font-weight: 700; letter-spacing: 0.16em;
+            text-transform: uppercase; color: #111; line-height: 1.15;
+        }
+        .splash-sub {
+            font-size: 11px; color: #6b7280;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Working area — import (left) + previous sessions (right) */
+        .splash-body {
+            display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+            gap: 22px; padding: 20px 24px 22px; flex: 1; min-height: 0;
+        }
+        .splash-import { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
+
+        .splash-drop-zone {
+            flex: 1; min-height: 170px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 7px;
+            padding: 24px 20px; text-align: center; outline: none;
+            border: 2px dashed #d6d6db; border-radius: 14px;
+            background: #fcfcfd; color: #6b7280; font-size: 13px;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+        }
+        .splash-drop-zone:hover,
+        .splash-drop-zone:focus-visible,
+        .splash-drop-zone.drag-over { border-color: #111; background: #f7f7f8; color: #111; }
+        .splash-drop-zone.drag-over { border-style: solid; }
+        .splash-drop-zone strong { font-size: 14px; font-weight: 600; color: #111; }
+        .splash-drop-icon { width: 38px; height: 38px; color: #9ca3af; transition: color 0.15s ease; }
+        .splash-drop-zone:hover .splash-drop-icon,
+        .splash-drop-zone.drag-over .splash-drop-icon { color: #111; }
+        .splash-drop-hint { font-size: 11px; color: #6b7280; }
+
+        .splash-btn-row { display: flex; gap: 10px; flex: 0 0 auto; }
+        .splash-btn {
+            flex: 1; min-width: 0; padding: 13px 16px; border-radius: 10px;
+            font-size: 12.5px; font-weight: 600; font-family: inherit;
+            cursor: pointer; user-select: none;
+            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+            border: 1.5px solid #e5e7eb; background: #fff; color: #111;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .splash-btn svg { flex: 0 0 auto; }
+        .splash-btn:hover { background: #111; color: #fff; border-color: #111; }
+        .splash-btn:active { transform: scale(0.98); }
+        .splash-btn.primary { background: #111; color: #fff; border-color: #111; }
+        .splash-btn.primary:hover { background: #1c1c20; border-color: #1c1c20; }
+        .splash-btn.install { background: var(--accent); color: #fff; border-color: var(--accent); flex: 0 0 auto; padding: 13px 14px; }
+        .splash-btn.install:hover { background: var(--accent-soft); border-color: var(--accent-soft); color: #fff; }
+
+        /* While a document loads the import zone is replaced by the progress card
+           and the session list is locked, so a second resume cannot be launched. */
+        .splash-screen.splash-busy .splash-drop-zone,
+        .splash-screen.splash-busy .splash-btn-row { display: none; }
+        .splash-screen.splash-busy .splash-resume {
+            opacity: 0.4; pointer-events: none; filter: saturate(0.35);
+        }

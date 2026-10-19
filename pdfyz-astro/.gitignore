@@ -1,0 +1,22 @@
+# Dépendances
+node_modules/
+
+# Sortie de compilation
+dist/
+dist-desktop/
+.astro/
+
+# Le noyau est un artefact : il est produit par ../pdfyz-rust/scripts/build-wasm.ps1
+# et recopié ici par tools/split-legacy.mjs ou par le script de compilation.
+public/pdfyz-core.js
+public/pdfyz_core.wasm
+
+# Dépendances CDN téléchargées par tools/vendor-cdn.mjs. Ce sont des artefacts :
+# `public/vendor/manifest.json` enregistre leur URL et leur empreinte, donc un
+# build neuf les reprend à l'identique — rien à versionner, 5,6 Mo à ne pas
+# stocker.
+public/vendor/
+
+# Divers
+*.log
+.DS_Store

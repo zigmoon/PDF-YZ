@@ -1,0 +1,31 @@
+# Artefacts de compilation — jamais versionnés.
+#
+# Chaque dossier a son propre .gitignore pour le détail ; celui-ci ne couvre que
+# la racine, et répète les cas qui piègent (un `target/` oublié fait un dépôt de
+# plusieurs centaines de mégaoctets).
+
+node_modules/
+/pdfyz-rust/target/
+/pdfyz-desktop/src-tauri/target/
+/pdfyz-desktop/frontend/
+/pdfyz-desktop/dist-windows/
+/pdfyz-desktop/build/
+/pdfyz-astro/dist/
+/pdfyz-astro/dist-desktop/
+/pdfyz-astro/.astro/
+/pdfyz-astro/public/vendor/
+/pdfyz-astro/public/pdfyz_core.wasm
+/pdfyz-astro/public/pdfyz-core.js
+/pdfyz-rust/dist/*.wasm
+
+# Installeurs produits à la main sur un poste de développement.
+/installeurs/
+
+# Atelier — scripts d'audit jetables
+/_*.cjs
+/_*.png
+
+.vscode/
+*.log
+.DS_Store
+Thumbs.db

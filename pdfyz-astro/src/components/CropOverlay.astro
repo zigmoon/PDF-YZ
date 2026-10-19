@@ -1,0 +1,37 @@
+---
+// superposition de recadrage visuel
+// Extrait de ../index.html, lignes 2281–2313. Balisage d'origine, non réécrit.
+---
+
+<!-- CROP MODAL -->
+<!-- VISUAL CROP OVERLAY -->
+<div class="crop-overlay" id="cropOverlay">
+    <div class="crop-topbar">
+        <div class="crop-topbar-left">
+            <h3>✂️ Crop</h3>
+            <span class="crop-dims" id="cropDims"></span>
+        </div>
+        <div class="crop-topbar-right">
+            <div class="crop-scope-bar">
+                <label><input type="radio" name="cropScope" value="all" checked> All pages</label>
+                <label><input type="radio" name="cropScope" value="current"> Current page</label>
+            </div>
+            <button class="crop-btn cancel" id="cropCancel">Cancel</button>
+            <button class="crop-btn apply" id="cropApply">Apply</button>
+        </div>
+    </div>
+    <div class="crop-canvas-wrap" id="cropCanvasWrap">
+        <canvas id="cropCanvas"></canvas>
+        <div class="crop-region" id="cropRegion">
+            <div class="crop-handle tl" data-dir="tl"></div>
+            <div class="crop-handle tr" data-dir="tr"></div>
+            <div class="crop-handle bl" data-dir="bl"></div>
+            <div class="crop-handle br" data-dir="br"></div>
+            <div class="crop-handle tm" data-dir="tm"></div>
+            <div class="crop-handle bm" data-dir="bm"></div>
+            <div class="crop-handle ml" data-dir="ml"></div>
+            <div class="crop-handle mr" data-dir="mr"></div>
+            <div class="crop-info" id="cropInfo"></div>
+        </div>
+    </div>
+</div>

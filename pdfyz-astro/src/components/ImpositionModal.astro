@@ -1,0 +1,224 @@
+---
+// imposition (livret et N-up)
+// Extrait de ../index.html, lignes 3040–3259. Balisage d'origine, non réécrit.
+---
+
+<!-- IMPOSITION MODAL -->
+<div class="impo-modal" id="impoModal">
+    <div class="impo-box">
+        <div class="impo-header">
+            <h3>📐 Imposition Print</h3>
+            <div class="impo-desc">Arrange pages on press sheets for professional printing — always in multiples of 4.</div>
+        </div>
+        <div class="impo-body">
+            <!-- Mode: booklet signature (SuperPrint) vs N-up grid -->
+            <div class="impo-section">
+                <div class="impo-section-title">Imposition type</div>
+                <div class="impo-modes" id="impoModes">
+                    <div class="impo-mode selected" data-mode="booklet">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h5z"/></svg>
+                        <div class="impo-mode-body">
+                            <div class="impo-mode-title">Booklet (signature)</div>
+                            <div class="impo-mode-desc">2 pages per sheet side, folded and stapled. Always a multiple of 4.</div>
+                        </div>
+                    </div>
+                    <div class="impo-mode" data-mode="nup">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+                        <div class="impo-mode-body">
+                            <div class="impo-mode-title">N-up grid</div>
+                            <div class="impo-mode-desc">Pages laid out in reading order on a press sheet (handouts, proofs).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booklet settings -->
+            <div class="impo-section" id="impoBookletSection">
+                <div class="impo-section-title">Booklet</div>
+                <div class="impo-opts">
+                    <div class="impo-opt">
+                        <label>Binding</label>
+                        <select id="impoBinding">
+                            <option value="saddle" selected>Saddle stitch — [n,1] [2,n-1]…</option>
+                            <option value="perfect">Perfect bound — [1,2] [3,4]…</option>
+                        </select>
+                    </div>
+                    <div class="impo-opt">
+                        <label>Pages per side</label>
+                        <select id="impoBookletPerSide" disabled>
+                            <option value="2" selected>2 (spread)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="impo-hint" id="impoBookletHint"></div>
+            </div>
+
+            <!-- Layout selection (N-up) -->
+            <div class="impo-section" id="impoLayoutSection" style="display:none;">
+                <div class="impo-section-title">Layout</div>
+                <div class="impo-grid">
+                    <div class="impo-card selected" data-layout="4up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="18" height="18" rx="2"/><rect x="26" y="4" width="18" height="18" rx="2"/><rect x="4" y="26" width="18" height="18" rx="2"/><rect x="26" y="26" width="18" height="18" rx="2"/></svg>
+                        <div class="impo-card-title">4 pages</div>
+                        <div class="impo-card-desc">2×2 — 4 pages/sheet</div>
+                    </div>
+                    <div class="impo-card" data-layout="8up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="10" height="18" rx="1"/><rect x="14" y="4" width="10" height="18" rx="1"/><rect x="26" y="4" width="10" height="18" rx="1"/><rect x="38" y="4" width="8" height="18" rx="1"/><rect x="2" y="26" width="10" height="18" rx="1"/><rect x="14" y="26" width="10" height="18" rx="1"/><rect x="26" y="26" width="10" height="18" rx="1"/><rect x="38" y="26" width="8" height="18" rx="1"/></svg>
+                        <div class="impo-card-title">8 pages</div>
+                        <div class="impo-card-desc">4×2 — 8 pages/sheet</div>
+                    </div>
+                    <div class="impo-card" data-layout="16up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="2" width="10" height="10" rx="1"/><rect x="14" y="2" width="10" height="10" rx="1"/><rect x="26" y="2" width="10" height="10" rx="1"/><rect x="38" y="2" width="8" height="10" rx="1"/><rect x="2" y="14" width="10" height="10" rx="1"/><rect x="14" y="14" width="10" height="10" rx="1"/><rect x="26" y="14" width="10" height="10" rx="1"/><rect x="38" y="14" width="8" height="10" rx="1"/><rect x="2" y="26" width="10" height="10" rx="1"/><rect x="14" y="26" width="10" height="10" rx="1"/><rect x="26" y="26" width="10" height="10" rx="1"/><rect x="38" y="26" width="8" height="10" rx="1"/><rect x="2" y="38" width="10" height="8" rx="1"/><rect x="14" y="38" width="10" height="8" rx="1"/><rect x="26" y="38" width="10" height="8" rx="1"/><rect x="38" y="38" width="8" height="8" rx="1"/></svg>
+                        <div class="impo-card-title">16 pages</div>
+                        <div class="impo-card-desc">4×4 — 16 pages/sheet</div>
+                    </div>
+                    <div class="impo-card" data-layout="20up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="8" height="10" rx="1"/><rect x="11" y="2" width="8" height="10" rx="1"/><rect x="20" y="2" width="8" height="10" rx="1"/><rect x="29" y="2" width="8" height="10" rx="1"/><rect x="38" y="2" width="8" height="10" rx="1"/><rect x="2" y="13" width="8" height="10" rx="1"/><rect x="11" y="13" width="8" height="10" rx="1"/><rect x="20" y="13" width="8" height="10" rx="1"/><rect x="29" y="13" width="8" height="10" rx="1"/><rect x="38" y="13" width="8" height="10" rx="1"/><rect x="2" y="24" width="8" height="10" rx="1"/><rect x="11" y="24" width="8" height="10" rx="1"/><rect x="20" y="24" width="8" height="10" rx="1"/><rect x="29" y="24" width="8" height="10" rx="1"/><rect x="38" y="24" width="8" height="10" rx="1"/><rect x="2" y="35" width="8" height="10" rx="1"/><rect x="11" y="35" width="8" height="10" rx="1"/><rect x="20" y="35" width="8" height="10" rx="1"/><rect x="29" y="35" width="8" height="10" rx="1"/><rect x="38" y="35" width="8" height="10" rx="1"/></svg>
+                        <div class="impo-card-title">20 pages</div>
+                        <div class="impo-card-desc">5×4 — 20 pages/sheet</div>
+                    </div>
+                    <div class="impo-card" data-layout="24up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="6" height="10" rx="1"/><rect x="9" y="2" width="6" height="10" rx="1"/><rect x="16" y="2" width="6" height="10" rx="1"/><rect x="23" y="2" width="6" height="10" rx="1"/><rect x="30" y="2" width="6" height="10" rx="1"/><rect x="37" y="2" width="6" height="10" rx="1"/><rect x="2" y="13" width="6" height="10" rx="1"/><rect x="9" y="13" width="6" height="10" rx="1"/><rect x="16" y="13" width="6" height="10" rx="1"/><rect x="23" y="13" width="6" height="10" rx="1"/><rect x="30" y="13" width="6" height="10" rx="1"/><rect x="37" y="13" width="6" height="10" rx="1"/><rect x="2" y="24" width="6" height="10" rx="1"/><rect x="9" y="24" width="6" height="10" rx="1"/><rect x="16" y="24" width="6" height="10" rx="1"/><rect x="23" y="24" width="6" height="10" rx="1"/><rect x="30" y="24" width="6" height="10" rx="1"/><rect x="37" y="24" width="6" height="10" rx="1"/><rect x="2" y="35" width="6" height="10" rx="1"/><rect x="9" y="35" width="6" height="10" rx="1"/><rect x="16" y="35" width="6" height="10" rx="1"/><rect x="23" y="35" width="6" height="10" rx="1"/><rect x="30" y="35" width="6" height="10" rx="1"/><rect x="37" y="35" width="6" height="10" rx="1"/></svg>
+                        <div class="impo-card-title">24 pages</div>
+                        <div class="impo-card-desc">6×4 — 24 pages/sheet</div>
+                    </div>
+                    <div class="impo-card" data-layout="32up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="0.8"><rect x="2" y="2" width="5" height="10" rx="0.5"/><rect x="8" y="2" width="5" height="10" rx="0.5"/><rect x="14" y="2" width="5" height="10" rx="0.5"/><rect x="20" y="2" width="5" height="10" rx="0.5"/><rect x="26" y="2" width="5" height="10" rx="0.5"/><rect x="32" y="2" width="5" height="10" rx="0.5"/><rect x="38" y="2" width="5" height="10" rx="0.5"/><rect x="44" y="2" width="2" height="10" rx="0.5"/><rect x="2" y="13" width="5" height="10" rx="0.5"/><rect x="8" y="13" width="5" height="10" rx="0.5"/><rect x="14" y="13" width="5" height="10" rx="0.5"/><rect x="20" y="13" width="5" height="10" rx="0.5"/><rect x="26" y="13" width="5" height="10" rx="0.5"/><rect x="32" y="13" width="5" height="10" rx="0.5"/><rect x="38" y="13" width="5" height="10" rx="0.5"/><rect x="44" y="13" width="2" height="10" rx="0.5"/><rect x="2" y="24" width="5" height="10" rx="0.5"/><rect x="8" y="24" width="5" height="10" rx="0.5"/><rect x="14" y="24" width="5" height="10" rx="0.5"/><rect x="20" y="24" width="5" height="10" rx="0.5"/><rect x="26" y="24" width="5" height="10" rx="0.5"/><rect x="32" y="24" width="5" height="10" rx="0.5"/><rect x="38" y="24" width="5" height="10" rx="0.5"/><rect x="44" y="24" width="2" height="10" rx="0.5"/><rect x="2" y="35" width="5" height="10" rx="0.5"/><rect x="8" y="35" width="5" height="10" rx="0.5"/><rect x="14" y="35" width="5" height="10" rx="0.5"/><rect x="20" y="35" width="5" height="10" rx="0.5"/><rect x="26" y="35" width="5" height="10" rx="0.5"/><rect x="32" y="35" width="5" height="10" rx="0.5"/><rect x="38" y="35" width="5" height="10" rx="0.5"/><rect x="44" y="35" width="2" height="10" rx="0.5"/></svg>
+                        <div class="impo-card-title">32 pages</div>
+                        <div class="impo-card-desc">8×4 — 32 pages/sheet</div>
+                    </div>
+                    <div class="impo-card" data-layout="64up">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="0.7"><rect x="2" y="2" width="5" height="5" rx="0.5"/><rect x="8" y="2" width="5" height="5" rx="0.5"/><rect x="14" y="2" width="5" height="5" rx="0.5"/><rect x="20" y="2" width="5" height="5" rx="0.5"/><rect x="26" y="2" width="5" height="5" rx="0.5"/><rect x="32" y="2" width="5" height="5" rx="0.5"/><rect x="38" y="2" width="5" height="5" rx="0.5"/><rect x="44" y="2" width="2" height="5" rx="0.5"/><rect x="2" y="8" width="5" height="5" rx="0.5"/><rect x="8" y="8" width="5" height="5" rx="0.5"/><rect x="14" y="8" width="5" height="5" rx="0.5"/><rect x="20" y="8" width="5" height="5" rx="0.5"/><rect x="26" y="8" width="5" height="5" rx="0.5"/><rect x="32" y="8" width="5" height="5" rx="0.5"/><rect x="38" y="8" width="5" height="5" rx="0.5"/><rect x="44" y="8" width="2" height="5" rx="0.5"/><rect x="2" y="14" width="5" height="5" rx="0.5"/><rect x="8" y="14" width="5" height="5" rx="0.5"/><rect x="14" y="14" width="5" height="5" rx="0.5"/><rect x="20" y="14" width="5" height="5" rx="0.5"/><rect x="26" y="14" width="5" height="5" rx="0.5"/><rect x="32" y="14" width="5" height="5" rx="0.5"/><rect x="38" y="14" width="5" height="5" rx="0.5"/><rect x="44" y="14" width="2" height="5" rx="0.5"/><rect x="2" y="20" width="5" height="5" rx="0.5"/><rect x="8" y="20" width="5" height="5" rx="0.5"/><rect x="14" y="20" width="5" height="5" rx="0.5"/><rect x="20" y="20" width="5" height="5" rx="0.5"/><rect x="26" y="20" width="5" height="5" rx="0.5"/><rect x="32" y="20" width="5" height="5" rx="0.5"/><rect x="38" y="20" width="5" height="5" rx="0.5"/><rect x="44" y="20" width="2" height="5" rx="0.5"/><rect x="2" y="26" width="5" height="5" rx="0.5"/><rect x="8" y="26" width="5" height="5" rx="0.5"/><rect x="14" y="26" width="5" height="5" rx="0.5"/><rect x="20" y="26" width="5" height="5" rx="0.5"/><rect x="26" y="26" width="5" height="5" rx="0.5"/><rect x="32" y="26" width="5" height="5" rx="0.5"/><rect x="38" y="26" width="5" height="5" rx="0.5"/><rect x="44" y="26" width="2" height="5" rx="0.5"/><rect x="2" y="32" width="5" height="5" rx="0.5"/><rect x="8" y="32" width="5" height="5" rx="0.5"/><rect x="14" y="32" width="5" height="5" rx="0.5"/><rect x="20" y="32" width="5" height="5" rx="0.5"/><rect x="26" y="32" width="5" height="5" rx="0.5"/><rect x="32" y="32" width="5" height="5" rx="0.5"/><rect x="38" y="32" width="5" height="5" rx="0.5"/><rect x="44" y="32" width="2" height="5" rx="0.5"/><rect x="2" y="38" width="5" height="5" rx="0.5"/><rect x="8" y="38" width="5" height="5" rx="0.5"/><rect x="14" y="38" width="5" height="5" rx="0.5"/><rect x="20" y="38" width="5" height="5" rx="0.5"/><rect x="26" y="38" width="5" height="5" rx="0.5"/><rect x="32" y="38" width="5" height="5" rx="0.5"/><rect x="38" y="38" width="5" height="5" rx="0.5"/><rect x="44" y="38" width="2" height="5" rx="0.5"/><rect x="2" y="44" width="5" height="2" rx="0.5"/><rect x="8" y="44" width="5" height="2" rx="0.5"/><rect x="14" y="44" width="5" height="2" rx="0.5"/><rect x="20" y="44" width="5" height="2" rx="0.5"/><rect x="26" y="44" width="5" height="2" rx="0.5"/><rect x="32" y="44" width="5" height="2" rx="0.5"/><rect x="38" y="44" width="5" height="2" rx="0.5"/><rect x="44" y="44" width="2" height="2" rx="0.5"/></svg>
+                        <div class="impo-card-title">64 pages</div>
+                        <div class="impo-card-desc">8×8 — 64 pages/sheet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sheet settings -->
+            <div class="impo-section">
+                <div class="impo-section-title">Sheet</div>
+                <div class="impo-opts">
+                    <div class="impo-opt">
+                        <label>Sheet size</label>
+                        <select id="impoSheetSize">
+                            <option value="auto" selected>Auto — 2 × page size</option>
+                            <option value="a5">A5 (148×210 mm)</option>
+                            <option value="a4">A4 (210×297 mm)</option>
+                            <option value="a3">A3 (297×420 mm)</option>
+                            <option value="a2">A2 (420×594 mm)</option>
+                            <option value="sra3">SRA3 (320×450 mm)</option>
+                            <option value="sra4">SRA4 (225×320 mm)</option>
+                            <option value="letter">Letter (8.5×11 in)</option>
+                            <option value="legal">Legal (8.5×14 in)</option>
+                            <option value="tabloid">Tabloid (11×17 in)</option>
+                            <option value="custom">Custom…</option>
+                        </select>
+                    </div>
+                    <div class="impo-opt">
+                        <label>Orientation</label>
+                        <select id="impoOrientation">
+                            <option value="auto">Auto (best fit)</option>
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Custom sheet size -->
+                <div class="impo-custom-row" id="impoCustomRow">
+                    <div class="impo-opt">
+                        <label>Width</label>
+                        <input type="number" id="impoCustomW" value="210" min="10" step="0.1">
+                    </div>
+                    <div class="impo-opt">
+                        <label>Height</label>
+                        <input type="number" id="impoCustomH" value="297" min="10" step="0.1">
+                    </div>
+                    <div class="impo-opt">
+                        <label>Unit</label>
+                        <select id="impoCustomUnit">
+                            <option value="mm" selected>mm</option>
+                            <option value="in">inches</option>
+                            <option value="pt">points</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacing -->
+            <div class="impo-section">
+                <div class="impo-section-title">Spacing (mm)</div>
+                <div class="impo-opts">
+                    <div class="impo-opt">
+                        <label>Gutter (between pages)</label>
+                        <input type="number" id="impoGutter" value="0" min="0" max="50" step="0.5">
+                    </div>
+                    <div class="impo-opt">
+                        <label>Bleed</label>
+                        <input type="number" id="impoBleed" value="0" min="0" max="20" step="0.5">
+                    </div>
+                </div>
+                <div class="impo-opts" style="margin-top:8px;">
+                    <div class="impo-opt">
+                        <label>Margin Top / Bottom</label>
+                        <div class="impo-opt-row">
+                            <div class="impo-opt"><input type="number" id="impoMarginT" value="0" min="0" max="80" step="0.5" placeholder="Top"></div>
+                            <div class="impo-opt"><input type="number" id="impoMarginB" value="0" min="0" max="80" step="0.5" placeholder="Bottom"></div>
+                        </div>
+                    </div>
+                    <div class="impo-opt">
+                        <label>Margin Left / Right</label>
+                        <div class="impo-opt-row">
+                            <div class="impo-opt"><input type="number" id="impoMarginL" value="0" min="0" max="80" step="0.5" placeholder="Left"></div>
+                            <div class="impo-opt"><input type="number" id="impoMarginR" value="0" min="0" max="80" step="0.5" placeholder="Right"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="impo-section">
+                <div class="impo-section-title">Options</div>
+                <div class="impo-opts">
+                    <div class="impo-opt">
+                        <label>Pages</label>
+                        <select id="impoPageRange">
+                            <option value="all">All pages</option>
+                            <option value="custom">Custom range…</option>
+                        </select>
+                    </div>
+                    <div class="impo-opt" id="impoRangeOpt" style="display:none;">
+                        <label>Range (e.g. 1-4, 7, 10-12)</label>
+                        <input type="text" id="impoRangeInput" placeholder="1-4, 7, 10-12">
+                    </div>
+                    <div class="impo-opt">
+                        <label>Page order</label>
+                        <select id="impoPageOrder">
+                            <option value="ltr-ttb">Left→Right, Top→Bottom</option>
+                            <option value="rtl-ttb">Right→Left, Top→Bottom</option>
+                            <option value="ltr-btt">Left→Right, Bottom→Top</option>
+                            <option value="ttb-ltr">Top→Bottom, Left→Right</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+                    <label class="impo-check"><input type="checkbox" id="impoCropMarks"> Crop marks</label>
+                    <label class="impo-check"><input type="checkbox" id="impoAutoRotate" checked> Auto-rotate pages to fit</label>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="impo-section">
+                <div class="impo-section-title">Print order <span id="impoOrderSummary" style="text-transform:none;letter-spacing:0;font-weight:400;"></span></div>
+                <div class="impo-order" id="impoOrderList"></div>
+                <div class="impo-preview-box" id="impoPreviewBox" style="margin-top:10px;">
+                    <canvas id="impoPreviewCanvas" width="280" height="130"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="impo-footer">
+            <button class="props-btn" id="impoCancel">Cancel</button>
+            <button class="props-btn action" id="impoApply">Apply Imposition</button>
+        </div>
+    </div>
+</div>

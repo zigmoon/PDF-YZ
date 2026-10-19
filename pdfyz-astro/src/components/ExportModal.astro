@@ -1,0 +1,109 @@
+---
+// export PDF et conversion .sp
+// Extrait de ../index.html, lignes 2691–2795. Balisage d'origine, non réécrit.
+---
+
+<!-- EXPORT MODAL -->
+<div class="export-modal" id="exportModal" role="dialog" aria-modal="true" aria-label="Export PDF">
+    <div class="export-box">
+        <h3>📄 Export PDF</h3>
+        <div class="export-row">
+            <label>File name</label>
+            <input type="text" id="exportFileName" placeholder="document.pdf" />
+        </div>
+        <div class="export-row">
+            <label>Standard</label>
+            <select id="exportStandard">
+                <option value="default">Standard PDF</option>
+                <option value="pdfa">PDF/A (Archival)</option>
+                <option value="print">Print-ready</option>
+            </select>
+        </div>
+        <div class="export-row">
+            <label>Resolution</label>
+            <select id="exportDPI">
+                <option value="72">72 DPI (Screen)</option>
+                <option value="150">150 DPI (Standard)</option>
+                <option value="300">300 DPI (Print)</option>
+                <option value="600">600 DPI (High)</option>
+            </select>
+        </div>
+        <div class="export-row">
+            <label>Page size</label>
+            <select id="exportPageSize">
+                <option value="keep">Keep original</option>
+                <option value="a4">A4 (210×297mm)</option>
+                <option value="letter">Letter (8.5×11in)</option>
+                <option value="legal">Legal (8.5×14in)</option>
+            </select>
+        </div>
+        <div class="export-summary" id="exportSummary"></div>
+        <div class="export-actions">
+            <button class="export-btn-cancel" id="exportCancel">Cancel</button>
+            <button class="export-btn-go" id="exportGo">Export</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONVERT TO .sp (SUPERPRINT) MODAL -->
+<div class="export-modal" id="spModal" role="dialog" aria-modal="true" aria-label="Convertir en .sp pour SuperPrint">
+    <div class="export-box" tabindex="-1" style="max-width:460px;">
+        <h3>⚡ Convertir en .sp — SuperPrint</h3>
+        <div class="sp-file" id="spFileInfo"></div>
+        <div class="sp-choice active" id="spChoiceText" data-mode="image-text">
+            <input type="radio" name="spMode" value="image-text" checked />
+            <div>
+                <strong>Image + texte éditable</strong>
+                <span>Le texte devient modifiable dans SuperPrint. Les blocs posés sur un fond complexe (photo, dégradé) restent en image.</span>
+            </div>
+        </div>
+        <div class="sp-choice" id="spChoiceImage" data-mode="image">
+            <input type="radio" name="spMode" value="image" />
+            <div>
+                <strong>Image seule</strong>
+                <span>Chaque page devient une image. Fidélité visuelle parfaite, mais le texte n'est pas modifiable.</span>
+            </div>
+        </div>
+        <div class="sp-sep"></div>
+        <div class="export-row">
+            <label>Résolution</label>
+            <select id="spDpi">
+                <option value="96">96 dpi (web)</option>
+                <option value="150" selected>150 dpi (recommandé)</option>
+                <option value="300">300 dpi (impression)</option>
+            </select>
+        </div>
+        <div class="export-row">
+            <label>Image</label>
+            <select id="spFormat">
+                <option value="png" selected>PNG (net, plus lourd)</option>
+                <option value="jpg">JPEG (léger)</option>
+            </select>
+        </div>
+        <div class="export-row">
+            <label>Fond perdu</label>
+            <input type="number" id="spBleed" value="0" min="0" max="20" step="0.5" style="width:70px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;outline:none;" />
+            <span style="font-size:11px;color:var(--muted);">mm</span>
+        </div>
+        <div class="sp-check">
+            <input type="checkbox" id="spEmbedFonts" checked />
+            <label for="spEmbedFonts" style="cursor:pointer;">Embarquer les polices dans le .sp</label>
+        </div>
+        <div class="export-summary" id="spSummary"></div>
+        <div class="sp-progress" id="spProgress">
+            <div class="sp-progress-label" id="spProgressLabel">Préparation…</div>
+            <div class="sp-progress-bar"><i id="spProgressBar"></i></div>
+        </div>
+        <div class="export-actions">
+            <button class="export-btn-cancel" id="spCancel">Annuler</button>
+            <button class="export-btn-go" id="spGo">Convertir en .sp</button>
+        </div>
+    </div>
+</div>
+
+<!-- POST-CONVERSION BANNER -->
+<div class="sp-done" id="spDone" role="status" aria-live="polite">
+    <span class="sp-done-text" id="spDoneText"></span>
+    <a class="sp-done-open" id="spDoneOpen" href="https://superprint.cc/app/" target="_blank" rel="noopener">Ouvrir SuperPrint ↗</a>
+    <button class="sp-done-close" id="spDoneClose" type="button" aria-label="Fermer">✕</button>
+</div>

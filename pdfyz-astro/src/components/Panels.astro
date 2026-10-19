@@ -1,0 +1,97 @@
+---
+// panneaux propriétés et éditeur de texte
+// Extrait de ../index.html, lignes 2598–2690. Balisage d'origine, non réécrit.
+---
+
+<!-- PROPERTIES PANEL -->
+<div class="props-panel" id="propsPanel">
+    <div class="props-title" id="propsTitle">Text</div>
+    <div class="props-context" id="propsContext">Choisissez une action ou glissez directement le bloc.</div>
+    <button class="props-btn props-move action" id="propMove" type="button" title="Déplacer le bloc par glisser-déposer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3"/><path d="M9 5l3-3 3 3"/><path d="M15 19l-3 3-3-3"/><path d="M19 9l3 3-3 3"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+        <span><strong>Déplacer</strong>Glissez le bloc sur la page</span>
+    </button>
+    <button class="props-btn" id="propEditText" type="button" style="display:none;">Modifier le texte</button>
+    <div class="props-row" id="propFontRow"><label>Font</label>
+        <select id="propFont"><option>Helvetica</option><option>Times-Roman</option><option>Courier</option><option>Arial</option><option>Georgia</option></select>
+    </div>
+    <div class="props-row" id="propSizeRow"><label>Size</label><input type="number" id="propSize" value="16" min="6" max="120" style="width:60px;" /><label>px</label></div>
+    <div class="props-row" id="propColorRow"><label>Couleur</label><input type="color" class="props-color" id="propColor" value="#000000" /></div>
+    <div class="props-row" id="propFormatRow" style="gap:4px;">
+        <button class="props-btn" id="propBold" style="flex:1;font-weight:700;">B</button>
+        <button class="props-btn" id="propItalic" style="flex:1;font-style:italic;">I</button>
+    </div>
+    <button class="props-btn" id="propReplace" style="width:100%;margin-top:4px;display:none;">Remplacer l’image</button>
+    <button class="props-btn danger" id="propDelete" style="width:100%;margin-top:4px;">Supprimer</button>
+</div>
+
+<!-- TEXT EDITOR PANEL (right drawer) -->
+<div class="text-edit-panel" id="textEditPanel">
+    <div class="te-header">
+        <span class="te-title">Edit Text</span>
+        <button class="te-close" id="teClose">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+    <div class="te-body">
+        <div class="te-original-font" id="teOriginalFont"></div>
+        <div id="teInlineHint" style="display:none; padding:8px 10px; border-radius:10px; background:rgba(var(--accent-rgb),0.06); border:1px solid rgba(var(--accent-rgb),0.12); font-size:11px; color:var(--muted); line-height:1.5;">
+            <span style="color:var(--text); font-weight:500;">✎ Click the text on the page to edit it.</span>
+        </div>
+        <textarea id="teTextarea" placeholder="Type your text here…" spellcheck="true"></textarea>
+        <div class="te-controls">
+            <div class="te-row">
+                <label>Font</label>
+                <div class="te-font-row">
+                    <select id="teFont">
+                        <optgroup label="Standard">
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Times-Roman">Times Roman</option>
+                            <option value="Courier">Courier</option>
+                        </optgroup>
+                        <optgroup label="Google Fonts" id="teFontGoogle">
+                            <option value="gf:Roboto">Roboto</option>
+                            <option value="gf:Open Sans">Open Sans</option>
+                            <option value="gf:Lato">Lato</option>
+                            <option value="gf:Montserrat">Montserrat</option>
+                            <option value="gf:Poppins">Poppins</option>
+                            <option value="gf:Inter">Inter</option>
+                            <option value="gf:Roboto Mono">Roboto Mono</option>
+                            <option value="gf:Playfair Display">Playfair Display</option>
+                            <option value="gf:Oswald">Oswald</option>
+                            <option value="gf:Raleway">Raleway</option>
+                            <option value="gf:Nunito">Nunito</option>
+                            <option value="gf:Source Sans Pro">Source Sans Pro</option>
+                        </optgroup>
+                        <optgroup label="Custom" id="teFontCustom"></optgroup>
+                    </select>
+                    <button class="te-upload-btn" id="teUploadFont" title="Upload .ttf / .otf font">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="te-font-loading" id="teFontLoading"><div class="spinner"></div><span>Loading font…</span></div>
+            <div class="te-row">
+                <label>Size</label>
+                <input type="number" id="teSize" value="16" min="6" max="120" />
+            </div>
+            <div class="te-row">
+                <label>Color</label>
+                <input type="color" id="teColor" value="#000000" class="te-color" />
+            </div>
+            <div class="te-row te-format">
+                <button class="te-fmt-btn" id="teBold"><strong>B</strong></button>
+                <button class="te-fmt-btn" id="teItalic"><em>I</em></button>
+                <button class="te-fmt-btn" id="teAlignLeft" title="Left"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="17" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+                <button class="te-fmt-btn" id="teAlignCenter" title="Center"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="18" y1="14" x2="6" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+                <button class="te-fmt-btn" id="teAlignRight" title="Right"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="7" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+            </div>
+        </div>
+        <div class="te-font-preview" id="teFontPreview">The quick brown fox jumps over the lazy dog</div>
+    </div>
+    <input type="file" id="fontFileInput" accept=".ttf,.otf,.woff,.woff2" style="display:none;" />
+    <div class="te-footer">
+        <button class="props-btn danger" id="teDelete">Delete</button>
+        <button class="props-btn action" id="teDone">Done</button>
+    </div>
+</div>

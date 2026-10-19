@@ -1,0 +1,22 @@
+---
+// popin « toutes les sessions »
+// Extrait de ../index.html, lignes 2263–2280. Balisage d'origine, non réécrit.
+---
+
+<!-- ALL SESSIONS POPIN -->
+<div class="sessions-modal" id="sessionsModal" role="dialog" aria-modal="true" aria-label="Saved sessions">
+    <div class="sessions-box">
+        <div class="sessions-head">
+            <h3>Saved sessions</h3>
+            <button class="sessions-close" id="sessionsClose" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="sessions-filters">
+            <input type="text" id="sessionsSearch" placeholder="Search sessions…" />
+            <button class="sessions-filter" data-filter="recent">Recent</button>
+            <button class="sessions-filter active" data-filter="all">All</button>
+        </div>
+        <div class="sessions-list" id="sessionsList"></div>
+    </div>
+</div>

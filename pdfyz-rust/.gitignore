@@ -1,0 +1,20 @@
+# Sortie de compilation Rust
+/target/
+**/target/
+
+# Le module WebAssembly est un ARTEFACT : il se regenere, il ne se commite pas.
+#
+#     pwsh -File scripts/build-wasm.ps1
+#
+# `scripts/check.ps1` rebatit et revalide tout ; `scripts/validate-wasm.mjs`
+# refuse un module dont la version ne correspond plus au `Cargo.toml`.
+/dist/*.wasm
+
+# Editeurs
+.vscode/
+.idea/
+*.swp
+
+# Divers
+.DS_Store
+*.log

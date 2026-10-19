@@ -1,0 +1,281 @@
+# ══════════════════════════════════════════════════════════════════════════════
+#  APPLICATIONS DE BUREAU — PDF-YZ (Windows · macOS · Linux)
+#
+#  POURQUOI UN SEUL PROJET TAURI POUR TROIS SYSTÈMES.
+#  `pdfyz-desktop/` est une coquille native : une fenêtre, une webview, la page
+#  de l'éditeur. Rien de spécifique à un système n'y est écrit. Le travail de ce
+#  workflow est donc un seul build décliné quatre fois (Windows, macOS ARM, macOS
+#  Intel, Linux), pas quatre projets à maintenir.
+#
+#  CE QUE LE BINAIRE EMBARQUE : TOUT, Y COMPRIS CE QUI VENAIT D'UN CDN.
+#  `scripts/prepare-bundle.mjs` construit le noyau Rust en WebAssembly, compile
+#  l'application Astro avec `--base /`, puis copie la sortie dans `frontend/` —
+#  le `frontendDist` de `tauri.conf.json`. pdf.js, pdf-lib, fontkit, Tailwind et
+#  les polices sont servis depuis `vendor/` : l'application s'ouvre sans réseau,
+#  ce qui est la seule raison d'exister d'une application de bureau ici. Les
+#  service workers ne s'enregistrent pas dans une webview, donc « mis en cache à
+#  la première visite » ne protégerait rien.
+#
+#  POURQUOI DES NOMS FIXES, ET DEUX PUBLICATIONS.
+#  Tauri nomme ses installeurs d'après la version (« PDF-YZ_0.2.0_x64-setup.exe »).
+#  Un lien de téléchargement ne peut pas suivre un nom qui change à chaque
+#  livraison : les fichiers sont donc renommés avant publication et attachés à la
+#  version `pdfyz-desktop-latest`, qui écrase ses fichiers à chaque passage
+#  (`--clobber`). Une seconde release, portant le tag, fige les mêmes binaires :
+#  sans elle, l'installeur de la veille ne serait plus téléchargeable nulle part
+#  dès la livraison suivante.
+#
+#  ⚠️ Ces adresses ne répondent qu'APRÈS le premier passage de ce workflow :
+#     https://github.com/zigmoon/PDF-YZ/releases/tag/pdfyz-desktop-latest
+# ══════════════════════════════════════════════════════════════════════════════
+name: Applications de bureau
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'desktop-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: PDF-YZ · ${{ matrix.systeme }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      # ⚠️ LES QUATRE COMBINAISONS SONT ÉCRITES EN CLAIR, ET CE N'EST PAS DU VERBE.
+      #
+      # Un premier jet croisait `target: [windows, macos-arm, macos-intel, linux]`
+      # avec une liste `include` de plateformes. Quand plusieurs entrées d'un
+      # `include` ne partagent AUCUNE clé avec la matrice de base, GitHub les
+      # fusionne en un seul objet — et seul le dernier survit. Quatre tâches
+      # deviennent une, silencieusement, et on ne le voit qu'en lisant les tâches
+      # réellement créées.
+      #
+      # Écrit ainsi, il n'y a plus d'interprétation possible. Le nom d'artefact
+      # ne doit pas contenir d'espace.
+      matrix:
+        include:
+          - { systeme: Windows, platform: windows-latest, target: '' }
+          - { systeme: macOS-ARM, platform: macos-latest, target: aarch64-apple-darwin }
+          - { systeme: macOS-Intel, platform: macos-latest, target: x86_64-apple-darwin }
+          - { systeme: Linux, platform: ubuntu-22.04, target: '' }
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # WebKitGTK : la webview du système sous Linux. Rien de tel n'existe sous
+      # Windows (WebView2) ni sous macOS (WKWebView), où le système fournit tout.
+      # `rpm` sert à construire le paquet RPM — il n'est pas installé d'origine.
+      - name: Dépendances système (Linux)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            rpm
+
+      - name: Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      # `wasm32-unknown-unknown` : le noyau que l'application embarque.
+      # `wasm32-wasip1` : la cible des tests, exécutés ici pour qu'une
+      # régression du noyau arrête la livraison avant l'empaquetage.
+      - name: Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown, wasm32-wasip1
+          components: rustfmt, clippy
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.platform }}-${{ matrix.target }}
+          workspaces: |
+            pdfyz-rust -> target
+            pdfyz-desktop/src-tauri -> target
+
+      # Les mêmes contrôles que le workflow « Vérification », mais exécutés là où
+      # le binaire est fabriqué : si le noyau régresse, aucun installeur n'est
+      # produit. Les 206 vérifications de parité comparent le module au
+      # JavaScript de repli, qui doit donner exactement le même résultat.
+      - name: Noyau — formatage, lint, tests
+        working-directory: pdfyz-rust
+        run: |
+          cargo fmt --check
+          cargo clippy --workspace --all-targets -- -D warnings
+          cargo test --workspace --target wasm32-wasip1
+
+      - name: Noyau — module wasm et parité
+        working-directory: pdfyz-rust
+        run: node scripts/build-wasm.mjs
+
+      - name: Dépendances de l'application
+        working-directory: pdfyz-astro
+        run: npm ci --no-audit --no-fund
+
+      - name: Dépendances du bureau
+        working-directory: pdfyz-desktop
+        run: npm ci --no-audit --no-fund
+
+      # `beforeBuildCommand` (scripts/prepare-bundle.mjs) s'exécute ici : il
+      # refuse de continuer si le `frontend/` produit contient encore une
+      # ressource distante, ou si le noyau a disparu du paquet.
+      #
+      # `tauri-action` sans tagName ni releaseName : il compile et s'arrête là.
+      # La publication est le travail du job « publier », plus bas.
+      - name: Compiler
+        uses: tauri-apps/tauri-action@v1
+        with:
+          projectPath: pdfyz-desktop
+          args: ${{ matrix.target != '' && format('--target {0}', matrix.target) || '' }}
+
+      - name: Téléverser les paquets
+        uses: actions/upload-artifact@v6
+        with:
+          name: paquets-${{ matrix.systeme }}
+          path: pdfyz-desktop/src-tauri/target/**/bundle/**
+          if-no-files-found: error
+
+  publier:
+    name: Publier (noms stables)
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+
+      # Node : la version de l'application est lue dans `tauri.conf.json` par
+      # `node -p`, pour être comparée au tag.
+      - name: Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Récupérer tous les paquets
+        uses: actions/download-artifact@v7
+        with:
+          path: paquets
+
+      # Le renommage est la raison d'être de ce job : il transforme des noms
+      # versionnés en adresses stables, et échoue BRUYAMMENT si un paquet
+      # manque — un lien mort serait pire que pas de lien du tout.
+      - name: Normaliser les noms
+        run: |
+          set -eu
+          out=livraison
+          mkdir -p "$out"
+
+          copier() {  # motif_source  nom_stable
+            trouve=$(find paquets -iname "$1" -type f | head -n 1 || true)
+            if [ -z "$trouve" ]; then
+              echo "MANQUANT : $1" >&2
+              exit 1
+            fi
+            cp "$trouve" "$out/$2"
+            printf '%-28s -> %s\n' "$1" "$2"
+          }
+
+          copier '*_x64-setup.exe'          PDF-YZ-Windows-x64-setup.exe
+          copier '*_x64_en-US.msi'          PDF-YZ-Windows-x64.msi
+          copier '*_aarch64.dmg'            PDF-YZ-macOS-AppleSilicon.dmg
+          copier '*_x64.dmg'                PDF-YZ-macOS-Intel.dmg
+          copier '*_amd64.AppImage'         PDF-YZ-Linux-x86_64.AppImage
+          copier '*_amd64.deb'              PDF-YZ-Linux-x86_64.deb
+          copier '*.x86_64.rpm'             PDF-YZ-Linux-x86_64.rpm
+
+          echo
+          ls -lh "$out"
+
+      - name: Publier la version « pdfyz-desktop-latest »
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          version="$(node -p "require('./pdfyz-desktop/src-tauri/tauri.conf.json').version")"
+
+          # Le texte de la page vit dans un fichier, pas dans ce YAML : deux
+          # copies divergeraient, donc il n'y en a qu'une.
+          sed "s/@VERSION@/$version/g" .github/release-notes-desktop.md > notes-desktop.md
+          if grep -q '@VERSION@' notes-desktop.md; then
+            echo "::error::un @VERSION@ subsiste dans le texte de la page"
+            exit 1
+          fi
+
+          gh release view pdfyz-desktop-latest >/dev/null 2>&1 || \
+            gh release create pdfyz-desktop-latest --latest=false
+
+          # L'édition est INCONDITIONNELLE : un texte de page est une donnée
+          # vivante, il se réécrit à chaque passage. `create ... --notes` ne le
+          # poserait qu'une fois, et la page garderait le texte du premier jour.
+          gh release edit pdfyz-desktop-latest \
+            --title "PDF-YZ $version — desktop applications" \
+            --notes-file notes-desktop.md
+
+          gh release upload pdfyz-desktop-latest livraison/* --clobber
+
+      # ── ARCHIVE VERSIONNÉE ──────────────────────────────────────────────────
+      # Ce que `pdfyz-desktop-latest` ne peut PAS conserver : ses noms sont
+      # fixes et il se fait écraser à chaque passage. L'installeur publié la
+      # veille disparaîtrait donc le lendemain, et le tag du dépôt ne garde que
+      # le code source, pas les binaires.
+      #
+      # Deux contrôles avant de figer quoi que ce soit, parce qu'une release
+      # versionnée est une affirmation : « ces binaires SONT la version X ».
+      #   1. le workflow doit être parti DU TAG (`workflow_dispatch` sait partir
+      #      d'une branche : les binaires viendraient d'un commit que le tag ne
+      #      désigne pas) ;
+      #   2. le tag doit dire la même chose que l'application compilée.
+      #
+      # Cette étape vient APRÈS, parce que c'est `pdfyz-desktop-latest` qui
+      # alimente les téléchargements : une archive ne doit jamais pouvoir
+      # retarder ni empêcher leur mise à jour. D'où l'avertissement plutôt que
+      # l'échec quand les conditions ne sont pas réunies.
+      - name: Publier l'archive versionnée
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+
+          case "${GITHUB_REF:-}" in
+            refs/tags/desktop-v*) tag="${GITHUB_REF_NAME}" ;;
+            *)
+              echo "::warning::construit depuis ${GITHUB_REF:-?}, pas depuis un tag : archive versionnee ignoree"
+              exit 0
+              ;;
+          esac
+          version="${tag#desktop-v}"
+
+          declaree=$(node -p "require('./pdfyz-desktop/src-tauri/tauri.conf.json').version")
+          if [ "$version" != "$declaree" ]; then
+            echo "::warning::le tag $tag annonce $version, l'application compilee est $declaree : archive versionnee ignoree"
+            exit 0
+          fi
+
+          ( cd livraison && sha256sum * > ../SHA256SUMS )
+          cat SHA256SUMS
+
+          gh release view "$tag" >/dev/null 2>&1 || \
+            gh release create "$tag" \
+              --title "PDF-YZ $version — desktop applications" \
+              --notes-file notes-desktop.md \
+              --latest=false
+          gh release upload "$tag" livraison/* SHA256SUMS --clobber
+          echo "archive $tag publiee"
+
+      # Le badge « Latest » ne se retire pas, il se désigne : sans cette étape,
+      # GitHub afficherait l'archive comme version la plus récente, alors que
+      # c'est `pdfyz-desktop-latest` que les liens du site visent.
+      - name: Ancrer « Latest » sur pdfyz-desktop-latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          gh release edit pdfyz-desktop-latest --latest
+          echo "badge Latest : pdfyz-desktop-latest"

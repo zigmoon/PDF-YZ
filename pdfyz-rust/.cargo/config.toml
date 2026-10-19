@@ -1,0 +1,11 @@
+# Execution des tests en WebAssembly, sans linker natif.
+#
+# Sur certaines machines Windows, `cargo test` ne peut pas se lier (Visual Studio
+# absent) et Smart App Control bloque les executables fraichement compiles.
+# `cargo test --target wasm32-wasip1` compile les tests en WebAssembly et les
+# execute via Node — ce qui suit est le lanceur.
+#
+#   cargo test --target wasm32-wasip1
+
+[target.wasm32-wasip1]
+runner = "node ../../scripts/run-wasi.mjs"

@@ -1,0 +1,13 @@
+[package]
+name = "pdfyz-impose"
+description = "Imposition de PDF-YZ : ordre de signature (livret), grille N-up, format de planche et traits de coupe."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+# Crate pur Rust : aucune dependance.
+[dependencies]
+pdfyz-core = { path = "../pdfyz-core" }

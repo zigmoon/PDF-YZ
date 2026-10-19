@@ -1,0 +1,12 @@
+[package]
+name = "pdfyz-core"
+description = "Primitives pures du noyau Rust de PDF-YZ : unites typographiques, geometrie, couleurs et trace vectoriel."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+# Crate pur Rust : aucune dependance, compilable en natif et en WebAssembly.
+[dependencies]

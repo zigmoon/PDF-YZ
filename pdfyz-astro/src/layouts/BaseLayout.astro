@@ -1,0 +1,270 @@
+---
+/**
+ * Coquille du document : <head> d'origine (SEO, Open Graph, icônes, polices,
+ * dépendances CDN, JSON-LD) et <body> réduit à un emplacement.
+ *
+ * Le <head> est repris **tel quel** depuis l'application historique. Ses
+ * <script> portent is:inline : Astro ne doit ni les déplacer, ni les regrouper,
+ * ni réécrire leurs URL — pdf-lib et fontkit sont des variables globales dont
+ * l'ordre de chargement est significatif.
+ */
+import '../styles/01-base.css';
+import '../styles/02-scrollbars.css';
+import '../styles/03-prehome.css';
+import '../styles/04-chrome.css';
+import '../styles/05-donate.css';
+import '../styles/06-sessions.css';
+import '../styles/07-toolbar.css';
+import '../styles/08-tools-mobile.css';
+import '../styles/09-canvas-sidebar.css';
+import '../styles/10-colour-popover.css';
+import '../styles/11-icc-zoom-status.css';
+import '../styles/12-properties-toast-loader.css';
+import '../styles/13-modals-fabs.css';
+import '../styles/14-notes-find-prefs.css';
+import '../styles/15-text-editor-thumbs.css';
+import '../styles/16-imposition-crop.css';
+---
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ─── SEO Core ─── -->
+    <title>PDF-YZ — Free Online PDF Editor | Edit, Annotate, Imposition &amp; Export</title>
+    <meta name="description" content="PDF-YZ is the most ergonomic free online PDF editor. Edit text, replace images, annotate, sign, crop, imposition and re-export — 100% in your browser, no upload required." />
+    <meta name="keywords" content="PDF editor, online PDF editor, free PDF editor, edit PDF online, annotate PDF, PDF imposition, PDF export, PDF sign, browser PDF tool, PDF-YZ, Zigmoon" />
+    <meta name="author" content="Zigmoon" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://app.zigmoon.com/PDF-YZ/" />
+    <link rel="alternate" hreflang="en" href="https://app.zigmoon.com/PDF-YZ/" />
+    <link rel="alternate" hreflang="x-default" href="https://app.zigmoon.com/PDF-YZ/" />
+
+    <!-- ─── Open Graph ─── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Zigmoon" />
+    <meta property="og:title" content="PDF-YZ — Free Online PDF Editor" />
+    <meta property="og:description" content="Edit text, replace images, annotate, sign, crop, imposition and re-export PDFs — 100% in your browser, no upload required." />
+    <meta property="og:url" content="https://app.zigmoon.com/PDF-YZ/" />
+    <meta property="og:image" content="https://app.zigmoon.com/icons/web-app-manifest-512x512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="PDF-YZ PDF Editor by Zigmoon" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ─── Twitter Card ─── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PDF-YZ — Free Online PDF Editor" />
+    <meta name="twitter:description" content="Edit, annotate, sign & export PDFs in your browser — free, private, no upload." />
+    <meta name="twitter:image" content="https://app.zigmoon.com/icons/web-app-manifest-512x512.png" />
+    <meta name="twitter:image:alt" content="PDF-YZ PDF Editor by Zigmoon" />
+    <meta name="twitter:site" content="@zigmoon" />
+    <meta name="twitter:creator" content="@zigmoon" />
+
+    <!-- ─── GEO SEO ─── -->
+    <meta name="geo.region" content="FR" />
+    <meta name="geo.placename" content="France" />
+    <meta name="geo.position" content="46.603354;1.888334" />
+    <meta name="ICBM" content="46.603354, 1.888334" />
+    <meta name="language" content="en" />
+
+    <!-- ─── Theme & PWA ─── -->
+    <meta name="theme-color" content="#0c0c0f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PDF-YZ" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="PDF-YZ" />
+    <meta name="msapplication-TileColor" content="#0c0c0f" />
+    <meta name="msapplication-config" content="none" />
+
+    <!-- ─── Icons ─── -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" sizes="any" href="favicon.svg" />
+    <link rel="apple-touch-icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <!-- ─── Feeds & Humans ─── -->
+    <link rel="sitemap" type="application/xml" href="sitemap.xml" />
+    <link rel="author" type="text/plain" href="humans.txt" />
+
+    <!-- ─── Fonts ─── -->
+<!-- ─── Fonts ───
+     Servies depuis `vendor/fonts/` : une feuille Google distante rendrait la
+     première ouverture impossible sans réseau — donc l'application de bureau
+     inutilisable, puisque les service workers ne s'y enregistrent pas. -->
+<link href="vendor/fonts/app.css" rel="stylesheet" />
+
+
+
+    <!-- ─── Dependencies ───
+     `vendor/` est produit par tools/vendor-cdn.mjs (origines dans
+     tools/cdn-urls.mjs). Chemins relatifs au document : le site est servi sous
+     `/PDF-YZ/`, l'application de bureau à la racine. -->
+    <script is:inline src="vendor/tailwind.js"></script>
+    <script is:inline src="vendor/pdf-lib.min.js"></script>
+    <!-- fontkit is REQUIRED by pdf-lib to embed any custom/Google font. Without it
+         every embedFont(bytes) call throws and the exporter silently fell back to
+         Helvetica, destroying the document's typography. -->
+    <script is:inline src="vendor/fontkit.umd.min.js"></script>
+
+    <!-- ─── JSON-LD Structured Data ─── -->
+    <script is:inline type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://app.zigmoon.com/PDF-YZ/#app",
+          "name": "PDF-YZ",
+          "alternateName": "PDF-YZ — PDF Editor",
+          "url": "https://app.zigmoon.com/PDF-YZ/",
+          "description": "The most ergonomic free online PDF editor. Edit text, replace images, annotate, sign, crop, imposition and re-export — 100% in your browser.",
+          "applicationCategory": "DesignApplication",
+          "applicationSubCategory": "PDF Editor",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires a modern browser with JavaScript enabled",
+          "softwareVersion": "0.2.0",
+          "datePublished": "2026-03-22",
+          "inLanguage": "en",
+          "isAccessibleForFree": true,
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "127",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock"
+          },
+          "featureList": [
+            "PDF text editing",
+            "Image replacement",
+            "Annotations",
+            "Digital signature",
+            "Page management",
+            "PDF imposition print (4, 8, 16 pages per sheet)",
+            "Crop marks and bleed",
+            "PDF export and re-export",
+            "Find and replace",
+            "100% browser-based — no upload"
+          ],
+          "screenshot": "https://app.zigmoon.com/icons/web-app-manifest-512x512.png",
+          "author": {
+            "@type": "Organization",
+            "@id": "https://zigmoon.com/#org",
+            "name": "Zigmoon",
+            "url": "https://zigmoon.com"
+          },
+          "publisher": {
+            "@id": "https://zigmoon.com/#org"
+          },
+          "potentialAction": {
+            "@type": "UseAction",
+            "target": "https://app.zigmoon.com/PDF-YZ/"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Zigmoon Apps",
+              "item": "https://app.zigmoon.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "PDF-YZ",
+              "item": "https://app.zigmoon.com/PDF-YZ/"
+            }
+          ]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://app.zigmoon.com/PDF-YZ/#software",
+          "name": "PDF-YZ",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web Browser",
+          "url": "https://app.zigmoon.com/PDF-YZ/",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "127"
+          }
+        },
+        {
+          "@type": "HowTo",
+          "@id": "https://app.zigmoon.com/PDF-YZ/#howto-edit",
+          "name": "How to edit a PDF online for free with PDF-YZ",
+          "description": "Edit text, replace images, annotate, sign and re-export any PDF directly in your browser.",
+          "totalTime": "PT2M",
+          "tool": { "@type": "HowToTool", "name": "A modern web browser (Chrome, Firefox, Edge, Safari)" },
+          "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Open your PDF", "text": "Drag & drop your PDF file onto the splash screen, or click Open. Files stay 100% in your browser." },
+            { "@type": "HowToStep", "position": 2, "name": "Edit text", "text": "Click any extracted text block to edit it inline \u2014 PDF-YZ will mask the original and re-render with your font, size and color." },
+            { "@type": "HowToStep", "position": 3, "name": "Annotate or sign", "text": "Use the toolbar to highlight, draw, add notes or insert a digital signature." },
+            { "@type": "HowToStep", "position": 4, "name": "Export", "text": "Press Ctrl+S, choose filename, PDF/A standard, page size and DPI, then export. Your edits are flattened into a fresh PDF." }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is PDF-YZ free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. PDF-YZ is 100% free with no account required. All processing happens in your browser — no files are uploaded to any server."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does PDF-YZ upload my PDF files?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. PDF-YZ runs entirely in your browser. Your documents never leave your device, ensuring full privacy."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What can I do with PDF-YZ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Edit text, replace images, annotate pages, add digital signatures, manage pages, perform print imposition (4, 8, 16 pages per sheet), add crop marks, and export modified PDFs."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <noscript><meta http-equiv="refresh" content="0;url=https://app.zigmoon.com/"></noscript>
+
+<!-- Colle du noyau Rust (script classique, publie PdfyzCore). Doit preceder le
+     module de l'editeur, qui l'attend pour se lier ; absente du HTML
+     historique, elle est ajoutee ici et non dans le <head> repris tel quel. -->
+<script is:inline src="pdfyz-core.js"></script>
+</head>
+
+<body>
+<slot />
+
+<!-- Scripts de fin de document : le module de l'éditeur est chargé depuis
+     src/scripts/app.js, la pop-in de don reste un script classique exécuté
+     avant lui, exactement comme dans l'application d'origine. -->
+<script>
+	import '../scripts/app.js';
+</script>
+<script is:inline src="donate-popin.js?v=2026-05-04b"></script>
+</body>
+</html>

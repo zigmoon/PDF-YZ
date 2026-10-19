@@ -1,0 +1,138 @@
+# ══════════════════════════════════════════════════════════════════════════════
+#  VÉRIFICATION — noyau Rust et application Astro
+#
+#  Deux tâches, une par moitié du projet. Elles répondent à une seule question :
+#  « ce commit est-il livrable ? » — et elles y répondent avant que quiconque
+#  télécharge un installeur.
+#
+#  CE QUI EST VÉRIFIÉ, ET POURQUOI CHAQUE ÉTAPE EXISTE :
+#
+#    · `cargo fmt --check` — le formatage n'est pas un goût : il rend les diffs
+#      lisibles et empêche les re-découpages accidentels de bruit.
+#    · `cargo clippy -D warnings` — sans `-D`, un avertissement est un vœu. Avec,
+#      c'est une barrière : le noyau est compilé en WebAssembly et livré tel quel,
+#      donc une erreur de type « boucle inutile » ou « comparaison de flottants »
+#      coûte des performances chez l'utilisateur, pas chez le développeur.
+#    · `cargo test --target wasm32-wasip1` — les tests tournent dans la CIBLE
+#      livrée, via `scripts/run-wasi.mjs`. Tester en natif ne prouverait rien
+#      sur le module qui part réellement dans le navigateur.
+#    · `build-wasm.mjs` + `validate-wasm.mjs` — construit le module et le compare
+#      fonction par fonction à l'implémentation JavaScript (206 vérifications).
+#      C'est la seule étape qui distingue « bibliothèque Rust » de « noyau
+#      utilisable par le site » : les deux chemins doivent donner le même
+#      résultat, sinon le repli JavaScript mentirait.
+#    · `astro check` + `astro build` — le typage des fichiers .astro et la
+#      compilation réelle. Un build cassé ne se voit qu'ici.
+#
+#  PAS DE MATRICE MULTI-SYSTÈME ICI : ce travail ne dépend pas de la plateforme,
+#  et il doit rester rapide. Les trois systèmes sont l'affaire du workflow de
+#  bureau, qui ne compile que ce qui doit être signé et empaqueté.
+# ══════════════════════════════════════════════════════════════════════════════
+name: Vérification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  noyau:
+    name: Noyau Rust
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+
+      # `wasm32-wasip1` porte les tests (pas de linker natif requis) ;
+      # `wasm32-unknown-unknown` est la cible livrée. Les deux sont nécessaires,
+      # et les installer ici évite qu'un `cargo build` échoue dix minutes plus
+      # tard sur un « target may not be installed ».
+      - name: Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1, wasm32-unknown-unknown
+          components: rustfmt, clippy
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: pdfyz-rust -> target
+
+      - name: Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Formatage
+        working-directory: pdfyz-rust
+        run: cargo fmt --check
+
+      - name: Clippy
+        working-directory: pdfyz-rust
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Tests (dans la cible livrée)
+        working-directory: pdfyz-rust
+        run: cargo test --workspace --target wasm32-wasip1
+
+      # Construit `dist/pdfyz_core.wasm`, le copie dans `pdfyz-astro/public/`
+      # (dont la tâche suivante a besoin) et lance les 206 vérifications de
+      # parité avec le JavaScript de référence.
+      - name: Module wasm + parité
+        working-directory: pdfyz-rust
+        run: node scripts/build-wasm.mjs
+
+      - name: Conserver le module
+        uses: actions/upload-artifact@v6
+        with:
+          name: pdfyz-core-wasm
+          path: pdfyz-rust/dist/pdfyz_core.wasm
+          if-no-files-found: error
+
+  application:
+    name: Application Astro
+    runs-on: ubuntu-22.04
+    needs: noyau
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: pdfyz-astro/package-lock.json
+
+      # Le noyau vient de la tâche précédente : sans ce fichier, l'application
+      # compile quand même — elle retomberait simplement sur le JavaScript à
+      # l'exécution, ce que personne ne verrait dans un journal de CI.
+      - name: Récupérer le noyau
+        uses: actions/download-artifact@v7
+        with:
+          name: pdfyz-core-wasm
+          path: pdfyz-astro/public
+
+      - name: Dépendances
+        working-directory: pdfyz-astro
+        run: npm ci --no-audit --no-fund
+
+      # `tools/vendor-cdn.mjs` télécharge pdf.js, pdf-lib, fontkit, Tailwind et
+      # les polices : sans réseau, ce build échoue franchement plutôt que de
+      # produire une application qui ne s'ouvre pas hors connexion.
+      - name: Typage
+        working-directory: pdfyz-astro
+        run: npm run check
+
+      - name: Build
+        working-directory: pdfyz-astro
+        run: npm run build
+
+      - name: Conserver la sortie
+        uses: actions/upload-artifact@v6
+        with:
+          name: pdfyz-astro-dist
+          path: pdfyz-astro/dist
+          if-no-files-found: error

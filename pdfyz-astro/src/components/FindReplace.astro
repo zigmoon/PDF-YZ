@@ -1,0 +1,40 @@
+---
+// bouton d’annotation et recherche/remplacement
+// Extrait de ../index.html, lignes 2796–2831. Balisage d'origine, non réécrit.
+---
+
+<!-- ANNOTATION FAB (above search, bottom-left) -->
+<button class="annot-fab" id="btnAnnot" title="Add Annotation Note">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<!-- FIND/REPLACE -->
+<div class="fr-panel" id="frPanel" role="search" aria-label="Rechercher et remplacer dans le PDF">
+    <div class="fr-shell">
+        <div class="fr-field fr-find">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="frFind" placeholder="Rechercher dans le document…" aria-label="Texte à rechercher" autocomplete="off" spellcheck="false" />
+            <button class="fr-option" id="frCase" type="button" title="Respecter la casse" aria-label="Respecter la casse" aria-pressed="false">Aa</button>
+            <button class="fr-option" id="frWhole" type="button" title="Mot entier" aria-label="Mot entier" aria-pressed="false">W</button>
+        </div>
+        <div class="fr-field fr-replace">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M4 7h16"/><path d="m8 21-4-4 4-4"/><path d="M20 17H4"/></svg>
+            <input type="text" id="frReplace" placeholder="Remplacer par…" aria-label="Texte de remplacement" autocomplete="off" spellcheck="false" />
+            <button class="fr-command" id="frReplaceOne" type="button">Remplacer</button>
+            <button class="fr-command primary" id="frReplaceAll" type="button">Tout remplacer</button>
+        </div>
+        <div class="fr-actions">
+            <button class="fr-mini" id="frPrev" type="button" title="Occurrence précédente (Maj+Entrée)" aria-label="Occurrence précédente"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <button class="fr-mini" id="frNext" type="button" title="Occurrence suivante (Entrée)" aria-label="Occurrence suivante"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <button class="fr-mini" id="frClose" type="button" title="Fermer (Échap)" aria-label="Fermer la recherche"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="fr-status" aria-live="polite">
+            <select class="fr-scope" id="frScope" aria-label="Portée de la recherche">
+                <option value="all">Toutes les pages</option>
+                <option value="current">Page actuelle</option>
+            </select>
+            <span class="fr-count" id="frCount">Saisissez un mot</span>
+            <span class="fr-page" id="frPage"></span>
+        </div>
+    </div>
+</div>

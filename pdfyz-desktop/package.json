@@ -1,0 +1,20 @@
+{
+  "name": "pdfyz-desktop",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "PDF-YZ — application de bureau (Tauri) autour de l'éditeur PDF-YZ",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "icons": "tauri icon ../favicon.svg -o src-tauri/icons",
+    "frontend": "node scripts/prepare-bundle.mjs"
+  },
+  "engines": {
+    "node": ">=20.3.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.2"
+  }
+}

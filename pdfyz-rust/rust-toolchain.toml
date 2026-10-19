@@ -1,0 +1,6 @@
+# Version et cibles de la chaine Rust, figees pour ce workspace.
+# `rustup` les applique automatiquement dans ce dossier.
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]
+targets = ["wasm32-unknown-unknown", "wasm32-wasip1"]

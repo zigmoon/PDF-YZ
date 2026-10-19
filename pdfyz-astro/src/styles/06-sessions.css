@@ -1,0 +1,256 @@
+/* sessions récentes et popin « toutes les sessions »
+   Découpé de ../index.html, lignes 618–869.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Previous sessions (right pane of the pre-home) ─── */
+        .splash-resume {
+            display: flex; flex-direction: column; gap: 10px;
+            min-width: 0; min-height: 0;
+            padding: 14px 14px 12px;
+            border: 1px solid #eeeef1; border-radius: 14px; background: #fcfcfd;
+        }
+        .splash-resume-head {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; flex-wrap: wrap; flex: 0 0 auto;
+        }
+        .splash-resume-title {
+            display: flex; align-items: center; gap: 7px;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: #111; white-space: nowrap;
+        }
+        .splash-resume-title svg { width: 14px; height: 14px; flex: 0 0 auto; }
+        .splash-count {
+            font-size: 10px; font-weight: 700; letter-spacing: 0;
+            padding: 1px 7px; border-radius: 999px;
+            background: #111; color: #fff;
+        }
+        .splash-count[hidden] { display: none; }
+        .splash-resume-tools { display: flex; align-items: center; gap: 8px; }
+        .splash-search {
+            display: flex; align-items: center; gap: 6px;
+            height: 30px; width: 170px; max-width: 42vw; padding: 0 9px;
+            border: 1px solid #e5e7eb; border-radius: 8px; background: #fff;
+        }
+        .splash-search:focus-within { border-color: #111; box-shadow: var(--focus-ring); }
+        .splash-search svg { width: 13px; height: 13px; color: #9ca3af; flex: 0 0 auto; }
+        .splash-search input {
+            width: 100%; padding: 0; border: 0; outline: 0; background: transparent;
+            font: inherit; font-size: 11.5px; color: #111;
+        }
+        .splash-search input::-webkit-search-cancel-button { display: none; }
+        .splash-resume-all {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            height: 30px; padding: 0 12px; border-radius: 8px;
+            font-size: 11.5px; font-weight: 600; font-family: inherit; cursor: pointer;
+            border: 1px solid #e5e7eb; background: #fff; color: #111;
+            user-select: none;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .splash-resume-all:hover { background: #111; color: #fff; border-color: #111; }
+        .splash-resume-all:active { transform: scale(0.97); }
+        .splash-resume-all svg { width: 13px; height: 13px; }
+
+        /* Card grid: fills the full width of the right pane */
+        .splash-sessions {
+            flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
+            gap: 8px; padding: 2px; align-content: start;
+        }
+        .splash-session {
+            position: relative;
+            display: grid; align-items: center;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            grid-template-areas: "icon title actions" "meta meta meta";
+            column-gap: 10px; row-gap: 4px;
+            width: 100%; min-width: 0; padding: 9px 10px;
+            border: 1px solid #e5e7eb; border-radius: 11px; background: #fff; color: #111;
+            font: inherit; text-align: left; cursor: pointer; outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+        }
+        .splash-session:hover { border-color: #c9c9cf; }
+        .splash-session:focus-visible { border-color: #111; box-shadow: var(--focus-ring); }
+        .splash-session.is-current { border-color: #111; box-shadow: inset 0 0 0 1px #111; }
+        .splash-session.is-missing { opacity: 0.7; }
+        .splash-session.is-missing:hover { opacity: 1; }
+        .splash-session.is-busy { pointer-events: none; }
+        .splash-session.is-busy .splash-session-play { opacity: 0.5; }
+        .splash-session-icon {
+            grid-area: icon;
+            width: 34px; height: 34px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            background: #111; color: #fff;
+        }
+        .splash-session.is-missing .splash-session-icon { background: #e5e7eb; color: #9ca3af; }
+        .splash-session-icon svg { width: 16px; height: 16px; }
+        .splash-session-title {
+            grid-area: title; min-width: 0;
+            display: block; font-size: 12px; font-weight: 600; color: #111;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .splash-session-meta {
+            grid-area: meta; display: flex; align-items: center;
+            gap: 5px; flex-wrap: wrap; min-width: 0;
+        }
+        .splash-session-meta > span {
+            font-size: 9.5px; line-height: 1.6; padding: 0 6px; border-radius: 999px;
+            background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+        .splash-session-meta > .s-ready { background: #111; color: #fff; border-color: #111; font-weight: 600; }
+        .splash-session-meta > .s-missing { background: #fff7ed; color: #b45309; border-color: #fed7aa; font-weight: 600; }
+        .splash-session-actions { grid-area: actions; display: flex; align-items: center; gap: 4px; }
+        .splash-session-play {
+            display: flex; align-items: center; gap: 4px;
+            padding: 5px 9px; border-radius: 7px;
+            background: #f3f4f6; color: #111; border: 1px solid #e5e7eb;
+            font-size: 10.5px; font-weight: 700; font-family: inherit; cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .splash-session:not(.is-missing):hover .splash-session-play,
+        .splash-session-play:hover { background: #111; color: #fff; border-color: #111; }
+        .splash-session-play svg { width: 10px; height: 10px; }
+        .splash-session-del {
+            width: 24px; height: 24px; flex: 0 0 auto; border-radius: 6px;
+            border: 1px solid transparent; background: transparent; color: #9ca3af;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            opacity: 0; transition: opacity 0.15s, background 0.15s, color 0.15s;
+        }
+        .splash-session:hover .splash-session-del,
+        .splash-session:focus-within .splash-session-del,
+        .splash-session-del:focus-visible { opacity: 1; }
+        .splash-session-del:hover { background: #fee2e2; color: #b91c1c; }
+        .splash-session-del svg { width: 12px; height: 12px; }
+        .splash-sessions-empty {
+            grid-column: 1 / -1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 6px;
+            padding: 34px 12px; text-align: center; color: #9ca3af;
+        }
+        .splash-sessions-empty svg { width: 26px; height: 26px; opacity: 0.5; }
+        .splash-sessions-empty strong { font-size: 12px; font-weight: 600; color: #4b5563; }
+        .splash-sessions-empty span { font-size: 11px; color: #6b7280; }
+
+        @media (max-width: 900px) {
+            .splash-shell { height: min(860px, 94vh); }
+            .splash-header { padding: 14px 16px; }
+            .splash-body {
+                grid-template-columns: 1fr; gap: 16px;
+                padding: 16px 16px 18px; overflow-y: auto;
+            }
+            .splash-drop-zone { flex: 0 0 auto; min-height: 140px; }
+            .splash-resume { flex: 0 0 auto; max-height: 52vh; }
+        }
+        @media (max-width: 560px) {
+            .splash-screen { padding: 10px; }
+            .splash-shell { border-radius: 14px; }
+            .splash-logo { width: 36px; height: 36px; }
+            .splash-sub { display: none; }
+            .splash-body { padding: 12px 12px 14px; gap: 12px; }
+            .splash-btn-row { flex-direction: column; }
+            .splash-sessions { grid-template-columns: 1fr; }
+            .splash-search { display: none; }
+            .splash-session-del { opacity: 1; }
+        }
+
+        /* ─── All sessions popin ─── */
+        .sessions-modal {
+            position: fixed; inset: 0; z-index: 900000;
+            background: rgba(11, 15, 20, 0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .sessions-modal.visible { display: flex; }
+        .sessions-box {
+            width: min(560px, 92vw); max-height: 80vh; display: flex; flex-direction: column;
+            background: #ffffff; border: 1px solid var(--border); border-radius: 16px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.25); overflow: hidden;
+        }
+        .sessions-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+        }
+        .sessions-head h3 { font-size: 15px; font-weight: 600; color: var(--text); }
+        .sessions-close {
+            width: 30px; height: 30px; border: none; border-radius: 8px;
+            background: transparent; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .sessions-close:hover { background: var(--surface-2); color: var(--text); }
+        .sessions-close svg { width: 16px; height: 16px; }
+        .sessions-filters {
+            display: flex; gap: 8px; padding: 12px 20px; align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .sessions-filters input {
+            flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface-2); color: var(--text); font-size: 12px; outline: none;
+            font-family: inherit;
+        }
+        .sessions-filters input:focus { border-color: var(--accent); }
+        .sessions-filter {
+            padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface-solid); color: var(--muted); font-size: 11px;
+            font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+            font-family: inherit;
+        }
+        .sessions-filter:hover { background: var(--surface-2); }
+        .sessions-filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .sessions-list {
+            overflow-y: auto; padding: 14px 20px; display: flex; flex-direction: column; gap: 8px;
+            flex: 1;
+        }
+        .session-card {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+            border: 1px solid var(--border); border-radius: 12px; cursor: pointer;
+            transition: all 0.15s; background: #fff;
+        }
+        .session-card:hover { border-color: var(--accent); background: var(--surface-2); }
+        .session-card.is-missing { opacity: 0.6; }
+        .session-card.is-missing .session-card-icon { background: var(--border); color: var(--muted); }
+        .session-card-icon {
+            width: 36px; height: 36px; border-radius: 9px; background: var(--accent);
+            color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .session-card-icon svg { width: 18px; height: 18px; }
+        .session-card-body { flex: 1; min-width: 0; }
+        .session-card-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .session-card-meta { font-size: 10px; color: var(--muted); margin-top: 3px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .session-card-meta span { background: var(--surface-2); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
+        .session-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .session-card-btn {
+            width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border);
+            background: #fff; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.12s;
+        }
+        .session-card-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .session-card-btn svg { width: 14px; height: 14px; }
+        .sessions-empty { text-align: center; color: var(--muted); font-size: 12px; padding: 32px 0; }
+        .splash-loading {
+            display: none; flex-direction: column; align-items: stretch; gap: 10px;
+            padding: 14px 0 4px; font-size: 13px; color: #374151;
+        }
+        .splash-loading.visible { display: flex; }
+        .splash-loading-row { display: flex; align-items: center; gap: 10px; }
+        .splash-loading .loader-spinner {
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2.5px solid #e5e7eb; border-top-color: var(--accent);
+            animation: spin 0.7s linear infinite; flex: 0 0 auto;
+        }
+        .splash-loading-msg { flex: 1; font-weight: 500; color: #374151; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .splash-loading-pct { font-variant-numeric: tabular-nums; font-weight: 600; color: #111; flex: 0 0 auto; min-width: 42px; text-align: right; }
+        .splash-progress {
+            width: 100%; height: 6px; background: #eef2f7; border-radius: 999px;
+            overflow: hidden; position: relative;
+        }
+        .splash-progress-bar {
+            position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+            background: var(--accent);
+            border-radius: 999px;
+            transition: width 0.18s ease-out;
+        }
+        .splash-progress.indeterminate .splash-progress-bar {
+            width: 35%; left: -35%; animation: splashIndet 1.1s ease-in-out infinite;
+        }
+        @keyframes splashIndet {
+            0%   { left: -35%; }
+            100% { left: 100%; }
+        }

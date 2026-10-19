@@ -1,0 +1,51 @@
+---
+/**
+ * Page unique de PDF-YZ.
+ *
+ * L'ordre des composants est l'ordre du document historique : la feuille de
+ * style et le script s'appuient sur la position des blocs (superpositions,
+ * ancêtres, focus initial), donc il ne doit pas bouger.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DonateOverlay from '../components/DonateOverlay.astro';
+import FloatingButtons from '../components/FloatingButtons.astro';
+import Splash from '../components/Splash.astro';
+import SessionsModal from '../components/SessionsModal.astro';
+import CropOverlay from '../components/CropOverlay.astro';
+import Feedback from '../components/Feedback.astro';
+import CanvasArea from '../components/CanvasArea.astro';
+import Toolbar from '../components/Toolbar.astro';
+import MobileChrome from '../components/MobileChrome.astro';
+import EditorChrome from '../components/EditorChrome.astro';
+import Panels from '../components/Panels.astro';
+import ExportModal from '../components/ExportModal.astro';
+import FindReplace from '../components/FindReplace.astro';
+import IccPanel from '../components/IccPanel.astro';
+import Preferences from '../components/Preferences.astro';
+import ImpositionModal from '../components/ImpositionModal.astro';
+import SignatureModal from '../components/SignatureModal.astro';
+import ColorPopover from '../components/ColorPopover.astro';
+import HiddenInputs from '../components/HiddenInputs.astro';
+---
+
+<BaseLayout>
+	<DonateOverlay />
+	<FloatingButtons />
+	<Splash />
+	<SessionsModal />
+	<CropOverlay />
+	<Feedback />
+	<CanvasArea />
+	<Toolbar />
+	<MobileChrome />
+	<EditorChrome />
+	<Panels />
+	<ExportModal />
+	<FindReplace />
+	<IccPanel />
+	<Preferences />
+	<ImpositionModal />
+	<SignatureModal />
+	<ColorPopover />
+	<HiddenInputs />
+</BaseLayout>

@@ -1,0 +1,110 @@
+/* imposition et recadrage visuel
+   Découpé de ../index.html, lignes 2041–2145.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Imposition modal ─── */
+        .impo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 50000; display: none; align-items: center; justify-content: center; }
+        .impo-modal.visible { display: flex; }
+        .impo-box { background: var(--surface-solid); border: 1px solid var(--border); border-radius: 16px; padding: 0; max-width: 680px; width: 94%; max-height: 92vh; max-height: 92dvh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; }
+        .impo-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border); }
+        .impo-header h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .impo-header .impo-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+        .impo-body { padding: 16px 24px; overflow-y: auto; flex: 1; }
+        .impo-body::-webkit-scrollbar { width: 5px; height: 5px; background: transparent; }
+        .impo-body::-webkit-scrollbar-track { background: transparent; }
+        .impo-body::-webkit-scrollbar-thumb { background: #111827; border: none; border-radius: 0; }
+        .impo-body::-webkit-scrollbar-button { display: none; }
+        .impo-section { margin-bottom: 18px; }
+        .impo-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 8px; }
+        .impo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .impo-card { padding: 12px 8px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface-2); cursor: pointer; text-align: center; transition: all 0.15s; }
+        .impo-card:hover { border-color: var(--accent); background: rgba(var(--accent-rgb),0.05); }
+        .impo-card.selected { border-color: var(--accent); background: rgba(var(--accent-rgb),0.1); }
+        .impo-card svg { display: block; margin: 0 auto 6px; width: 36px; height: 36px; color: var(--muted); }
+        .impo-card:hover svg, .impo-card.selected svg { color: var(--accent); }
+        .impo-card .impo-card-title { font-size: 11px; font-weight: 600; color: var(--text); }
+        .impo-card .impo-card-desc { font-size: 9px; color: var(--muted); margin-top: 2px; }
+        .impo-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+        .impo-opt { display: flex; flex-direction: column; gap: 4px; }
+        .impo-opt label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
+        .impo-opt select, .impo-opt input { padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 12px; font-family: 'IBM Plex Mono', 'Inter', monospace; }
+        .impo-opt input[type="number"] { width: 100%; }
+        .impo-opt-row { display: flex; gap: 8px; }
+        .impo-opt-row .impo-opt { flex: 1; }
+        .impo-check { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); cursor: pointer; }
+        .impo-check input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+        .impo-preview-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; height: 140px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* Booklet / N-up mode picker */
+        .impo-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .impo-mode {
+            display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px;
+            border-radius: 10px; border: 2px solid var(--border); background: var(--surface-2);
+            cursor: pointer; transition: border-color .15s, background .15s;
+        }
+        .impo-mode:hover { border-color: var(--accent); background: rgba(var(--accent-rgb),0.05); }
+        .impo-mode.selected { border-color: var(--accent); background: rgba(var(--accent-rgb),0.1); }
+        .impo-mode svg { width: 26px; height: 26px; flex: 0 0 auto; color: var(--muted); }
+        .impo-mode.selected svg, .impo-mode:hover svg { color: var(--accent); }
+        .impo-mode-body { min-width: 0; }
+        .impo-mode-title { font-size: 12px; font-weight: 700; color: var(--text); }
+        .impo-mode-desc { font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+        .impo-order {
+            font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; line-height: 1.7;
+            color: var(--text); word-break: break-word;
+            background: var(--surface-solid); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 10px; max-height: 76px; overflow-y: auto;
+        }
+        .impo-order b { font-weight: 700; }
+        .impo-order .impo-sheet-sep { color: var(--muted); }
+        .impo-hint { font-size: 10.5px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
+        .impo-preview-box canvas { max-width: 100%; max-height: 100%; }
+        .impo-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+        /* ─── Visual Crop overlay ─── */
+        .crop-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 50000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .crop-overlay.visible { display: flex; }
+        /* Hide floating top-left "Pages" + top-right "Install" buttons while
+           the crop overlay is visible — they sit at z-index 1000000 and would
+           otherwise float over the crop tools. */
+        body:has(#cropOverlay.visible) #btnPagesFixed,
+        body:has(#cropOverlay.visible) #btnSaveFixed { display: none !important; }
+        .crop-topbar { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: rgba(0,0,0,0.6); z-index: 2; }
+        .crop-topbar-left, .crop-topbar-right { display: flex; align-items: center; gap: 10px; }
+        .crop-topbar h3 { font-size: 14px; font-weight: 600; color: #fff; margin: 0; }
+        .crop-dims { font-size: 11px; color: rgba(255,255,255,0.7); font-family: 'Space Mono', monospace; }
+        .crop-scope-bar { display: flex; gap: 6px; }
+        .crop-scope-bar label { display: flex; align-items: center; gap: 4px; font-size: 11px; color: rgba(255,255,255,0.8); cursor: pointer; }
+        .crop-scope-bar input { accent-color: var(--accent); }
+        .crop-btn { padding: 7px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+        .crop-btn.cancel { background: rgba(255,255,255,0.15); color: #fff; }
+        .crop-btn.cancel:hover { background: rgba(255,255,255,0.25); }
+        .crop-btn.apply { background: var(--accent); color: #fff; }
+        .crop-btn.apply:hover { background: var(--accent-soft); }
+        .crop-canvas-wrap { position: relative; display: flex; align-items: center; justify-content: center; flex: 1; padding: 60px 20px 20px; }
+        .crop-canvas-wrap canvas { max-width: 90vw; max-height: calc(100vh - 120px); max-height: calc(100dvh - 120px); display: block; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+        .crop-region { position: absolute; border: 2px solid var(--accent); box-shadow: 0 0 0 9999px rgba(0,0,0,0.5); cursor: move; z-index: 1; }
+        .crop-handle { position: absolute; width: 12px; height: 12px; background: #fff; border: 2px solid var(--accent); border-radius: 2px; z-index: 3; }
+        .crop-handle.tl { top: -6px; left: -6px; cursor: nw-resize; }
+        .crop-handle.tr { top: -6px; right: -6px; cursor: ne-resize; }
+        .crop-handle.bl { bottom: -6px; left: -6px; cursor: sw-resize; }
+        .crop-handle.br { bottom: -6px; right: -6px; cursor: se-resize; }
+        .crop-handle.tm { top: -6px; left: 50%; margin-left: -6px; cursor: n-resize; }
+        .crop-handle.bm { bottom: -6px; left: 50%; margin-left: -6px; cursor: s-resize; }
+        .crop-handle.ml { top: 50%; margin-top: -6px; left: -6px; cursor: w-resize; }
+        .crop-handle.mr { top: 50%; margin-top: -6px; right: -6px; cursor: e-resize; }
+        .crop-info { position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); font-size: 11px; color: rgba(255,255,255,0.8); font-family: 'Space Mono', monospace; white-space: nowrap; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px; }
+        .impo-custom-row { display: none; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .impo-custom-row.visible { display: grid; }
+        @media (max-width: 600px) {
+            .impo-grid { grid-template-columns: repeat(3, 1fr); }
+            .impo-opts { grid-template-columns: 1fr; }
+            .impo-box { max-width: 100%; width: 100%; max-height: 100vh; border-radius: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .props-panel { display: none !important; }
+            .canvas-area { padding: 20px 8px calc(100px + env(safe-area-inset-bottom)); }
+            .text-edit-panel { width: 100%; }
+            .prefs-drawer { width: 100%; }
+        }

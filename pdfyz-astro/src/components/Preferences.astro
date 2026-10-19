@@ -1,0 +1,77 @@
+---
+// tiroir des préférences
+// Extrait de ../index.html, lignes 2967–3039. Balisage d'origine, non réécrit.
+---
+
+<!-- PREFERENCES DRAWER (right side) -->
+<div class="prefs-drawer" id="prefsPanel">
+    <div class="prefs-drawer-header">
+        <span class="prefs-drawer-title">Preferences</span>
+        <button class="prefs-drawer-close" id="prefsClose">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+    <div class="prefs-drawer-body">
+        <div class="prefs-section">
+            <div class="prefs-section-title">Export — Quality</div>
+            <div class="prefs-row"><label>Resolution</label>
+                <select id="prefDPI"><option value="72">72 DPI (Screen)</option><option value="150" selected>150 DPI (Standard)</option><option value="300">300 DPI (Print)</option><option value="600">600 DPI (High)</option></select>
+            </div>
+            <div class="prefs-row"><label>Image quality</label>
+                <select id="prefImgQuality"><option value="0.6">Low (60%)</option><option value="0.8" selected>Medium (80%)</option><option value="0.92">High (92%)</option><option value="1">Maximum (100%)</option></select>
+            </div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">Export — Format</div>
+            <div class="prefs-row"><label>Standard</label>
+                <select id="prefStandard"><option value="default" selected>Standard PDF</option><option value="pdfa">PDF/A (Archival)</option><option value="print">Print-ready</option></select>
+            </div>
+            <div class="prefs-row"><label>Compression</label>
+                <select id="prefCompress"><option value="none">None</option><option value="light" selected>Light</option><option value="heavy">Aggressive</option></select>
+            </div>
+            <div class="prefs-row"><label>Page size</label>
+                <select id="prefPageSize"><option value="keep" selected>Keep original</option><option value="a4">A4 (210×297mm)</option><option value="letter">Letter (8.5×11in)</option><option value="legal">Legal (8.5×14in)</option></select>
+            </div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">Metadata</div>
+            <div class="prefs-row"><label>Title</label><input type="text" id="prefTitle" placeholder="Document title…" /></div>
+            <div class="prefs-row"><label>Author</label><input type="text" id="prefAuthor" placeholder="Author name…" /></div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">Watermark</div>
+            <div class="prefs-row"><label>Text</label><input type="text" id="prefWatermark" placeholder="e.g. CONFIDENTIAL" /></div>
+            <div class="prefs-row"><label>Opacity</label>
+                <select id="prefWmOpacity"><option value="0.05">5%</option><option value="0.1" selected>10%</option><option value="0.2">20%</option><option value="0.3">30%</option></select>
+            </div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">Print Production</div>
+            <div class="prefs-row"><label>Crop marks</label><button class="prefs-toggle" id="prefCropMarks"></button></div>
+            <div class="prefs-row"><label>Mark length</label>
+                <select id="prefCropLength"><option value="8" selected>8 pt</option><option value="12">12 pt</option><option value="18">18 pt</option></select>
+            </div>
+            <div class="prefs-row"><label>Mark offset</label>
+                <select id="prefCropOffset"><option value="6" selected>6 pt</option><option value="9">9 pt</option><option value="12">12 pt</option></select>
+            </div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">Options</div>
+            <div class="prefs-row"><label title="Rasterise chaque page à la résolution choisie : rien ne reste modifiable ni sélectionnable, et le texte d'origine disparaît du fichier exporté.">Flatten to image</label><button class="prefs-toggle" id="prefFlatten"></button></div>
+            <div class="prefs-row"><label>Embed fonts</label><button class="prefs-toggle on" id="prefEmbedFonts"></button></div>
+            <div class="prefs-row"><label>Auto-save</label><button class="prefs-toggle on" id="prefAutoSave"></button></div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">Actions</div>
+            <div style="display:flex; gap:8px;">
+                <button class="props-btn" id="prefPrint" style="flex:1;">🖨 Print</button>
+            </div>
+        </div>
+        <div class="prefs-section">
+            <div class="prefs-section-title">📋 Imported PDF Details</div>
+            <div id="pdfMetaList" class="pdf-meta-list">
+                <div class="pdf-meta-empty">No PDF loaded</div>
+            </div>
+        </div>
+    </div>
+</div>

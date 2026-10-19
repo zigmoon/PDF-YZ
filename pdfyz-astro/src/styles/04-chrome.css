@@ -1,0 +1,148 @@
+/* toast PWA, boutons flottants, menus, bannière .sp
+   Découpé de ../index.html, lignes 368–511.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── PWA Update Toast ─── */
+        .sw-update-toast {
+            position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom));
+            transform: translateX(-50%) translateY(20px);
+            background: #111; color: #fff; padding: 12px 16px; border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 10px;
+            font-size: 13px; z-index: 9999; opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease; max-width: calc(100vw - 32px);
+        }
+        .sw-update-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+        .sw-update-toast button {
+            background: #fff; color: #111; border: 0; border-radius: 8px;
+            padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+        }
+        .sw-update-toast button.ghost { background: transparent; color: #9ca3af; }
+        .sw-update-toast button:hover { opacity: 0.9; }
+
+        /* ─── Floating top-left Pages button (desktop only) ─── */
+        #btnPagesFixed {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            left: calc(12px + env(safe-area-inset-left));
+            z-index: 1000000;
+            width: 40px; height: 40px;
+            display: none; align-items: center; justify-content: center;
+            background: var(--surface-solid, #fff); color: var(--text, #111);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: var(--toolbar-shadow);
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+        }
+        #btnPagesFixed:hover { background: #111; color: #fff; }
+        #btnPagesFixed:active { transform: scale(0.95); }
+        #btnPagesFixed svg { width: 20px; height: 20px; stroke-width: 2; }
+        #btnPagesFixed.is-on { background: #111; color: #fff; border-color: #111; }
+        @media (min-width: 769px) {
+            /* 🛡️ Le bouton flottant « Pages » ne doit apparaître qu'une fois un PDF ouvert,
+               pas sur la pré-home / splash. body.pdf-loaded est ajouté par showUI(). */
+            body.pdf-loaded #btnPagesFixed { display: flex; }
+            body.pdf-loaded #btnPages { display: none !important; }
+        }
+
+        /* ─── Floating top-right Export button (replaces the removed PWA button) ─── */
+        #btnSaveFixed {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            z-index: 1000000;
+            width: 40px; height: 40px;
+            display: none; align-items: center; justify-content: center;
+            background: #ffffff; color: #111827;
+            border: 1px solid var(--border, #dcdcdc);
+            border-radius: 10px;
+            box-shadow: var(--toolbar-shadow);
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+        }
+        #btnSaveFixed:hover { background: #111827; color: #ffffff; border-color: #111827; }
+        #btnSaveFixed:active { transform: scale(0.95); }
+        #btnSaveFixed svg { width: 20px; height: 20px; stroke-width: 1.8; }
+        @media (min-width: 769px) {
+            body.pdf-loaded #btnSaveFixed { display: flex; }
+        }
+        @media (max-width: 768px) {
+            body.pdf-loaded #btnSaveFixed { display: flex; }
+        }
+
+        /* ─── “More tools” dropdown (labelled items) ─── */
+        .tool-dropdown-menu.wide { min-width: 212px; padding: 8px; }
+        .tool-dropdown-menu.wide .tool-btn {
+            width: 100%; height: 34px; justify-content: flex-start; gap: 10px;
+            padding: 0 10px; font-size: 12.5px; font-weight: 500; border-radius: 8px;
+        }
+        .tool-dropdown-menu.wide .tool-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .tool-dropdown-menu.wide .tool-btn span { white-space: nowrap; }
+        .tool-dropdown-menu.wide .tool-btn.modify-toggle { width: 100%; min-width: 0; }
+        .tool-menu-sep { height: 1px; background: var(--border); margin: 5px 4px; }
+
+        /* ─── Editable text must LOOK editable ───
+           Outside modify mode nothing suggested the blocks could be clicked, which
+           is why text editing felt undiscoverable. */
+        body:not(.edit-mode) .edit-layer .el-text { cursor: text; }
+        body:not(.edit-mode) .edit-layer .el-text:hover:not(.inline-edit):not(.panel-active) {
+            box-shadow: 0 0 0 1.5px rgba(var(--accent-rgb), 0.55);
+            background: rgba(var(--accent-rgb), 0.07) !important;
+            border-radius: 2px;
+        }
+
+        /* ─── Convert-to-.sp modal ─── */
+        #spModal { z-index: 1000002; }
+        #spModal .sp-file {
+            font-size: 11px; color: var(--muted); margin: -8px 0 14px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        #spModal .sp-choice {
+            display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px;
+            border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+            margin-bottom: 8px; background: var(--surface); transition: border-color 0.12s, background 0.12s;
+        }
+        #spModal .sp-choice:hover { border-color: var(--accent-soft); }
+        #spModal .sp-choice.active { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.06); }
+        #spModal .sp-choice.disabled { opacity: 0.5; cursor: not-allowed; }
+        #spModal .sp-choice input { margin: 2px 0 0; accent-color: var(--accent); flex-shrink: 0; }
+        #spModal .sp-choice strong { display: block; font-size: 12.5px; font-weight: 600; color: var(--text); }
+        #spModal .sp-choice span { font-size: 11px; color: var(--muted); line-height: 1.45; }
+        #spModal .sp-check { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+        #spModal .sp-check input { accent-color: var(--accent); }
+        #spModal .sp-sep { height: 1px; background: var(--border); margin: 14px 0; }
+        #spModal .sp-progress { display: none; margin-top: 14px; }
+        #spModal .sp-progress.on { display: block; }
+        #spModal .sp-progress-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+        #spModal .sp-progress-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+        #spModal .sp-progress-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.18s ease; }
+        #spModal .export-actions button[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+        /* ─── Post-conversion banner ─── */
+        .sp-done {
+            position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
+            transform: translate(-50%, 140%);
+            display: flex; align-items: center; gap: 12px;
+            background: #111827; color: #fff; padding: 11px 12px 11px 16px;
+            border-radius: 12px; box-shadow: 0 14px 34px rgba(0,0,0,0.32);
+            font-size: 12px; z-index: 1000003; max-width: min(560px, calc(100vw - 24px));
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .sp-done.visible { transform: translate(-50%, 0); }
+        .sp-done-text { line-height: 1.4; }
+        .sp-done-text em { font-style: normal; color: #8b5cf6; }
+        .sp-done-open {
+            flex-shrink: 0; background: var(--accent); color: #fff; text-decoration: none;
+            padding: 7px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 600; white-space: nowrap;
+        }
+        .sp-done-open:hover { background: var(--accent-soft); }
+        .sp-done-close {
+            flex-shrink: 0; background: none; border: none; color: #6b7280; font-size: 15px;
+            cursor: pointer; padding: 2px 4px; line-height: 1;
+        }
+        .sp-done-close:hover { color: #fff; }
+        @media (max-width: 520px) {
+            .sp-done { flex-wrap: wrap; justify-content: center; text-align: center; }
+            .sp-done-text { flex: 1 1 100%; }
+        }

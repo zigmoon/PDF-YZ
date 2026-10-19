@@ -1,0 +1,110 @@
+/* pop-in de don
+   Découpé de ../index.html, lignes 512–617.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Donation pop-in (shown right before PWA install) ─── */
+        #pdfz-donate-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000001;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.35s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        #pdfz-donate-overlay.visible { opacity: 1; pointer-events: auto; }
+        .pdfz-donate-shell {
+            display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+            width: min(460px, 90vw);
+        }
+        #pdfz-donate-box {
+            background: #0a0a0a; color: #f0f0f0;
+            border: 1px solid #1f1f1f; border-radius: 12px;
+            width: 100%; position: relative;
+            font-family: 'Space Mono', ui-monospace, monospace;
+            overflow: hidden;
+            box-shadow: 0 14px 60px rgba(0, 0, 0, 0.55);
+            transform: translateY(18px);
+            transition: transform 0.35s ease;
+        }
+        #pdfz-donate-overlay.visible #pdfz-donate-box { transform: translateY(0); }
+        .pdfz-donate-close {
+            background: transparent; border: 0; color: #fff;
+            font-family: inherit; font-size: 10px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            opacity: 0.55; padding: 4px 8px;
+        }
+        .pdfz-donate-close:hover { opacity: 1; }
+        .pdfz-donate-speed-banner {
+            display: block; text-align: center;
+            padding: 1.4rem 1.2rem 1.2rem;
+            background: #080808;
+            border-bottom: 1px solid #1a1a1a;
+            color: #fff; line-height: 1.05;
+        }
+        .pdfz-donate-speed-banner .pdfz-speed-figure {
+            display: block; font-size: 44px; font-weight: 800;
+            letter-spacing: -1px; color: #fff;
+        }
+        .pdfz-donate-speed-banner .pdfz-speed-figure em { color: #fff; font-style: normal; }
+        .pdfz-donate-speed-banner .pdfz-speed-label {
+            display: block; margin-top: 6px;
+            font-size: 11px; letter-spacing: 4px;
+            text-transform: uppercase; color: #cfcfcf; opacity: 0.85;
+        }
+        .pdfz-donate-speed-banner .pdfz-speed-sub {
+            display: block; margin-top: 4px;
+            font-size: 10px; letter-spacing: 2px;
+            text-transform: uppercase; color: #a0a0a0; opacity: 0.55;
+        }
+        .pdfz-donate-header { padding: 2rem 2.2rem 1.6rem; text-align: left; }
+        .pdfz-donate-eyebrow {
+            display: block; font-size: 9px; letter-spacing: 3px;
+            text-transform: uppercase; opacity: 0.45; margin-bottom: 1rem; color: #a0a0a0;
+        }
+        #pdfz-donate-box h2 {
+            font-size: 16px; font-weight: 700; margin: 0 0 1rem;
+            text-transform: uppercase; letter-spacing: 2px;
+            line-height: 1.3; color: #fff;
+        }
+        .pdfz-donate-header p {
+            font-size: 12px; font-weight: 300; line-height: 1.7;
+            margin: 0; opacity: 0.7;
+        }
+        .pdfz-donate-body {
+            background: #050505; padding: 1.6rem 2.2rem 1.8rem;
+            display: flex; flex-direction: column; align-items: stretch;
+            gap: 14px; border-top: 1px solid #1a1a1a;
+        }
+        .pdfz-donate-label {
+            font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+            opacity: 0.45; color: #a0a0a0;
+        }
+        .pdfz-donate-skip {
+            background: transparent; border: 1px solid #1f1f1f; color: #888;
+            padding: 10px 14px; font-family: inherit; font-size: 10px;
+            letter-spacing: 2px; text-transform: uppercase;
+            border-radius: 4px; cursor: pointer; margin-top: 4px;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .pdfz-donate-skip:hover { color: #fff; border-color: #3a3a3a; }
+        /* Mobile: compact pop-in */
+        @media (max-width: 600px) {
+            .pdfz-donate-shell { width: min(420px, 94vw); gap: 8px; max-height: 92vh; }
+            #pdfz-donate-box { max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .pdfz-donate-speed-banner { padding: 12px 14px; }
+            .pdfz-donate-speed-banner .pdfz-speed-figure { font-size: 26px; }
+            .pdfz-donate-speed-banner .pdfz-speed-label { margin-top: 3px; font-size: 9px; letter-spacing: 2px; }
+            .pdfz-donate-speed-banner .pdfz-speed-sub { display: none; }
+            .pdfz-donate-header { padding: 0.9rem 1.1rem 0.7rem; }
+            .pdfz-donate-eyebrow { display: none; }
+            #pdfz-donate-box h2 { font-size: 13px; letter-spacing: 1.5px; margin: 0 0 0.5rem; }
+            .pdfz-donate-header p { font-size: 11px; line-height: 1.5; }
+            .pdfz-donate-header p br { display: none; }
+            .pdfz-donate-body { padding: 0.9rem 1.1rem 1rem; gap: 8px; }
+            .pdfz-donate-label { font-size: 8px; letter-spacing: 2px; }
+            #pdfz-donate-hint { display: none; }
+            .pdfz-donate-skip { font-size: 10px; padding: 4px; margin-top: 0; }
+        }

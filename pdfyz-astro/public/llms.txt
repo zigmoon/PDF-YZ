@@ -1,0 +1,53 @@
+# PDF-YZ — Free Online PDF Editor
+
+> PDF-YZ is a free, browser-based PDF editor by Zigmoon. Edit text, replace images, annotate, sign, crop, do print imposition (4/8/16-up) and re-export — 100% locally in the browser, no upload, no account, no tracking. Installable as a PWA.
+
+## Why PDF-YZ matters
+- **Privacy by design**: Files are never uploaded. All processing runs client-side via WebAssembly (pdf-lib + pdf.js).
+- **Free, no account, no watermark**.
+- **Works offline** once installed (PWA with service worker).
+- **Genuine text editing**: extracted text blocks are masked and re-rendered with the user's font, size and color, not just overlaid.
+
+## Core features
+- Edit existing PDF text inline (font picker incl. Google Fonts, size, color, bold/italic, alignment).
+- Replace embedded images.
+- Annotate: highlight, freehand draw, sticky notes, eraser.
+- Digital signature capture (canvas-based).
+- Page management: add, delete, reorder, crop (per-page or all pages).
+- Print imposition: 2/4/8/16 pages per sheet with crop marks and bleed.
+- Find & replace.
+- Find images and replace them.
+- ICC color profile selection.
+- Export with PDF/A standard, custom DPI, custom page size.
+- Print directly from the browser.
+
+## Keyboard shortcuts
+- `Ctrl+S` Export · `Ctrl+P` Print · `Ctrl+F` Find · `Ctrl+O` Open · `Ctrl+Shift+N` New blank
+- `Ctrl+Z` Undo · `Ctrl+Y` / `Ctrl+Shift+Z` Redo · `Ctrl+D` Duplicate selected
+- `Ctrl+B` Toggle Pages sidebar
+- `Ctrl + + / − / 0 / 1` Zoom in / out / 100% / fit
+- `Page Up / Page Down / Home / End` Page navigation
+- `Arrows` (Shift = 10 px) Nudge selection · `Del / Backspace` Delete selection
+- `V T I D H E` Tools (select/text/image/draw/highlight/eraser)
+- `?` or `F1` Help · `Esc` Close panels / deselect
+
+## Tech stack
+- Vanilla HTML/JS/CSS, no build step, single file.
+- pdf-lib 1.17.1 (modify) + pdf.js 4.9.155 (render).
+- PWA: `manifest.webmanifest`, `service-worker.js`, file_handler for `application/pdf`, share_target POST.
+- Storage: `localStorage` for prefs + IndexedDB (`pdfyz-sessions`) for the per-document sessions, 7-day TTL, 10 MB cap per file.
+
+## Author
+- Zigmoon — Simon Dupont-Gellert · France · https://zigmoon.com
+
+## URLs
+- App: https://app.zigmoon.com/PDF-YZ/
+- Sitemap: https://app.zigmoon.com/PDF-YZ/sitemap.xml
+- Manifest: https://app.zigmoon.com/PDF-YZ/manifest.webmanifest
+- Source family directory: https://app.zigmoon.com/llms.txt
+
+## Sister apps
+- ZORD — Privacy-first A4 text editor with multi-AI (https://app.zigmoon.com/zord/)
+- CUT THE FLOW — In-browser video editor (https://app.zigmoon.com/CUTTHEFLOW/)
+- A7LAS — Multi-engine AI search aggregator (https://a7las.com)
+- KULT — Procedural 3D modeling studio (https://zigmoon.com/kult/)

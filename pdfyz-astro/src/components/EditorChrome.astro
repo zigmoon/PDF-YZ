@@ -1,0 +1,84 @@
+---
+// barre de modification, pages, aide clavier, zoom, état
+// Extrait de ../index.html, lignes 2518–2597. Balisage d'origine, non réécrit.
+---
+
+<!-- MODIFY MODE BAR -->
+<div id="modifyBar" role="status" aria-live="polite">
+    <span class="mb-hint"><strong>Modifier la page</strong></span>
+    <button class="mb-done" id="btnModifyDone" type="button">Terminer et enregistrer</button>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-close" id="sidebarClose">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+    <div class="page-list" id="pageList"></div>
+    <div style="padding:10px; display:flex; flex-direction:column; gap:6px;">
+        <button class="props-btn action" id="btnAddPage" style="width:100%;">+ Add Page</button>
+        <button class="props-btn" id="btnMergePDF" style="width:100%; font-size:11px;">Merge another PDF</button>
+
+    </div>
+</div>
+
+<!-- KEYBOARD HELP MODAL -->
+<div class="kbd-modal" id="kbdModal" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+    <div class="kbd-box">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="kbd-grid">
+            <span class="kbd-key">V</span><span class="kbd-desc">Select tool</span>
+            <span class="kbd-key">M</span><span class="kbd-desc">Modifier les éléments du PDF</span>
+            <span class="kbd-key">T</span><span class="kbd-desc">Text tool</span>
+            <span class="kbd-key">I</span><span class="kbd-desc">Image tool</span>
+            <span class="kbd-key">D</span><span class="kbd-desc">Draw tool</span>
+            <span class="kbd-key">H</span><span class="kbd-desc">Highlight tool</span>
+            <span class="kbd-key">E</span><span class="kbd-desc">Eraser (click stroke to remove)</span>
+            <span class="kbd-key">Ctrl+S</span><span class="kbd-desc">Export PDF</span>
+            <span class="kbd-key">Ctrl+O</span><span class="kbd-desc">Open PDF…</span>
+            <span class="kbd-key">Ctrl+Shift+N</span><span class="kbd-desc">New blank document</span>
+            <span class="kbd-key">Ctrl+Z</span><span class="kbd-desc">Undo</span>
+            <span class="kbd-key">Ctrl+Y / Ctrl+Shift+Z</span><span class="kbd-desc">Redo</span>
+            <span class="kbd-key">Ctrl+F</span><span class="kbd-desc">Find & Replace</span>
+            <span class="kbd-key">Ctrl+P</span><span class="kbd-desc">Print</span>
+            <span class="kbd-key">Ctrl+D</span><span class="kbd-desc">Duplicate selected</span>
+            <span class="kbd-key">Ctrl+B</span><span class="kbd-desc">Toggle Pages panel</span>
+            <span class="kbd-key">Ctrl + + / − / 0 / 1</span><span class="kbd-desc">Zoom in / out / 100% / fit</span>
+            <span class="kbd-key">+ / − / 0</span><span class="kbd-desc">Zoom in / out / fit</span>
+            <span class="kbd-key">Ctrl+Scroll</span><span class="kbd-desc">Zoom in / out</span>
+            <span class="kbd-key">Page Up / Page Down</span><span class="kbd-desc">Previous / next page</span>
+            <span class="kbd-key">Home / End</span><span class="kbd-desc">First / last page</span>
+            <span class="kbd-key">Arrows</span><span class="kbd-desc">Nudge selected (1 px)</span>
+            <span class="kbd-key">Shift+Arrows</span><span class="kbd-desc">Nudge selected (10 px)</span>
+            <span class="kbd-key">Del / Backspace</span><span class="kbd-desc">Delete selected</span>
+            <span class="kbd-key">Esc</span><span class="kbd-desc">Close panel / Deselect</span>
+            <span class="kbd-key">? / F1</span><span class="kbd-desc">This help</span>
+        </div>
+        <button class="kbd-close" id="kbdClose">Close</button>
+    </div>
+</div>
+
+<!-- MERGE FILE INPUT -->
+<input type="file" id="fileMerge" accept=".pdf" style="display:none;" />
+
+<!-- ZOOM -->
+<div class="zoom-group" id="zoomGroup">
+    <div class="zoom-bar" id="zoomBar">
+        <button id="btnZoomOut"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+        <span class="zoom-label" id="zoomLabel">100%</span>
+        <button id="btnZoomIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
+        <button id="btnZoomFit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+    </div>
+</div>
+
+<!-- STATUS -->
+<div class="status-bar" id="statusBar">
+    <div class="save-dot" id="saveDot"></div>
+    <span id="statusText">Page 1/1</span>
+    <span class="status-sep">·</span>
+    <span id="statusFormat"></span>
+    <span class="status-sep">·</span>
+    <span id="statusSize"></span>
+</div>

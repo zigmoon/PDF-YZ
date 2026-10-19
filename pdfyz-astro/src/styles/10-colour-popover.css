@@ -1,0 +1,79 @@
+/* sélecteur de couleur et toile de dessin
+   Découpé de ../index.html, lignes 1296–1370.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Colour popover (tool colour + selected object colour) ─── */
+        .color-pop {
+            position: fixed; left: 50%; bottom: 56px; z-index: 60000;
+            transform: translateX(-50%) translateY(8px);
+            display: flex; flex-direction: column; gap: 8px;
+            padding: 10px 12px; border-radius: 14px; max-width: 92vw;
+            background: var(--surface-solid); border: 1px solid var(--border);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+            opacity: 0; visibility: hidden;
+            transition: opacity .16s ease, transform .16s ease, visibility .16s;
+        }
+        .color-pop.visible { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        /* Once dragged, the popover behaves like a widget: explicit left/top, no centring. */
+        .color-pop.positioned { bottom: auto; transform: none; }
+        .color-pop.positioned.visible { transform: none; }
+        .color-pop.dragging { transition: none; }
+        .color-pop-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            cursor: move; user-select: none; touch-action: none;
+            padding: 2px 0 4px; margin: -2px -2px 0;
+            border-radius: 8px;
+        }
+        .color-pop-head:active { cursor: grabbing; }
+        .color-pop-grip { display: inline-flex; align-items: center; gap: 6px; }
+        .color-pop-grip svg { width: 12px; height: 12px; opacity: .55; flex-shrink: 0; }
+        .color-pop-title {
+            font-size: 11px; font-weight: 600; color: var(--muted);
+            text-transform: uppercase; letter-spacing: .5px; white-space: nowrap;
+        }
+        .color-pop-close {
+            border: none; background: transparent; color: var(--muted);
+            cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px;
+        }
+        .color-pop-close:hover { color: var(--text); }
+        .color-pop-swatches { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .color-swatch {
+            width: 24px; height: 24px; border-radius: 50%; padding: 0; cursor: pointer;
+            border: 2px solid transparent; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+        }
+        .color-swatch.active { border-color: var(--text); }
+        .color-pop-custom {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 11px; color: var(--muted); cursor: pointer;
+        }
+        .color-pop-custom input {
+            width: 30px; height: 26px; padding: 0; cursor: pointer;
+            border: 1px solid var(--border); border-radius: 6px; background: transparent;
+        }
+        @media (max-width: 768px) {
+            .color-pop { bottom: 84px; }
+            .color-swatch { width: 28px; height: 28px; }
+        }
+
+        .resize-h {
+            position: absolute; width: 10px; height: 10px;
+            background: #fff; border: 2px solid var(--accent); border-radius: 2px;
+            display: none; z-index: 20; touch-action: none; pointer-events: auto;
+        }
+        .selected .resize-h, .el-text:focus .resize-h { display: block; }
+        /* Allow touch drag once an element is selected, without blocking page scroll otherwise */
+        .el-img.selected, .el-sig.selected, .el-note.selected, .el-note .el-note-header,
+        .el-pdf-img.selected { touch-action: none; }
+        .resize-h.se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+        .resize-h.sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+        .resize-h.ne { top: -5px; right: -5px; cursor: nesw-resize; }
+        .resize-h.nw { top: -5px; left: -5px; cursor: nwse-resize; }
+
+        /* ─── Draw canvas (freehand + highlight) ─── */
+        .draw-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 15; display: none; cursor: crosshair;
+            pointer-events: none; touch-action: none;
+        }
+        .draw-layer.active { display: block; pointer-events: auto; }

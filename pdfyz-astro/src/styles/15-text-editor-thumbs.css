@@ -1,0 +1,152 @@
+/* éditeur de texte, vignettes, aide clavier
+   Découpé de ../index.html, lignes 1893–2040.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Text Editor — floating contextual toolbar (modern) ─── */
+        .text-edit-panel {
+            position: fixed; z-index: 85;
+            transform: translateY(12px); opacity: 0; pointer-events: none;
+            transition: transform 0.18s ease, opacity 0.18s ease;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+            display: flex; flex-direction: column; gap: 0;
+            width: min(360px, calc(100vw - 24px));
+        }
+        .text-edit-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .te-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 12px; border-bottom: 1px solid var(--border);
+        }
+        .te-title { font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0.4px; text-transform: uppercase; }
+        .te-close {
+            width: 26px; height: 26px; border-radius: 7px; border: none;
+            background: transparent; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .te-close:hover { background: var(--surface-2); color: var(--text); }
+        .te-close svg { width: 15px; height: 15px; }
+        .te-body {
+            padding: 10px 12px 12px; overflow: hidden;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .te-body textarea {
+            width: 100%; min-height: 96px; resize: vertical;
+            padding: 10px; border-radius: 10px; border: 1px solid var(--border);
+            background: var(--surface-2); color: var(--text); font-size: 13px;
+            font-family: 'IBM Plex Mono', 'Inter', monospace; line-height: 1.55;
+            outline: none; transition: border-color 0.15s;
+        }
+        .te-body textarea:focus { border-color: var(--accent); }
+        .te-controls { display: flex; flex-direction: column; gap: 8px; }
+        .te-row { display: flex; align-items: center; gap: 6px; }
+        .te-row label { font-size: 10px; color: var(--muted); min-width: 34px; letter-spacing: 0.3px; text-transform: uppercase; }
+        .te-row select, .te-row input[type="number"] {
+            flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface-2); color: var(--text); font-size: 12px;
+            font-family: 'IBM Plex Mono', 'Inter', monospace; outline: none;
+        }
+        .te-row select:focus, .te-row input:focus { border-color: var(--accent); }
+        .te-color {
+            width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--border);
+            padding: 0; cursor: pointer; background: none;
+        }
+        .te-format { gap: 4px; }
+        .te-fmt-btn {
+            flex: 1; padding: 6px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface-solid); color: var(--text); cursor: pointer;
+            font-size: 12px; text-align: center; transition: all 0.12s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .te-fmt-btn:hover { background: var(--surface-2); }
+        .te-fmt-btn.active { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+        .te-font-row { display: flex; align-items: center; gap: 6px; }
+        .te-font-row select { flex: 1; }
+        .te-upload-btn {
+            width: 28px; height: 28px; min-width: 28px; border-radius: 8px; border: 1px dashed var(--border);
+            background: var(--surface-2); color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.12s;
+        }
+        .te-upload-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .te-upload-btn svg { width: 13px; height: 13px; }
+        .te-original-font {
+            display: none; padding: 5px 9px; border-radius: 8px;
+            background: rgba(var(--accent-rgb),0.08); border: 1px solid rgba(var(--accent-rgb),0.15);
+            font-size: 10px; color: var(--muted); line-height: 1.4;
+        }
+        .te-original-font.visible { display: block; }
+        .te-original-font strong { color: var(--text); font-weight: 500; }
+        .te-font-match { display: inline; }
+        .te-font-match.ok { color: #4ade80; }
+        .te-font-match.pending { color: var(--muted); }
+        .te-font-match.warn { color: #fbbf24; }
+        .te-font-preview {
+            padding: 7px 9px; border-radius: 8px; background: var(--surface-2);
+            border: 1px solid var(--border); font-size: 13px; color: var(--text);
+            line-height: 1.4; min-height: 32px;
+        }
+        .te-font-loading {
+            display: none; align-items: center; gap: 6px; padding: 2px 0;
+            font-size: 10px; color: var(--muted);
+        }
+        .te-font-loading.visible { display: flex; }
+        .te-font-loading .spinner {
+            width: 11px; height: 11px; border: 2px solid var(--border); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .te-footer {
+            display: flex; gap: 6px; padding: 0 12px 12px;
+        }
+        .te-footer .props-btn { flex: 1; }
+
+        /* ─── Page thumb actions ─── */
+        .page-thumb-actions {
+            position: absolute; top: 4px; left: 4px; right: 4px;
+            display: flex; justify-content: flex-end; gap: 2px; z-index: 5;
+            /* Always visible so rotate / duplicate / delete are never cut off,
+               even on the smallest previews. */
+        }
+        .page-thumb-actions button {
+            width: 24px; height: 24px; border-radius: 6px; border: none;
+            background: rgba(0,0,0,0.55); color: #fff; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: background 0.12s;
+        }
+        .page-thumb-actions button:hover { background: rgba(0,0,0,0.8); }
+        .page-thumb-actions button svg { width: 12px; height: 12px; }
+        .page-thumb.dragging { opacity: 0.4; }
+        .page-thumb.drag-over-top { border-top: 3px solid var(--accent) !important; }
+        .page-thumb.drag-over-bottom { border-bottom: 3px solid var(--accent) !important; }
+
+        /* ─── Eraser cursor ─── */
+        .draw-layer.eraser-mode { cursor: pointer !important; }
+
+        /* ─── Keyboard help modal ─── */
+        .kbd-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 60000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .kbd-modal.visible { display: flex; }
+        .kbd-box {
+            background: var(--surface-solid); border: 1px solid var(--border);
+            border-radius: 14px; padding: 24px 28px; max-width: 420px; width: 90%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .kbd-box h3 { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+        .kbd-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; }
+        .kbd-key {
+            font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 600;
+            background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px;
+            padding: 2px 8px; text-align: center; white-space: nowrap;
+        }
+        .kbd-desc { font-size: 12px; color: var(--muted); line-height: 24px; }
+        .kbd-close {
+            display: block; margin: 16px auto 0; padding: 6px 20px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--surface-solid); color: var(--text);
+            cursor: pointer; font-size: 12px;
+        }
+        .kbd-close:hover { background: var(--accent); color: var(--accent-contrast); }

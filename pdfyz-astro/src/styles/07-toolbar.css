@@ -1,0 +1,86 @@
+/* barre d’outils flottante et mode modification
+   Découpé de ../index.html, lignes 870–951.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Floating Toolbar (compact) ─── */
+        .toolbar-container {
+            position: fixed; top: calc(1rem + 15px); left: 50%; transform: translateX(-50%);
+            z-index: 40; background: var(--surface); border-radius: 12px;
+            box-shadow: var(--toolbar-shadow); padding: 6px 10px;
+            display: none; align-items: center; gap: 2px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        }
+        .toolbar-container.visible { display: flex; }
+        .tool-btn {
+            width: 38px; height: 38px; border-radius: 10px;
+            border: 1px solid transparent; background: transparent;
+            color: var(--text); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s ease; position: relative;
+        }
+        .tool-btn:hover { background: var(--surface-2); transform: translateY(-1px); }
+        .tool-btn.active { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .tool-btn:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+        .tool-btn svg { width: 19px; height: 19px; stroke-width: 1.8; }
+        .toolbar-divider { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
+
+        /* ─── Modify mode ─── */
+        .tool-btn.modify-toggle {
+            width: 38px; min-width: 38px; padding: 0;
+        }
+        .tool-btn.modify-toggle svg { width: 20px; height: 20px; }
+        .tool-btn.modify-active {
+            background: var(--accent); color: var(--accent-contrast); border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        #modifyBar {
+            position: fixed; top: calc(1rem + 74px); left: 50%; transform: translateX(-50%) translateY(-8px);
+            z-index: 90; display: none; align-items: center; gap: 10px;
+            padding: 8px 14px 8px 18px; border-radius: 12px;
+            background: var(--surface-solid); border: 1px solid var(--border);
+            box-shadow: var(--toolbar-shadow); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            font-size: 12px; color: var(--text); opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none; white-space: nowrap;
+        }
+        #modifyBar.visible { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+        #modifyBar .mb-hint { color: var(--muted); }
+        #modifyBar .mb-hint strong { color: var(--text); font-weight: 600; }
+        #modifyBar .mb-done {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--accent); color: var(--accent-contrast); cursor: pointer;
+            font-size: 11px; font-weight: 600; font-family: inherit;
+        }
+        #modifyBar .mb-done:hover { opacity: 0.9; }
+        /* Make editable blocks discoverable while modification permission is on. */
+        body.edit-mode .edit-layer { cursor: default; }
+        body.edit-mode .edit-layer .el-text, body.edit-mode .edit-layer .el-img,
+        body.edit-mode .edit-layer .el-sig, body.edit-mode .edit-layer .el-note {
+            cursor: grab;
+        }
+        body.edit-mode .el-text.extracted { cursor: grab; }
+        body.edit-mode .el-text.extracted:hover:not(.inline-edit):not(.modified) {
+            box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.5);
+            background: rgba(var(--accent-rgb),0.08) !important;
+            border-radius: 2px;
+        }
+        body.edit-mode .el-img:hover, body.edit-mode .el-sig:hover, body.edit-mode .el-note:hover {
+            box-shadow: 0 0 0 2px rgba(var(--accent-rgb),0.45);
+        }
+        @media (max-width: 768px) {
+            #modifyBar {
+                top: auto; bottom: calc(76px + env(safe-area-inset-bottom));
+                width: calc(100% - 24px); box-sizing: border-box; justify-content: space-between;
+                white-space: normal;
+            }
+            #modifyBar .mb-hint { max-width: 55%; }
+            #modifyBar .mb-done { padding: 6px 10px; font-size: 10px; white-space: nowrap; }
+            body.edit-mode .props-panel {
+                display: none !important; top: auto; right: 12px; left: 12px;
+                bottom: calc(164px + env(safe-area-inset-bottom)); width: auto;
+                max-height: 44vh; overflow-y: auto;
+            }
+            body.edit-mode .props-panel.visible { display: flex !important; }
+        }

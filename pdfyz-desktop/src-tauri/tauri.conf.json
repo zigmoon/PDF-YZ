@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "PDF-YZ",
+  "version": "0.2.0",
+  "identifier": "com.zigmoon.pdfyz",
+  "build": {
+    "beforeBuildCommand": "node scripts/prepare-bundle.mjs",
+    "frontendDist": "../frontend"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "PDF-YZ",
+        "width": 1440,
+        "height": 920,
+        "minWidth": 900,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "dragDropEnabled": false,
+        "url": "index.html"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Productivity",
+    "shortDescription": "Éditeur PDF hors-ligne",
+    "longDescription": "PDF-YZ édite les PDF dans une webview native : texte, images, annotations, imposition, export. Aucun fichier ne quitte la machine.",
+    "copyright": "© Zigmoon",
+    "publisher": "Zigmoon",
+    "homepage": "https://app.zigmoon.com/PDF-YZ/",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "languages": ["French", "English"],
+        "installerIcon": "icons/icon.ico"
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    },
+    "linux": {
+      "deb": {
+        "depends": [],
+        "section": "graphics"
+      }
+    }
+  }
+}

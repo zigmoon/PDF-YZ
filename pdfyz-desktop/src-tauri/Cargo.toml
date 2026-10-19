@@ -1,0 +1,23 @@
+[package]
+name = "pdfyz-desktop"
+version = "0.2.0"
+description = "PDF-YZ — éditeur PDF hors-ligne, en application de bureau"
+authors = ["Simon Dupont-Gellert (Zigmoon)"]
+edition = "2021"
+rust-version = "1.77"
+license = "LicenseRef-Proprietary"
+repository = "https://github.com/zigmoon/PDF-YZ"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+# Le binaire distribué : petit, sans symboles, sans code mort de debug.
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

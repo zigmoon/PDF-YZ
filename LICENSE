@@ -1,0 +1,203 @@
+PDF-YZ — LICENCE
+Licence propriétaire. Tous droits réservés.
+
+Copyright (c) 2026 Simon Dupont-Gellert (Zigmoon) & Clémence Brunet. Publié par 2.13 — https://2points13.fr
+
+Ce fichier est la licence de PDF-YZ : l'éditeur PDF, son noyau de calcul écrit en
+Rust et compilé en WebAssembly, son interface Astro, son enveloppe de bureau Tauri,
+leur code source (HTML, CSS, JavaScript, Rust, WebAssembly), leur documentation,
+leur outillage de compilation et leurs ressources graphiques. Elle s'applique à la
+version courante du logiciel et à toutes les suivantes.
+
+------------------------------------------------------------------------------
+EN CLAIR
+(Ce résumé n'est pas la licence ; les conditions ci-dessous font foi.)
+------------------------------------------------------------------------------
+
+Vous pouvez :
+
+  * utiliser PDF-YZ, tel qu'il est servi à l'adresse https://app.zigmoon.com/PDF-YZ/
+    et sous la forme des applications de bureau publiées par le Concédant, pour
+    tout usage, y compris commercial, sans frais et sans compte ;
+  * conserver tout ce que vous produisez avec lui. Vos documents, vos PDF, vos
+    images, vos polices et vos fichiers exportés vous appartiennent : aucune
+    obligation, aucune mention.
+
+Vous ne pouvez pas, sans l'autorisation écrite préalable du Concédant :
+
+  * copier, redistribuer, revendre, concéder en sous-licence, héberger, mettre en
+    miroir ou publier tout ou partie du logiciel ;
+  * le modifier, ni en créer des œuvres dérivées ;
+  * retirer ou altérer les mentions de copyright, cette licence ou les crédits ;
+  * utiliser le code pour construire, entraîner, affiner ou améliorer un produit
+    concurrent ou un modèle d'intelligence artificielle.
+
+PDF-YZ s'exécute dans un navigateur ou dans une webview : son code peut être lu.
+Lisible n'est pas libre de réutilisation : cette licence accorde l'usage du
+logiciel, non des droits sur son code source.
+
+Les composants tiers et les polices intégrées conservent leurs propres licences et
+marques, qui prévalent sur celle-ci pour les parties qu'elles couvrent.
+
+Licences commerciales, compilations sur mesure, marque blanche, auto-hébergement et
+partenariats : all@2points13.fr
+
+------------------------------------------------------------------------------
+CONDITIONS GÉNÉRALES
+------------------------------------------------------------------------------
+
+1. DÉFINITIONS
+
+   « Logiciel » désigne PDF-YZ sous toutes ses formes de diffusion : les
+   applications (site web et applications de bureau), leur code source en tout
+   langage, leurs formes compilées — notamment le module WebAssembly —, leur
+   documentation, leur outillage de compilation et leurs ressources graphiques.
+
+   « Concédant » désigne Simon Dupont-Gellert (Zigmoon) & Clémence Brunet,
+   éditeur 2.13, co-titulaires des droits sur le Logiciel.
+
+   « Vous » désigne la personne physique ou morale qui exerce des droits au titre
+   de la présente licence, ainsi que toute entité qui la contrôle, est contrôlée
+   par elle ou se trouve sous contrôle commun avec elle.
+
+   « Production » désigne les documents, images, polices et fichiers exportés que
+   Vous créez avec le Logiciel.
+
+2. CONCESSION — DROIT D'USAGE
+
+   Sous réserve des conditions ci-dessous, le Concédant Vous accorde un droit
+   non exclusif, non transférable, non sous-licenciable, révocable, mondial et
+   gratuit d'UTILISER le Logiciel, tel qu'il est servi à l'adresse
+   https://app.zigmoon.com/PDF-YZ/ et sous la forme des applications de bureau
+   distribuées par le Concédant, à toute fin, y compris commerciale, sans frais
+   et sans compte.
+
+   Cette licence accorde un droit d'USAGE. Elle n'accorde aucun droit de
+   reproduction, de représentation, d'adaptation ou de distribution sur le
+   Logiciel, ni aucun droit de quelque nature que ce soit sur son code source ou
+   ses ressources graphiques. Aucun droit n'est accordé par implication, par
+   estoppel ou autrement.
+
+   La lecture du code source, là où il est livré au navigateur, résulte de la
+   nature technique d'une application web. Elle ne constitue pas une concession et
+   ne confère aucun droit au-delà du droit d'usage défini ci-dessus.
+
+3. VOTRE PRODUCTION
+
+   Le Concédant ne revendique aucun droit sur Votre Production. Vos documents, vos
+   images, vos polices et vos fichiers exportés vous appartiennent, et Vous pouvez
+   les utiliser sans restriction et sans obligation de mention.
+
+   Vous demeurez responsable des droits sur tout ce que Vous placez dans le
+   Logiciel : polices chargées, images importées, documents importés. Rien dans
+   cette licence ne Vous transfère de droit sur l'œuvre d'un tiers.
+
+4. INTERDICTIONS
+
+   Vous ne pouvez pas, et ne pouvez pas permettre à quiconque de :
+
+   (a) copier, reproduire, redistribuer, revendre, louer, prêter, concéder en
+       sous-licence, publier, mettre en miroir ou héberger tout ou partie du
+       Logiciel, sous quelque forme que ce soit, y compris comme service offert à
+       des tiers ;
+
+   (b) modifier, traduire, adapter, agencer ou créer autrement des œuvres dérivées
+       du Logiciel ;
+
+   (c) décompiler, désassembler ou faire de l'ingénierie inverse sur le Logiciel,
+       sauf lorsque cet acte est expressément permis par une disposition
+       impérative de la loi applicable, et dans les seules limites de celle-ci ;
+
+   (d) retirer, masquer ou altérer toute mention de copyright, cette licence, les
+       crédits ou toute référence au Concédant que porte le Logiciel ;
+
+   (e) extraire, réutiliser ou redistribuer la documentation ou les ressources
+       graphiques comme un ensemble de matériaux séparé ;
+
+   (f) présenter une copie dérivée ou modifiée comme étant le Logiciel, ou d'une
+       manière qui suggère une origine ou une approbation par le Concédant.
+
+5. APPRENTISSAGE AUTOMATIQUE ET RÉUTILISATION AUTOMATISÉE
+
+   Vous ne pouvez pas utiliser le Logiciel, son code source, sa documentation ou
+   ses ressources graphiques, en tout ou partie, pour développer, entraîner,
+   affiner, évaluer, distiller ou autrement améliorer un modèle d'apprentissage
+   automatique, ni pour constituer un corpus destiné à ces fins, ni pour
+   construire un produit ou un service destiné à concurrencer le Logiciel, sans
+   l'autorisation écrite préalable du Concédant.
+
+6. COMPOSANTS TIERS ET POLICES
+
+   Le Logiciel intègre des composants tiers — notamment pdf-lib 1.17.1, pdf.js
+   4.9.155, fontkit 1.1.1 et Tailwind CSS — ainsi que des polices (Inter,
+   Space Mono, IBM Plex Mono) distribuées par Google Fonts. Ces éléments restent
+   régis par leurs propres licences et marques, qui prévalent sur celle-ci pour
+   les parties qu'elles couvrent. Voir les fichiers NOTICE livrés avec
+   l'application, et les licences présentes dans les dossiers vendus avec elle
+   (`pdfjs/cmaps/LICENSE`, `pdfjs/standard_fonts/`).
+
+7. NOMS ET MARQUES
+
+   Les noms « PDF-YZ », « Zigmoon » et « 2.13 », ainsi que leurs logos, sont des
+   marques du Concédant, régies séparément de cette licence. Cette licence
+   n'accorde aucun droit de les utiliser. Tout usage public ou commercial d'une
+   œuvre dérivée ne doit pas suggérer une origine officielle ou une approbation
+   par le Concédant.
+
+8. REMARQUES ET CONTRIBUTIONS
+
+   Toute remarque, suggestion, rapport d'anomalie ou autre retour que Vous envoyez
+   au Concédant peut être utilisé par lui sans restriction et sans obligation de
+   compensation, et ne transfère aucun droit sur le Logiciel.
+
+9. RÉSILIATION
+
+   Cette licence est effective jusqu'à sa résiliation. Elle se résilie
+   automatiquement, sans préavis, en cas de manquement à l'une de ses conditions.
+   À la résiliation, Vous devez cesser d'utiliser le Logiciel et détruire toute
+   copie en votre possession ou sous votre contrôle. Les clauses 3 (Votre
+   Production), 4 (Interdictions), 5 (Apprentissage automatique), 8 (Remarques),
+   10 (Absence de garantie) et 11 (Limitation de responsabilité) survivent à la
+   résiliation.
+
+10. ABSENCE DE GARANTIE
+
+    LE LOGICIEL EST FOURNI « EN L'ÉTAT », SANS GARANTIE D'AUCUNE SORTE, EXPRESSE
+    OU IMPLICITE, Y COMPRIS LES GARANTIES DE QUALITÉ MARCHANDE, D'ADÉQUATION À UN
+    USAGE PARTICULIER, D'EXACTITUDE ET D'ABSENCE DE CONTREFAÇON. LE CONCÉDANT NE
+    GARANTIT PAS QUE LE LOGICIEL SERA ININTERROMPU, EXEMPT D'ERREUR OU DE DÉFAUT,
+    NI QUE LES FICHIERS QU'IL PRODUIT RÉPONDRONT À UNE EXIGENCE PARTICULIÈRE, Y
+    COMPRIS CELLES D'UNE IMPRIMANTE, D'UNE PRESSE OU D'UN FLUX PRÉPRESSE DONNÉS.
+    VOUS UTILISEZ LE LOGICIEL À VOS RISQUES.
+
+11. LIMITATION DE RESPONSABILITÉ
+
+    DANS TOUTE LA MESURE PERMISE PAR LA LOI APPLICABLE, LE CONCÉDANT NE SERA PAS
+    RESPONSABLE DES DOMMAGES INDIRECTS, ACCESSOIRES, SPÉCIAUX, CONSÉCUTIFS OU
+    PUNITIFS, NI D'AUCUNE PERTE DE PROFIT, DE REVENU, DE DONNÉES, DE PRODUCTION
+    OU DE CLIENTÈLE, DÉCOULANT DU LOGICIEL OU DE CETTE LICENCE OU EN LIEN AVEC
+    EUX, MÊME SI LE CONCÉDANT A ÉTÉ AVISÉ DE LA POSSIBILITÉ DE TELS DOMMAGES. LA
+    RESPONSABILITÉ TOTALE DU CONCÉDANT AU TITRE DE CETTE LICENCE NE DÉPASSERA PAS
+    LE MONTANT EFFECTIVEMENT PAYÉ PAR VOUS POUR LE LOGICIEL AU COURS DES DOUZE
+    MOIS PRÉCÉDANT L'ÉVÉNEMENT GÉNÉRATEUR DE RESPONSABILITÉ.
+
+12. DROIT APPLICABLE — JURIDICTION
+
+    Cette licence est régie par le droit français. Tout litige relatif à son
+    interprétation ou à son exécution relève des tribunaux compétents du domicile
+    du Concédant, sous réserve de toute règle impérative contraire.
+
+13. CONTACT
+
+    Licences commerciales, compilations sur mesure, marque blanche, auto-hébergement
+    et partenariats :
+      all@2points13.fr
+
+------------------------------------------------------------------------------
+VERSIONS PUBLIÉES ANTÉRIEUREMENT
+------------------------------------------------------------------------------
+
+Cette licence s'applique à la version courante du Logiciel et à toutes les
+suivantes. Pour ces versions, elle ne retire pas les droits déjà accordés, au
+titre de la licence alors en vigueur, à quiconque a reçu une copie de PDF-YZ avant
+l'entrée en vigueur de cette licence.

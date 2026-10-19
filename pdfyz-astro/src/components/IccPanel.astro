@@ -1,0 +1,139 @@
+---
+// profil couleur ICC / PDF-A
+// Extrait de ../index.html, lignes 2832–2966. Balisage d'origine, non réécrit.
+---
+
+<!-- ICC COLOR PROFILE PANEL -->
+<div class="icc-panel" id="iccPanel">
+    <div class="icc-panel-header">
+        <h3>🎨 Color Profiles (ICC)</h3>
+        <button class="icc-panel-close" id="iccClose">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+    <div class="icc-panel-body">
+        <div class="icc-status" id="iccStatus">
+            Active: <strong id="iccActiveLabel">None (Device RGB)</strong>
+        </div>
+
+        <div class="icc-section-title">CMYK — Offset Print (FOGRA / ISO)</div>
+        <div class="icc-profile-list" id="iccListCMYK">
+            <div class="icc-profile-item" data-icc="fogra39">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">FOGRA39 (ISO Coated v2)</div>
+                    <div class="icc-profile-desc">European offset, coated paper — ISO 12647-2</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+            <div class="icc-profile-item" data-icc="fogra47">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">FOGRA47 (Uncoated)</div>
+                    <div class="icc-profile-desc">European offset, uncoated paper — ISO 12647-2</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+            <div class="icc-profile-item" data-icc="fogra51">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">FOGRA51 (PSO Coated v3)</div>
+                    <div class="icc-profile-desc">Latest European coated — ISO 12647-2:2013</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+            <div class="icc-profile-item" data-icc="fogra52">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">FOGRA52 (PSO Uncoated v3 FOGRA52)</div>
+                    <div class="icc-profile-desc">Latest European uncoated — ISO 12647-2:2013</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+            <div class="icc-profile-item" data-icc="swop">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">US Web Coated (SWOP) v2</div>
+                    <div class="icc-profile-desc">North American web offset — GRACoL</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+            <div class="icc-profile-item" data-icc="gracol">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">GRACoL 2006 Coated</div>
+                    <div class="icc-profile-desc">North American commercial offset</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+            <div class="icc-profile-item" data-icc="japancolor">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">Japan Color 2001 Coated</div>
+                    <div class="icc-profile-desc">Japanese offset printing standard</div>
+                </div>
+                <span class="icc-profile-badge cmyk">CMYK</span>
+            </div>
+        </div>
+
+        <div class="icc-section-title">RGB — Screen &amp; Digital</div>
+        <div class="icc-profile-list" id="iccListRGB">
+            <div class="icc-profile-item" data-icc="srgb">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">sRGB IEC61966-2.1</div>
+                    <div class="icc-profile-desc">Standard web/screen — default for most displays</div>
+                </div>
+                <span class="icc-profile-badge rgb">RGB</span>
+            </div>
+            <div class="icc-profile-item" data-icc="adobergb">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">Adobe RGB (1998)</div>
+                    <div class="icc-profile-desc">Wide-gamut — photography &amp; prepress</div>
+                </div>
+                <span class="icc-profile-badge rgb">RGB</span>
+            </div>
+            <div class="icc-profile-item" data-icc="displayp3">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">Display P3</div>
+                    <div class="icc-profile-desc">Apple wide-gamut — modern displays</div>
+                </div>
+                <span class="icc-profile-badge rgb">RGB</span>
+            </div>
+        </div>
+
+        <div class="icc-section-title">Grayscale</div>
+        <div class="icc-profile-list" id="iccListGray">
+            <div class="icc-profile-item" data-icc="dotgain20">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">Dot Gain 20%</div>
+                    <div class="icc-profile-desc">Standard grayscale for offset printing</div>
+                </div>
+                <span class="icc-profile-badge gray">Gray</span>
+            </div>
+            <div class="icc-profile-item" data-icc="grayD50">
+                <div class="icc-radio"></div>
+                <div class="icc-profile-info">
+                    <div class="icc-profile-name">Gray Gamma 2.2 (D50)</div>
+                    <div class="icc-profile-desc">Neutral gray for prepress workflows</div>
+                </div>
+                <span class="icc-profile-badge gray">Gray</span>
+            </div>
+        </div>
+
+        <div class="icc-section-title">Custom Profile</div>
+        <input type="file" id="iccFileInput" accept=".icc,.icm" style="display:none;" />
+        <button class="icc-upload-btn" id="iccUploadBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload .icc / .icm file
+        </button>
+        <div class="icc-profile-list" id="iccCustomList"></div>
+
+        <div style="display:flex; gap:8px; padding-top: 6px; border-top: 1px solid var(--border);">
+            <button class="props-btn" id="iccClear" style="flex:1; font-size:11px;">Clear Profile</button>
+        </div>
+    </div>
+</div>

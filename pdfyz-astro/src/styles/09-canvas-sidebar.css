@@ -1,0 +1,255 @@
+/* barre latérale, zone de pages, objets éditables
+   Découpé de ../index.html, lignes 1045–1295.
+   Ne pas réordonner : ces fichiers sont chargés dans l'ordre et la
+   cascade d'origine en dépend. */
+
+        /* ─── Sidebar (pages) ─── */
+        .sidebar {
+            position: fixed; left: 0; top: 0; height: 100%; width: 264px;
+            background: var(--surface-solid); border-right: 1px solid var(--border);
+            z-index: 50; transform: translateX(-100%);
+            transition: transform 0.3s ease; display: flex; flex-direction: column;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-header {
+            display: flex; align-items: center; justify-content: flex-end;
+            padding: 14px 16px; border-bottom: 1px solid var(--border);
+        }
+        .sidebar-title {
+            font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.4px; color: var(--muted);
+        }
+        .sidebar-close {
+            width: 28px; height: 28px; border-radius: 8px; border: none;
+            background: transparent; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.12s;
+        }
+        .sidebar-close:hover { background: var(--surface-2); color: var(--text); }
+        .sidebar-close svg { width: 16px; height: 16px; }
+        .page-list {
+            flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px; display: flex;
+            flex-direction: column; gap: 12px;
+            scrollbar-gutter: stable; /* keep the rail from shifting thumbnails */
+            scrollbar-width: thin;
+            scrollbar-color: #111827 #e9e9e9;
+        }
+        .page-list::-webkit-scrollbar { width: 8px; height: 8px; background: #e9e9e9; }
+        .page-list::-webkit-scrollbar-track { background: #e9e9e9; }
+        .page-list::-webkit-scrollbar-thumb { background: #111827; border: none; border-radius: 0; min-height: 44px; }
+        .page-list::-webkit-scrollbar-thumb:hover { background: #000; }
+        .page-list::-webkit-scrollbar-button { display: none; }
+        .page-thumb {
+            position: relative; border-radius: 8px; border: 2px solid transparent;
+            overflow: hidden; cursor: pointer; transition: all 0.15s; background: #fff;
+            /* Auto height: keep large previews (width-ratio based) even on big documents,
+               while the dedicated rail scrollbar handles navigation — page actions never
+               get cut off. flex-shrink:0 is critical: without it the flex column shrinks
+               every thumb to fit instead of scrolling, which is what made previews tiny. */
+            flex-shrink: 0; min-height: 140px; display: flex; align-items: center; justify-content: center;
+        }
+        .page-thumb:hover { border-color: var(--border); }
+        .page-thumb.active { border-color: var(--accent); }
+        .page-thumb canvas { width: 100%; height: auto; display: block; object-fit: contain; }
+        .page-num {
+            position: absolute; bottom: 4px; right: 6px; font-size: 10px; font-weight: 600;
+            color: #fff; background: rgba(0,0,0,0.5); padding: 1px 6px; border-radius: 4px;
+        }
+
+        /* ─── Canvas scroll area ─── */
+        .canvas-area {
+            position: fixed; inset: 0; overflow-y: auto; overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 110px 20px 40px; background: var(--bg);
+        }
+        .page-canvas-wrap {
+            position: relative; margin-bottom: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            /* Ensure each page is its own isolated box: absolutely-positioned overlay
+               content (edit/draw layers, elements) can never spill into the next page,
+               which previously caused pages to visibly overlap when scrolling. */
+            overflow: hidden;
+            contain: layout paint;
+        }
+        .page-canvas-wrap canvas { display: block; }
+        .edit-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            /* Elements are positioned by absolute left/top; keep their text selectable
+               but prevent visual bleed outside the page box (contain handles clipping
+               at the wrap level). */
+        }
+
+        /* ─── Editable elements ─── */
+        .el-text {
+            position: absolute; cursor: grab; padding: 4px 6px;
+            min-width: 40px; min-height: 20px; border: 1px dashed transparent;
+            outline: none; background: transparent; transition: all 0.15s;
+            white-space: pre-wrap; word-break: break-word;
+            line-height: 1.3;
+        }
+        .el-text:hover { border-color: rgba(var(--accent-rgb),0.3); }
+        .el-text.selected { border-color: var(--accent); background: rgba(var(--accent-rgb),0.04); }
+        .el-text-content { pointer-events: none; display: block; }
+        /* Text-mode: crosshair for adding new text on empty areas */
+        .edit-layer.text-mode { cursor: crosshair; }
+        .edit-layer.note-mode { cursor: crosshair; }
+        .edit-layer.text-mode .el-text:not(.extracted) { border-color: rgba(var(--accent-rgb),0.35) !important; cursor: pointer; background: rgba(var(--accent-rgb),0.03); }
+        .edit-layer.text-mode .el-text:not(.extracted):hover { border-color: var(--accent) !important; background: rgba(var(--accent-rgb),0.1); }
+        /* Panel-active (currently being edited — for non-extracted text) */
+        .el-text:not(.extracted).panel-active { border-color: var(--accent) !important; background: rgba(var(--accent-rgb),0.06); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.15); }
+        /* New text pulse */
+        .el-text.new-text-pulse { animation: newTextPulse 0.6s ease; }
+        @keyframes newTextPulse {
+            0% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb),0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(var(--accent-rgb),0.15); }
+            100% { box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.15); }
+        }
+        /* Extracted text: invisible overlay matching PDF position */
+        .el-text.extracted {
+            padding: 1px 1px; line-height: 1.18;
+            border: none !important;
+            background: transparent !important;
+            cursor: text;
+            border-radius: 0;
+            transition: box-shadow 0.15s;
+            pointer-events: auto;
+            white-space: pre;
+            overflow: hidden;
+        }
+        .el-text.extracted .el-text-content {
+            color: transparent;
+            pointer-events: none;
+            display: block;
+            outline: none;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .el-text.extracted:hover:not(.inline-edit):not(.modified) {
+            box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.35);
+            background: rgba(var(--accent-rgb),0.06) !important;
+            border-radius: 2px;
+        }
+        .el-text.extracted.selected:not(.inline-edit):not(.modified) {
+            box-shadow: 0 0 0 1.5px rgba(var(--accent-rgb),0.5);
+            background: rgba(var(--accent-rgb),0.08) !important;
+            border-radius: 2px;
+        }
+        /* Inline editing mode: original element hidden, floating textarea takes over */
+        .el-text.extracted.inline-edit {
+            visibility: hidden !important;
+        }
+        /* Floating textarea overlay for inline editing (Adobe-style) */
+        .pdfz-inline-textarea {
+            position: absolute;
+            z-index: 100;
+            border: 2px solid var(--accent);
+            box-shadow: 0 2px 12px rgba(var(--accent-rgb),0.18);
+            border-radius: 2px;
+            background: #fff;
+            padding: 1px 2px;
+            margin: 0;
+            resize: both;
+            overflow: auto;
+            min-width: 60px;
+            min-height: 24px;
+            outline: none;
+            caret-color: var(--accent);
+            box-sizing: border-box;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.18;
+        }
+        /* Modified extracted text: shows replacement over original */
+        .el-text.extracted.modified:not(.inline-edit) {
+            background: transparent !important;
+            border: none !important;
+        }
+        .el-text.extracted.modified:not(.inline-edit) .el-text-content {
+            color: inherit !important;
+            background: inherit;
+            display: block;
+        }
+        .el-text.extracted.modified:hover:not(.inline-edit) {
+            box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.35);
+        }
+        /* Brief flash on page load to show editable areas */
+        .el-text.extracted.text-reveal {
+            box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.3) !important;
+            transition: box-shadow 1.5s ease-out;
+        }
+        .el-img {
+            position: absolute; cursor: grab;
+            border: 1px dashed transparent; transition: border-color 0.15s;
+        }
+        .el-img:hover { border-color: rgba(var(--accent-rgb),0.3); }
+        .el-img.selected { border-color: var(--accent); }
+        .el-img.el-pdf-img { border: 1px dashed transparent; }
+        .el-img.el-pdf-img img { opacity: 0; transition: opacity 0.15s; }
+        .el-img.el-pdf-img:hover img { opacity: 0.25; }
+        .el-img.el-pdf-img.selected img { opacity: 0.35; }
+        .el-img.el-pdf-img.replaced img { opacity: 1 !important; }
+        .el-img img {
+            width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none;
+        }
+        .el-sig { position: absolute; cursor: grab; }
+        .el-sig img { width: 100%; height: 100%; display: block; pointer-events: none; }
+        .el-pdf-graphic {
+            position: absolute; cursor: grab; border: 1px dashed transparent;
+            box-sizing: border-box; min-width: 8px; min-height: 8px;
+        }
+        .el-pdf-graphic::before {
+            content: ''; position: absolute; inset: -5px; border: 1px solid transparent;
+        }
+        .el-pdf-graphic:hover, .el-pdf-graphic.selected {
+            border-color: var(--accent); background: rgba(var(--accent-rgb),0.06);
+        }
+        .el-pdf-graphic.selected, .el-stroke.selected, .el-img.selected, .el-sig.selected { touch-action: none; }
+        .el-pdf-graphic-preview {
+            width: 100%; height: 100%; overflow: visible; pointer-events: none;
+            opacity: 0; transition: opacity 0.12s ease;
+        }
+        /* Only reveal the extracted shape once it is selected (or in Modify mode):
+           drawing it on simple hover would paint a second copy on top of the real one. */
+        .el-pdf-graphic.selected .el-pdf-graphic-preview,
+        body.edit-mode .el-pdf-graphic:hover .el-pdf-graphic-preview,
+        .el-pdf-graphic.modified .el-pdf-graphic-preview { opacity: 1; }
+        /* An object covered by a flat erase mask has to be re-drawn as a vector,
+           otherwise it disappears from the page the moment its neighbour moves. */
+        .el-pdf-graphic.under-mask .el-pdf-graphic-preview { opacity: 1; }
+        .el-img.el-pdf-img.under-mask img { opacity: 1 !important; }
+        .native-preview-mask {
+            position: absolute; pointer-events: none; overflow: visible;
+        }
+
+        /* ─── Layer order inside a page ───
+           PDF objects must sit BELOW the text drawn on top of them. Extracted
+           graphics are appended after the text overlays, so without an explicit
+           order an opaque background rectangle captured the clicks meant for the
+           text it was behind — text on a coloured background was uneditable. */
+        .el-pdf-graphic { z-index: 1; }
+        /* The box is only a bounding box: hit-testing happens on the SVG path so a
+           diagonal outline does not swallow clicks over its whole rectangle. */
+        .el-pdf-graphic { pointer-events: none; }
+        .el-pdf-graphic .graphic-hit { pointer-events: stroke; cursor: pointer; touch-action: none; }
+        .el-img.el-pdf-img { z-index: 2; }
+        .el-img, .el-sig { z-index: 4; }
+        .el-stroke { z-index: 4; }
+        .el-text.extracted { z-index: 3; }
+        .el-text:not(.extracted) { z-index: 5; }
+        .el-note { z-index: 6; }
+
+        /* Freehand / highlight strokes exposed as selectable objects */
+        .el-stroke {
+            position: absolute; pointer-events: none; box-sizing: border-box;
+            outline: 1px dashed transparent; outline-offset: 2px;
+        }
+        .el-stroke > svg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            overflow: visible; pointer-events: none;
+        }
+        .el-stroke .stroke-hit { pointer-events: stroke; cursor: pointer; touch-action: none; }
+        .el-stroke:hover { outline-color: rgba(var(--accent-rgb),0.35); }
+        .el-stroke.selected { outline: 1px dashed var(--accent); outline-offset: 2px; }

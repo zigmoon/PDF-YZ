@@ -1,0 +1,20 @@
+# Dépendances
+node_modules/
+
+# Le dossier embarqué dans le binaire : c'est une copie de pdfyz-astro/dist-desktop,
+# refaite à chaque build par scripts/prepare-bundle.mjs.
+frontend/
+
+# Sortie de cargo
+src-tauri/target/
+
+# Schémas de permissions, régénérés à chaque build par le CLI Tauri
+src-tauri/gen/schemas/
+
+# Paquets et installeurs produits localement
+dist-windows/
+build/
+
+# Divers
+*.log
+.DS_Store

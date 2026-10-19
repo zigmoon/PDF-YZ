@@ -1,0 +1,41 @@
+# Espace de travail Rust de PDF-YZ.
+#
+# Feuille de route : docs/PLAN.md. Quatre crates, dans l'ordre des dependances :
+#
+#   pdfyz-core    primitives pures (unites, geometrie, couleurs, trace vectoriel)
+#   pdfyz-impose  imposition : ordre de signature (livret), grille N-up, traits de coupe
+#   pdfyz-model   modele du document : plage de pages, identifiant de session,
+#                 empreinte d'objet graphique, echelle de plans (z-index)
+#   pdfyz-wasm    frontiere C du noyau : `dist/pdfyz_core.wasm`, sans wasm-bindgen
+#
+# Les trois premiers sont purs : **aucune dependance externe**, et
+# `#![forbid(unsafe_code)]` dans chacun. Tout l'`unsafe` de la frontiere C est
+# concentre dans `pdfyz-wasm`.
+#
+# Ce noyau reprend le calcul qui, dans l'application HTML monolithique
+# (`../index.html`), etait mele au DOM : ordre d'imposition, geometrie des
+# emplacements, bornes et chemin SVG des objets vectoriels, conversions de
+# couleurs, analyse de plage de pages. Le DOM, pdf.js et pdf-lib restent en
+# JavaScript : ce sont des frontieres navigateur, pas du calcul.
+
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+# Licence **proprietaire**, comme le reste de PDF-YZ. `LicenseRef-Proprietary`
+# est la facon SPDX de nommer une licence hors liste standard : ecrire ici un
+# identifiant standard (MIT, AGPL…) serait un mensonge lisible par un audit.
+license = "LicenseRef-Proprietary"
+authors = ["Simon Dupont-Gellert (Zigmoon)"]
+repository = "https://github.com/zigmoon/SUPERPRINT"
+
+# Profil de publication pense pour la taille du WASM (chargement navigateur).
+[profile.release]
+lto = true
+opt-level = "z"
+codegen-units = 1
+panic = "abort"
