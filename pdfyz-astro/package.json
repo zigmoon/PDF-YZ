@@ -1,6 +1,6 @@
 {
   "name": "pdfyz-astro",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "PDF-YZ — éditeur PDF hors-ligne dans le navigateur. Application Astro, noyau Rust/WebAssembly.",

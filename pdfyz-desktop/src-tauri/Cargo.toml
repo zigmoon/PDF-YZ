@@ -1,6 +1,6 @@
 [package]
 name = "pdfyz-desktop"
-version = "0.2.0"
+version = "0.3.0"
 description = "PDF-YZ — éditeur PDF hors-ligne, en application de bureau"
 authors = ["Simon Dupont-Gellert (Zigmoon)"]
 edition = "2021"

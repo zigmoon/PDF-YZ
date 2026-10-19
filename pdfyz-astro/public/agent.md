@@ -1,7 +1,39 @@
 # PDF-YZ — Agent Guide
 
-> Single-file vanilla HTML/JS/CSS PDF editor PWA.
+> PDF editor: Rust core compiled to WebAssembly, Astro interface, Tauri desktop shell.
 > Hosted at `app.zigmoon.com/PDF-YZ/`. Language: **English**.
+
+---
+
+## 0. Where the code lives now
+
+The repository holds three folders, and **they are not interchangeable**:
+
+| Folder | Role | Output |
+|---|---|---|
+| `pdfyz-rust/` | calculation core — geometry, colour, imposition, z-order, sessions. **Zero external crates.** | `pdfyz_core.wasm` (~155 KB) |
+| `pdfyz-astro/` | the interface. 16 CSS slices, 19 components, one page. The editor logic is `src/scripts/app.js`, migrated verbatim. | `dist/` (static site) |
+| `pdfyz-desktop/` | Tauri 2 shell around that site. | installers for Windows / macOS / Linux |
+
+**`index.html` is frozen.** It is the behaviour reference and the input of
+`pdfyz-astro/tools/split-legacy.mjs`; it is no longer edited. A UI change is made
+in `pdfyz-astro/src/`, never in `index.html` — otherwise the two drift and the next
+`split-legacy.mjs --force` silently reverts it.
+
+`src/scripts/app.js` is likewise a **copy**, generated once by the splitter and
+then hand-edited (that is what `--check` protects: it refuses to overwrite it).
+Edit it in place, in `pdfyz-astro/`.
+
+Two rules that are easy to break and expensive to debug:
+
+1. **Nothing is fetched at runtime.** Every third-party file is vendored into
+   `pdfyz-astro/public/vendor/` by `tools/vendor-cdn.mjs`. A service worker is not a
+   substitute: it does not register inside a Tauri webview, so cache-on-first-visit
+   leaves the desktop app dead offline.
+2. **Rust and JavaScript must agree.** The JS fallback stays in the app, so every
+   rule ported to Rust is re-implemented in `pdfyz-rust/scripts/validate-wasm.mjs`
+   and compared (206 checks). A change to `pdfyz-core` without a matching check is
+   an untested change.
 
 ---
 

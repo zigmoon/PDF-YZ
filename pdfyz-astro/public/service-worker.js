@@ -4,13 +4,17 @@
 // portée. Plus aucun chemin n'est codé en dur : le même fichier fonctionne à la
 // racine d'un domaine, sous `/PDF-YZ/` ou dans n'importe quel sous-dossier.
 const BASE = new URL('./', self.location.href).pathname;
-const CACHE_NAME = 'pdfyz-v38-offline-vendor';
+const CACHE_NAME = 'pdfyz-v39-icon-prehome';
 const PRECACHE_URLS = [
   BASE,
   `${BASE}index.html`,
   `${BASE}manifest.webmanifest`,
   `${BASE}favicon.svg`,
   `${BASE}logo-pdf-yz.svg`,
+  `${BASE}icons/icon-32.png`,
+  `${BASE}icons/icon-180.png`,
+  `${BASE}icons/icon-192.png`,
+  `${BASE}icons/icon-512.png`,
   `${BASE}donate-popin.js`,
   // Le noyau Rust et sa colle : sans eux l'application démarre, mais avec le
   // repli JavaScript pour tous les calculs (imposition, couleurs, tracés).

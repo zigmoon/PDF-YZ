@@ -254,8 +254,17 @@ async function emit(relPath, text) {
   written.push(relPath);
 }
 
+// Feuilles écrites à la main, chargées APRÈS les tranches découpées. Elles
+// redéfinissent la pré-accueil sans toucher au découpage mécanique de
+// `index.html` : les inscrire ici, et non dans le gabarit produit, les fait
+// survivre à un `--force` qui réécrit la coquille.
+const HAND_WRITTEN_STYLES = ['17-prehome.css'];
+
 function layoutMarkup(styles) {
-  const imports = styles.map((s) => `import '../styles/${s.file}';`).join('\n');
+  const imports = [
+    ...styles.map((s) => `import '../styles/${s.file}';`),
+    ...HAND_WRITTEN_STYLES.map((f) => `import '../styles/${f}';`),
+  ].join('\n');
   return `---
 /**
  * Coquille du document : <head> d'origine (SEO, Open Graph, icônes, polices,
