@@ -213,9 +213,19 @@ jobs:
 
           # Le texte de la page vit dans un fichier, pas dans ce YAML : deux
           # copies divergeraient, donc il n'y en a qu'une.
-          sed "s/@VERSION@/$version/g" .github/release-notes-desktop.md > notes-desktop.md
+          #
+          # Le bloc de commentaire d'en-tete est retire AVANT publication : il
+          # documente le fichier pour ceux qui le maintiennent, et n'a rien a
+          # faire sur une page publique. `gh release edit` publie le fichier tel
+          # quel, commentaire HTML compris (invisible au rendu, mais present
+          # dans l'API et dans le texte brut).
+          sed -e '/^<!--$/,/^-->$/d' -e "s/@VERSION@/$version/g" .github/release-notes-desktop.md > notes-desktop.md
           if grep -q '@VERSION@' notes-desktop.md; then
             echo "::error::un @VERSION@ subsiste dans le texte de la page"
+            exit 1
+          fi
+          if grep -q '^<!--$' notes-desktop.md; then
+            echo "::error::le commentaire d'en-tete n'a pas ete retire"
             exit 1
           fi
 

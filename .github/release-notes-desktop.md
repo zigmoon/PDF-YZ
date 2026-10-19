@@ -1,11 +1,3 @@
-<!--
-  Texte de la page de version « pdfyz-desktop-latest ».
-  `@VERSION@` est remplacé par la version de `pdfyz-desktop/src-tauri/tauri.conf.json`
-  au moment de la publication. C'est la SEULE source de ce texte : le workflow
-  relit ce fichier à chaque passage plutôt que d'écrire les notes dans le YAML,
-  parce que deux copies divergeraient à la première modification.
--->
-
 **PDF-YZ @VERSION@** — the PDF editor, as a desktop application.
 
 Everything the web version does, with no browser tab: text and image editing,

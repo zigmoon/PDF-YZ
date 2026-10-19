@@ -15,6 +15,29 @@
 
 ---
 
+## Download
+
+Desktop applications are built by GitHub Actions from this repository — four
+platforms, one commit, no unsigned-code surprises beyond the usual first-launch
+warning.
+
+| System | Installer |
+|---|---|
+| **Windows 10/11** (x64) | [`setup.exe`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Windows-x64-setup.exe) · [`.msi`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Windows-x64.msi) |
+| **macOS** 10.15+ Apple Silicon | [`.dmg`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-macOS-AppleSilicon.dmg) |
+| **macOS** 10.15+ Intel | [`.dmg`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-macOS-Intel.dmg) |
+| **Linux** (x86_64) | [`AppImage`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Linux-x86_64.AppImage) · [`.deb`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Linux-x86_64.deb) · [`.rpm`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Linux-x86_64.rpm) |
+
+Those links always serve the newest build. Each version is also archived under its
+tag — [`desktop-v0.6.0`](https://github.com/zigmoon/PDF-YZ/releases/tag/desktop-v0.6.0) —
+with a `SHA256SUMS` file beside the binaries.
+
+The Windows and macOS bundles are **not signed or notarised**: SmartScreen asks you
+to confirm the publisher, and macOS needs a right-click → *Open* on first launch.
+The web version needs none of that — see <https://app.zigmoon.com/PDF-YZ/>.
+
+---
+
 ## What it does
 
 PDF-YZ edits a PDF where it sits: on the reader's disk. No account, no upload, no
