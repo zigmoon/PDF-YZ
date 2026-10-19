@@ -15,4 +15,4 @@ Last update: 2026-10-19
 Language: English
 Standards: HTML5, CSS3, ES2022
 Software: PDF-YZ by Zigmoon
-Version: 0.5.0
+Version: 0.6.0

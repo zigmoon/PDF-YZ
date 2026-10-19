@@ -5,7 +5,12 @@
 ## Why PDF-YZ matters
 - **Privacy by design**: Files are never uploaded. All processing runs client-side via WebAssembly (pdf-lib + pdf.js).
 - **Free, no account, no watermark**.
-- **Works offline** once installed (PWA with service worker).
+- **Works offline** once installed (PWA with service worker). Every library, font and
+  wasm module is served from the same origin — there is no CDN call on load.
+  *One exception, stated plainly:* the text tool's font picker offers optional Google
+  Families (Roboto, Lato, …) that are **not** bundled. Choosing one downloads that font
+  once, on demand, to embed it in the exported PDF. The editor is fully usable without
+  them, and the app says so instead of failing silently.
 - **Genuine text editing**: extracted text blocks are masked and re-rendered with the user's font, size and color, not just overlaid.
 
 ## Core features

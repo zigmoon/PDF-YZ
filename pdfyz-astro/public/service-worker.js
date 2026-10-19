@@ -4,7 +4,7 @@
 // portée. Plus aucun chemin n'est codé en dur : le même fichier fonctionne à la
 // racine d'un domaine, sous `/PDF-YZ/` ou dans n'importe quel sous-dossier.
 const BASE = new URL('./', self.location.href).pathname;
-const CACHE_NAME = 'pdfyz-v40-theme';
+const CACHE_NAME = 'pdfyz-v41-livraison';
 const PRECACHE_URLS = [
   BASE,
   `${BASE}index.html`,

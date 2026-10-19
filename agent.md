@@ -26,7 +26,8 @@ Edit it in place, in `pdfyz-astro/`.
 
 Two rules that are easy to break and expensive to debug:
 
-1. **Nothing is fetched at runtime.** Every third-party file is vendored into
+1. **Nothing is fetched at runtime** — with one stated exception, the optional
+   Google Families described below. Every other third-party file is vendored into
    `pdfyz-astro/public/vendor/` by `tools/vendor-cdn.mjs`. A service worker is not a
    substitute: it does not register inside a Tauri webview, so cache-on-first-visit
    leaves the desktop app dead offline.
@@ -71,6 +72,18 @@ The pre-home declares its own `--pre-*` tokens twice (day, then
 `:root[data-theme="dark"]`), because its palette is a designed surface rather than a
 generic one. Its greys are chosen for measured contrast, not by eye: 6.5:1 and
 4.7:1 in day, 8.0:1 and 5.3:1 at night.
+
+### The one deliberate network call
+
+`loadGoogleFont()` in `app.js` fetches `fonts.googleapis.com` when the user picks one of
+the optional families in the text tool. Those families are **not** vendored: they exist
+only to be embedded into an exported PDF, and bundling every weight would add several
+megabytes to a 6.5 MB site.
+
+This is the single exception to "nothing is fetched at runtime", and it is guarded:
+`navigator.onLine === false` short-circuits to an explicit message naming the font,
+rather than a silent failure — which is what the desktop build would otherwise show.
+`tools/verifie-livraison.mjs` accepts this one URL and fails on any other in the bundle.
 
 ### The icon
 

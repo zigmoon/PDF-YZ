@@ -20,7 +20,6 @@ automatique (`pdfyz-astro/tools/split-legacy.mjs`). Le site à déployer est `pd
 ---
 
 ## 1. Pourquoi un noyau en Rust
-
 Les règles qui décident de ce qu'un utilisateur voit — où tombe une page dans un
 cahier imposé, quelle couleur donne un mélange, quel objet passe devant quel autre —
 sont difficiles à écrire deux fois de la même façon. Elles sont donc écrites **une
@@ -35,7 +34,8 @@ la vérification, il ne se découvre pas en production.
 ## 2. Construire et vérifier
 
 Prérequis : **Node 22+** et **Rust stable**. La cible `wasm32-unknown-unknown` sert
-au module livré, `wasm32-wasip1` aux tests.
+au module livré, `wasm32-wasip1` aux tests. L'image de partage et les icônes PNG
+demandent `sharp` (dépendance de développement, déjà dans `package.json`).
 
 ```bash
 # Noyau : formatage, lint, tests, module, parité
@@ -110,6 +110,13 @@ qu'il faut respecter en modifiant le projet :
 - Un *service worker* ne suffirait pas : il ne s'enregistre pas dans une webview
   Tauri. La mise en cache à la première visite laisserait l'application de bureau
   muette hors connexion.
+
+**L'unique exception, énoncée clairement :** le sélecteur de polices du panneau
+texte propose des familles Google (Roboto, Lato…) qui ne sont pas embarquées.
+En choisir une télécharge cette police **une fois**, à la demande, pour l'incorporer
+au PDF exporté. L'éditeur fonctionne sans, et le message d'échec nomme la police au
+lieu d'échouer en silence. `tools/verifie-livraison.mjs` tolère cette URL et échoue
+sur toute autre.
 
 Vérification : charger l'application réseau coupé, puis contrôler que
 `performance.getEntriesByType('resource')` ne contient aucune URL distante.

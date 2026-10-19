@@ -261,13 +261,21 @@ function detectFont(fontName, fontFamily) {
     return { font: 'Helvetica', originalFont: original, systemFont, weight, italic };
 }
 
-// Load a Google Font by name → store bytes in cache (all weight variants)
+// Load a Google Font by name → store bytes in cache (all weight variants).
+// These families are NOT bundled: they are fetched once, on demand, only to be
+// embedded into an exported PDF. The app is fully usable without them, so the
+// failure path must be a clear message rather than a silent hang — in the
+// desktop build there is no network at all, and "Font unavailable" alone would
+// not tell the user why.
 async function loadGoogleFont(name) {
     const key = 'gf:' + name;
     if (fontCache.has(key)) return fontCache.get(key);
 
     $('teFontLoading').classList.add('visible');
     try {
+        if (navigator.onLine === false) {
+            throw new Error('offline');
+        }
         const cssUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,400;1,700&display=swap`;
         const cssResp = await fetch(cssUrl, {
             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64) AppleWebKit/537.36 Chrome/120' }
@@ -304,7 +312,10 @@ async function loadGoogleFont(name) {
         return entry;
     } catch (e) {
         console.warn('Google Font load failed:', name, e);
-        toast('Font unavailable: ' + name);
+        const offline = e && (e.message === 'offline' || navigator.onLine === false);
+        toast(offline
+            ? `${name} needs a connection once — the app works offline with its bundled fonts.`
+            : 'Font unavailable: ' + name);
         return null;
     } finally {
         $('teFontLoading').classList.remove('visible');
