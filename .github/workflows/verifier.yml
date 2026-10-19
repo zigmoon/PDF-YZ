@@ -44,7 +44,7 @@ jobs:
     name: Noyau Rust
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # `wasm32-wasip1` porte les tests (pas de linker natif requis) ;
       # `wasm32-unknown-unknown` est la cible livrée. Les deux sont nécessaires,
@@ -62,7 +62,7 @@ jobs:
           workspaces: pdfyz-rust -> target
 
       - name: Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
@@ -86,7 +86,7 @@ jobs:
         run: node scripts/build-wasm.mjs
 
       - name: Conserver le module
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pdfyz-core-wasm
           path: pdfyz-rust/dist/pdfyz_core.wasm
@@ -97,10 +97,10 @@ jobs:
     runs-on: ubuntu-22.04
     needs: noyau
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -110,7 +110,7 @@ jobs:
       # compile quand même — elle retomberait simplement sur le JavaScript à
       # l'exécution, ce que personne ne verrait dans un journal de CI.
       - name: Récupérer le noyau
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pdfyz-core-wasm
           path: pdfyz-astro/public
@@ -147,7 +147,7 @@ jobs:
           done
 
       - name: Conserver la sortie
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pdfyz-astro-dist
           path: pdfyz-astro/dist

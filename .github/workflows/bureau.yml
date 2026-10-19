@@ -64,11 +64,13 @@ jobs:
           - { systeme: Linux, platform: ubuntu-22.04, target: '' }
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # WebKitGTK : la webview du système sous Linux. Rien de tel n'existe sous
       # Windows (WebView2) ni sous macOS (WKWebView), où le système fournit tout.
       # `rpm` sert à construire le paquet RPM — il n'est pas installé d'origine.
+      # `libfuse2` sert à `linuxdeploy`, que le bundle AppImage exécute : sans
+      # FUSE il échoue à la dernière étape, après plusieurs minutes de build.
       - name: Dépendances système (Linux)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
@@ -77,11 +79,12 @@ jobs:
             libwebkit2gtk-4.1-dev \
             libappindicator3-dev \
             librsvg2-dev \
+            libfuse2 \
             patchelf \
             rpm
 
       - name: Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
@@ -93,6 +96,14 @@ jobs:
         with:
           targets: wasm32-unknown-unknown, wasm32-wasip1
           components: rustfmt, clippy
+
+      # macOS ARM tourne sur `macos-latest`, qui est arm64 : la variante Intel
+      # est donc une COMPILATION CROISÉE. Sans cette cible installée, rustc
+      # s'arrête sur « can't find crate for core ». L'action ci-dessus ne pose
+      # que les cibles wasm, d'où cette étape séparée.
+      - name: Cible de compilation
+        if: matrix.target != ''
+        run: rustup target add ${{ matrix.target }}
 
       - name: Cache Rust
         uses: swatinem/rust-cache@v2
@@ -138,7 +149,7 @@ jobs:
           args: ${{ matrix.target != '' && format('--target {0}', matrix.target) || '' }}
 
       - name: Téléverser les paquets
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: paquets-${{ matrix.systeme }}
           path: pdfyz-desktop/src-tauri/target/**/bundle/**
@@ -149,17 +160,17 @@ jobs:
     needs: build
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Node : la version de l'application est lue dans `tauri.conf.json` par
       # `node -p`, pour être comparée au tag.
       - name: Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
       - name: Récupérer tous les paquets
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: paquets
 
