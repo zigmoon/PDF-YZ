@@ -1,8 +1,8 @@
-# PDF-YZ — PDF Editor
-
 <p align="center">
   <img src="logo-pdf-yz.svg" width="120" alt="PDF-YZ">
 </p>
+
+<h1 align="center">PDF-YZ — PDF Editor</h1>
 
 <p align="center">
   <b>A PDF editor that runs entirely on your machine.</b><br>
