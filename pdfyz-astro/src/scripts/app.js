@@ -25,6 +25,91 @@ const pdfjsLib = await import(/* @vite-ignore */ vendor('vendor/pdfjs/pdf.min.mj
 pdfjsLib.GlobalWorkerOptions.workerSrc = vendor('vendor/pdfjs/pdf.worker.min.mjs');
 const { PDFDocument, StandardFonts, rgb, degrees, PDFName, PDFString } = PDFLib;
 
+// ─── Rendu des pages dans un onglet en arrière-plan ───
+// pdf.js enchaîne le dessin d'une page avec `requestAnimationFrame`. Un onglet
+// masqué ne reçoit plus ces rappels : le document restait à moitié rendu — pages
+// blanches, aucune erreur, aucune fin de chargement — jusqu'au retour sur l'onglet.
+// On ne perd plus ces rappels : on les met en attente et on les relâche d'un bloc
+// au retour. Volontairement une file d'attente, pas un repli sur `setTimeout` :
+// les minuteurs d'un onglet masqué sont bridés à un par seconde, ce qui rendrait
+// la préparation d'un gros document plus longue qu'une simple pause.
+// `prefs.bgRender` (Préférences → « Render in background ») inverse ce choix.
+let _renderInBackground = false;
+const _nativeRaf = window.requestAnimationFrame.bind(window);
+const _nativeCaf = window.cancelAnimationFrame.bind(window);
+const _parkedRaf = new Map();   // id négatif → rappel en attente du retour de l'onglet
+const _timedRaf = new Map();    // id négatif → minuteur de secours (mode arrière-plan)
+let _rafId = 0;
+let _rafParkedAt = 0;
+
+function _setLoadingNote(msg) {
+    const loader = $('loader');
+    if (loader && loader.classList.contains('visible')) $('loaderMsg').textContent = msg;
+    const splash = $('splash');
+    if (splash && !splash.classList.contains('hidden') && $('splashLoadMsg')) {
+        $('splashLoadMsg').textContent = msg;
+    }
+}
+
+// Release the callbacks the hidden tab had frozen, in a single animation frame.
+function _releaseParkedRaf() {
+    if (!_parkedRaf.size) return 0;
+    const parked = [..._parkedRaf.values()];
+    _parkedRaf.clear();
+    parked.forEach(cb => _nativeRaf(cb));
+    return parked.length;
+}
+
+// Explicit "keep going while hidden" mode: timers are throttled, but the document
+// does keep preparing itself instead of waiting for the user to come back.
+function _rescheduleParkedWithTimers() {
+    if (!_parkedRaf.size) return;
+    const parked = [..._parkedRaf.values()];
+    _parkedRaf.clear();
+    _rafParkedAt = 0;
+    parked.forEach(cb => {
+        const id = --_rafId;
+        _timedRaf.set(id, setTimeout(() => { _timedRaf.delete(id); cb(performance.now()); }, 16));
+    });
+}
+
+window.requestAnimationFrame = (cb) => {
+    if (typeof cb !== 'function' || !document.hidden) return _nativeRaf(cb);
+    if (_renderInBackground) {
+        const id = --_rafId;
+        _timedRaf.set(id, setTimeout(() => { _timedRaf.delete(id); cb(performance.now()); }, 16));
+        return id;
+    }
+    const id = --_rafId;
+    _parkedRaf.set(id, cb);
+    if (!_rafParkedAt) {
+        _rafParkedAt = Date.now();
+        _setLoadingNote('Rendu en pause — revenez sur cet onglet pour continuer');
+    }
+    return id;
+};
+window.cancelAnimationFrame = (id) => {
+    if (typeof id === 'number' && id < 0) {
+        _parkedRaf.delete(id);
+        const timer = _timedRaf.get(id);
+        if (timer !== undefined) { clearTimeout(timer); _timedRaf.delete(id); }
+        return;
+    }
+    _nativeCaf(id);
+};
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    const pausedFor = _rafParkedAt ? Date.now() - _rafParkedAt : 0;
+    _rafParkedAt = 0;
+    const released = _releaseParkedRaf();
+    if (!released) return;
+    _setLoadingNote('Reprise du rendu…');
+    // Nothing was lost while the tab slept, but the jump in progress needs a word:
+    // without it the load looks like it restarted by itself.
+    if (pausedFor > 2000) toast('Rendu des pages repris après une pause (onglet inactif)');
+});
+
 // ─── Noyau Rust (WebAssembly) ───
 // Chargé une fois, avant tout calcul : ordre d'imposition, emplacements N-up,
 // traits de coupe, conversions de couleur, bornes de tracés, signatures de
@@ -444,9 +529,14 @@ const prefs = {
     detectImages: false,
     watermark: '', wmOpacity: 0.1,
     cropMarks: false, cropLength: 8, cropOffset: 6,
+    // Default OFF: page rendering pauses while the tab is hidden and resumes on
+    // return (see the requestAnimationFrame guard above). ON keeps it going in the
+    // background, throttled by the browser's timer limits.
+    bgRender: false,
 };
 // Load saved prefs
 try { Object.assign(prefs, JSON.parse(localStorage.getItem('pdfz-prefs') || '{}')); } catch {}
+_renderInBackground = !!prefs.bgRender;
 // v26 migration: “Flatten” was a no-op that defaulted to ON, so anyone who saved
 // that inert `true` would suddenly get rasterised exports. Reset it once.
 if (!localStorage.getItem('pdfz-flatten-migrated')) {
@@ -1606,7 +1696,20 @@ function _refreshMaskedOverlaps(pageData) {
             w, h,
         });
     });
-    const hits = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    // How much of `box` the erased areas really swallow. Intersecting is not enough:
+    // a page-wide panel that merely CONTAINS the edited line also intersects it.
+    const coverage = (box) => {
+        const area = box.w * box.h;
+        if (!(area > 0)) return 0;
+        let covered = 0;
+        for (const r of rects) {
+            const w = Math.min(box.x + box.w, r.x + r.w) - Math.max(box.x, r.x);
+            const h = Math.min(box.y + box.h, r.y + r.h) - Math.max(box.y, r.y);
+            if (w > 0 && h > 0) covered += w * h;
+        }
+        return Math.min(1, covered / area);
+    };
+    const pageArea = Math.max(1, (pageData.width || 0) * (pageData.height || 0));
     for (const el of pageData.elements || []) {
         if (!el.extracted || (el.type !== 'pdf-graphic' && el.type !== 'pdf-image')) continue;
         const dom = layer.querySelector(`[data-id="${el.id}"]`);
@@ -1616,7 +1719,13 @@ function _refreshMaskedOverlaps(pageData) {
             y: el.originalViewY != null ? el.originalViewY : el.y,
             w: el.width || 0, h: el.height || 0,
         };
-        const covered = !el._deleted && rects.some(r => hits(box, r));
+        // Only an object that the erased area actually covers must be re-drawn above
+        // the mask. Repainting a background frame/panel does the opposite of what we
+        // want: its opaque fill sits above the page raster, and because extracted text
+        // is transparent (the visible text IS the raster), every other block of the
+        // page disappears — the page looked wiped as soon as one line was validated.
+        const isBackground = box.w * box.h > pageArea * 0.5;
+        const covered = !el._deleted && !isBackground && coverage(box) >= 0.8;
         dom.classList.toggle('under-mask', covered);
     }
 }
@@ -1754,13 +1863,11 @@ function placeElement(el, layer) {
         dom.addEventListener('dblclick', (e) => {
             e.stopPropagation();
             dom._wantEdit = false;
-            if (S.editMode) {
-                selectEl(el, dom);
-                openTextPanel(el);
-                return;
-            }
             selectEl(el, dom);
             openTextPanel(el);
+            // In Modify mode this used to stop at selection: the panel invited the user
+            // to click the text, yet no path ever opened the editor. Double-click edits
+            // in both modes (single click keeps its move/select behaviour there).
             if (el.extracted && !dom.classList.contains('inline-edit')) startInlineEdit(el, dom);
         });
 
@@ -3271,6 +3378,9 @@ function startInlineEdit(el, dom) {
     const ta = document.createElement('textarea');
     ta.className = 'pdfz-inline-textarea';
     ta.value = el.content || '';
+    // Baseline for the change detection: an edit that is committed has to enter the
+    // history and the auto-save, otherwise a reload silently throws the correction away.
+    ta._startContent = ta.value;
     // Position textarea to align with extracted text (account for .el-text padding: 1px)
     ta.style.left = (el.x - 1) + 'px';
     ta.style.top = (el.y - 1) + 'px';
@@ -3415,7 +3525,11 @@ function endInlineEdit() {
     S._inlineEditEl = null;
 
     // An emptied block must not stay behind as an invisible, clickable box.
-    if (el && !String(el.content || '').trim()) dropEmptiedBlock(el);
+    const emptied = !!(el && !String(el.content || '').trim());
+    if (emptied) dropEmptiedBlock(el);
+    // In-place typing used to leave the document "clean": no undo step, no auto-save,
+    // so validating a correction and reloading lost it. Record the committed edit.
+    else if (el && (ta?._startContent !== el.content || ta?._userResized)) markDirty();
 }
 
 function openTextPanel(el) {
@@ -3430,6 +3544,13 @@ function openTextPanel(el) {
     if (el.extracted) {
         $('teInlineHint').style.display = 'block';
         $('teTextarea').style.display = 'none';
+        // The hint has to match the gesture that actually works in the current mode.
+        const hint = document.getElementById('teInlineHintText');
+        if (hint) {
+            hint.textContent = S.editMode
+                ? '✎ Double-click the text on the page to edit it.'
+                : '✎ Click the text on the page to edit it.';
+        }
     } else {
         $('teInlineHint').style.display = 'none';
         $('teTextarea').style.display = '';
@@ -3577,7 +3698,7 @@ function discardProvisionalText(el) {
     }
 }
 
-function dropEmptiedBlock(el) {
+function dropEmptiedBlock(el, { silent = false } = {}) {
     if (!el || _emptiedDropped.has(el)) return;
     // Provisional block (Text tool, nothing typed): nothing ever happened.
     if (el._provisional) { discardProvisionalText(el); return; }
@@ -3597,7 +3718,7 @@ function dropEmptiedBlock(el) {
     if (dom) dom.remove();
     if (S.selected === el) deselect();
     markDirty();
-    if (el.extracted) toast('Empty block removed · Ctrl+Z to undo');
+    if (el.extracted && !silent) toast('Empty block removed · Ctrl+Z to undo');
 }
 
 function closeTextPanel() {
@@ -3615,6 +3736,7 @@ $('teTextarea').addEventListener('input', () => {
     if (!S.editingText) return;
     S.editingText.content = $('teTextarea').value;
     syncTextToDOM(S.editingText);
+    markDirty();
     // Also update floating textarea if active
     if (S._inlineEditTA && S._inlineEditEl === S.editingText) {
         S._inlineEditTA.value = S.editingText.content || '';
@@ -3890,6 +4012,9 @@ async function rebuild(opts) {
     };
     if (driveSelf) beginLoaderProgress('Updating…');
     setP(2, 'Saving current state…');
+    // The render below rebuilds every edit layer: commit the floating inline editor
+    // first, otherwise an in-progress correction is lost by e.g. a crop or a rotate.
+    try { endInlineEdit(); } catch (_) {}
     // Save in-progress elements
     const savedEl = {}; const savedPaths = {};
     S.pages.forEach((p, i) => {
@@ -4236,7 +4361,13 @@ window.addEventListener('resize', () => {
         const p = S.pdfDoc.getPage(0);
         const w = p.getSize().width;
         const avail = $('canvasArea').clientWidth - 60;
-        setZoom(avail / (w * 1.5));
+        const next = avail / (w * 1.5);
+        // Only re-fit when the usable WIDTH really changed. A keyboard opening on a
+        // tablet, a height-only resize or a scrollbar repaint used to trigger a full
+        // re-render: the pages went blank for the duration of the pass and the inline
+        // text editor was destroyed while the user was typing in it.
+        if (Math.abs(next - S.zoom) < 0.01) return;
+        setZoom(next);
     }, 300);
 });
 
@@ -4348,6 +4479,9 @@ function setZoom(z) {
     // Never start a second full render while one is running (opening a PDF + an
     // automatic fit-on-resize used to overlap and leave the pages blank).
     if (_isOpening || _renderBusy) { _pendingZoom = S.zoom; return; }
+    // The re-render rebuilds every edit layer and throws the floating inline editor
+    // away: commit it first, so a zoom/resize cannot swallow the text being typed.
+    try { endInlineEdit(); } catch (_) {}
     // Save elements before re-render
     const savedEl = {}; const savedPaths = {};
     S.pages.forEach((p, idx) => {
@@ -6519,35 +6653,56 @@ $('frReplace').addEventListener('keydown', e => {
 $('frNext').onclick = frGoNext;
 $('frPrev').onclick = frGoPrev;
 
-$('frReplaceOne').onclick = () => {
-    if (FR.matches.length === 0 || FR.current < 0) { toast('No match to replace'); return; }
-    const rep = $('frReplace').value;
-    const m = FR.matches[FR.current];
-    m.el.content = m.el.content.substring(0, m.start) + rep + m.el.content.substring(m.start + m.length);
-    syncTextToDOM(m.el);
-    markDirty();
-    toast('Occurrence remplacée');
-    doFind();
-};
-
-$('frReplaceAll').onclick = () => {
-    if (!FR.matches.length) return;
-    const rep = $('frReplace').value;
-    const matchesByElement = new Map();
-    for (const match of FR.matches) {
-        if (!matchesByElement.has(match.el)) matchesByElement.set(match.el, []);
-        matchesByElement.get(match.el).push(match);
-    }
+// Apply a set of matches, right-to-left per block. Returns the blocks left with no
+// text at all, so the caller can remove them through the shared "empty block" rule.
+function _applyReplacements(matchesByElement, rep) {
+    const emptied = [];
     for (const [el, matches] of matchesByElement) {
         matches.sort((a, b) => b.start - a.start);
         for (const match of matches) {
             el.content = el.content.substring(0, match.start) + rep + el.content.substring(match.start + match.length);
         }
         syncTextToDOM(el);
+        if (!String(el.content || '').trim()) emptied.push(el);
     }
-    const count = FR.matches.length;
+    return emptied;
+}
+
+$('frReplaceOne').onclick = () => {
+    if (FR.matches.length === 0 || FR.current < 0) { toast('No match to replace'); return; }
+    const rep = $('frReplace').value;
+    const m = FR.matches[FR.current];
+    // Replacing with nothing is a deletion: if it empties the whole block, the block
+    // must go through the normal "empty block" path, otherwise it survives as an
+    // invisible, still-clickable ghost with the original text masked in white.
+    const emptied = _applyReplacements(new Map([[m.el, [m]]]), rep);
+    emptied.forEach(el => dropEmptiedBlock(el, { silent: true }));
+    if (emptied.length) toast('Block emptied — removed · Ctrl+Z to undo');
+    else toast('Occurrence remplacée');
     markDirty();
-    toast(`${count} occurrence${count > 1 ? 's' : ''} remplacée${count > 1 ? 's' : ''}`);
+    doFind();
+};
+
+$('frReplaceAll').onclick = () => {
+    if (!FR.matches.length) return;
+    const rep = $('frReplace').value;
+    // "Replace with nothing" deletes the matched text everywhere. It is a legitimate
+    // operation, but it used to wipe whole blocks with no warning whatsoever.
+    if (!rep && !confirm(`${FR.matches.length} occurrence(s) seront supprimées du document (annulable avec Ctrl+Z). Continuer ?`)) return;
+    const matchesByElement = new Map();
+    for (const match of FR.matches) {
+        if (!matchesByElement.has(match.el)) matchesByElement.set(match.el, []);
+        matchesByElement.get(match.el).push(match);
+    }
+    const emptied = _applyReplacements(matchesByElement, rep);
+    emptied.forEach(el => dropEmptiedBlock(el, { silent: true }));
+    const count = FR.matches.length;
+    const plural = count > 1 ? 's' : '';
+    const emptiedNote = emptied.length
+        ? ` · ${emptied.length} bloc${emptied.length > 1 ? 's' : ''} vidé${emptied.length > 1 ? 's' : ''} supprimé${emptied.length > 1 ? 's' : ''}`
+        : '';
+    markDirty();
+    toast(`${count} occurrence${plural} remplacée${plural}${emptiedNote}`);
     doFind();
 };
 
@@ -6778,6 +6933,7 @@ function syncPrefsUI() {
     $('prefFlatten').classList.toggle('on', prefs.flatten);
     $('prefEmbedFonts').classList.toggle('on', prefs.embedFonts);
     $('prefAutoSave').classList.toggle('on', prefs.autoSave);
+    $('prefBgRender').classList.toggle('on', prefs.bgRender);
     $('prefWatermark').value = prefs.watermark || '';
     $('prefWmOpacity').value = prefs.wmOpacity || 0.1;
     $('prefCropMarks').classList.toggle('on', prefs.cropMarks);
@@ -6807,12 +6963,18 @@ $('prefWmOpacity').onchange = () => { prefs.wmOpacity = +$('prefWmOpacity').valu
 $('prefCropLength').onchange = () => { prefs.cropLength = +$('prefCropLength').value; savePrefs(); };
 $('prefCropOffset').onchange = () => { prefs.cropOffset = +$('prefCropOffset').value; savePrefs(); };
 // Toggles
-['prefFlatten','prefEmbedFonts','prefAutoSave','prefCropMarks'].forEach(id => {
+['prefFlatten','prefEmbedFonts','prefAutoSave','prefCropMarks','prefBgRender'].forEach(id => {
     const key = id.replace('pref','').charAt(0).toLowerCase() + id.replace('pref','').slice(1);
     $(id).onclick = () => {
         prefs[key] = !prefs[key];
         $(id).classList.toggle('on', prefs[key]);
         savePrefs();
+        // Switching the background mode must take effect on what is currently
+        // queued: either release it now, or let it wait for the tab to come back.
+        if (key === 'bgRender') {
+            _renderInBackground = prefs.bgRender;
+            if (_renderInBackground) _rescheduleParkedWithTimers();
+        }
         // The export dialog may be open behind the Preferences panel: keep its
         // summary truthful about what the next export will actually do.
         if ($('exportModal').classList.contains('visible')) updateExportSummary();

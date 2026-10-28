@@ -6,6 +6,24 @@ you open never leaves your machine, and the application works **fully offline** 
 pdf.js, pdf-lib, fontkit, Tailwind and the interface fonts are embedded in the
 binary.
 
+## What changed in 0.6.1
+
+- **Correcting one sentence no longer blanks the page.** A page background panel
+  that merely *contained* the edited line was re-drawn above the page raster, which
+  hid every other text block of the page. Only objects the erase mask actually
+  covers (≥ 80 %, and never a page-sized background) are redrawn now.
+- **A correction is really saved.** Validating an inline edit used to leave the
+  document "clean": no undo step, no auto-save. It now enters the history and the
+  session store — Ctrl+Z restores it, and a reload keeps it.
+- **"Replace all" with an empty replacement** asks for confirmation, removes the
+  blocks it empties instead of leaving invisible clickable ghosts, and says so.
+- **Editing works in Modify mode**: double-click edits in place (the panel hint
+  follows the mode). Zoom, resize and rebuild commit the edit in progress instead
+  of dropping it.
+- **Background tab**: page rendering is parked while the tab is hidden and resumed
+  on return, instead of staying half-rendered. *Preferences → Render in background*
+  keeps it going while you are away.
+
 ## Downloads
 
 | System | File |

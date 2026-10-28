@@ -120,6 +120,18 @@ Open documents are kept in IndexedDB for **7 days**, capped at **12 sessions** a
 10 MB per file, so closing a tab is not data loss. Nothing in a session leaves the
 machine either.
 
+### Background tabs
+
+pdf.js paints page by page through `requestAnimationFrame`, which browsers stop
+firing in an inactive tab: a document opened (or still loading) in the background
+used to stay half rendered — blank pages, no error — until the tab came back.
+Those callbacks are now **parked** and released in a single frame on return, so a
+load resumes exactly where it stopped instead of waiting forever; a short notice
+appears if the pause lasted more than two seconds. *Preferences → Render in
+background* (default OFF) keeps the document preparing itself while the tab is
+inactive — slower, because browsers throttle timers of hidden tabs to about one
+tick per second.
+
 ---
 
 ## Imposition
@@ -361,7 +373,7 @@ clean folder with `PATH` reduced to `C:\Windows`: WebView2 started, kernel repor
 | Fedora / RHEL | [`.rpm`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Linux-x86_64.rpm) | `sudo dnf install ./PDF-YZ-*.rpm` |
 
 Those links follow the newest build. Each version is also archived under its tag —
-[`desktop-v0.6.0`](https://github.com/zigmoon/PDF-YZ/releases/tag/desktop-v0.6.0) —
+[`desktop-v0.6.1`](https://github.com/zigmoon/PDF-YZ/releases/tag/desktop-v0.6.1) —
 with a `SHA256SUMS` file beside the binaries.
 
 The bundles are **not signed or notarised**: there is no Apple certificate or

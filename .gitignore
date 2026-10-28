@@ -23,6 +23,7 @@ node_modules/
 
 # Archive de déploiement web (produite à la demande, jamais versionnée).
 /PDF-YZ-web-*.zip
+/livraison/
 
 # Atelier — scripts d'audit jetables
 /_*.cjs
