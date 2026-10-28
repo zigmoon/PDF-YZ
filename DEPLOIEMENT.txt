@@ -39,7 +39,7 @@ URGENCE — trois erreurs classiques, dans cet ordre :
 
 Si votre client FTP ne gère pas l'envoi récursif, le plus sûr reste FileZilla :
 glisser-déposer le contenu du dossier, puis vérifier le nombre de fichiers
-(240 attendus).
+(242 attendus pour 0.6.1).
 
 
 2. Droits
@@ -71,6 +71,16 @@ Le point qui compte le plus est le noyau : dans la console du navigateur,
 
 S'il répond "none", le .wasm a été servi avec le mauvais type MIME : voir la
 section Nginx ci-dessous, ou vérifiez que .htaccess a bien été transféré.
+
+Et pour savoir si c'est bien la DERNIÈRE version qui est en ligne (une seule
+oublie de fichier suffit à servir l'ancienne) :
+
+    curl -s https://app.zigmoon.com/PDF-YZ/service-worker.js | grep CACHE_NAME
+
+La version attendue est écrite dans `pdfyz-astro/public/service-worker.js`
+(`pdfyz-v42-…` pour 0.6.1). Si le serveur annonce encore la précédente, c'est que
+le service worker n'a pas été remplacé — et tous les visiteurs déjà venus
+continueront de recevoir l'ancien bundle, quelle que soit la fraîcheur du reste.
 
 
 4. Nginx (si votre hébergement n'est pas Apache)
