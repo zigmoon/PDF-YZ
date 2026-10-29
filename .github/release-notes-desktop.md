@@ -6,6 +6,19 @@ you open never leaves your machine, and the application works **fully offline** 
 pdf.js, pdf-lib, fontkit, Tailwind and the interface fonts are embedded in the
 binary.
 
+## What changed in 0.6.2
+
+- **No ghost copy of a picture after cropping.** Cropping a page rebuilds the whole
+  view; the editable overlay that mirrors every bitmap image was dropped there,
+  because it was restored with the text formula and got a `NaN` position. Its
+  `top` became invalid, the browser discarded it, and the copy fell back to the
+  top of the page — a duplicate visual under each one, on every page. Images are
+  now restored with their own geometry (PDF origin → view, height subtracted), and
+  the overlay no longer receives an inline opacity that defeated the
+  “invisible until hovered” rule.
+- **Existing visitors get the fix.** The service-worker cache name changed, so a
+  returning browser does not keep serving the previous bundle.
+
 ## What changed in 0.6.1
 
 - **Correcting one sentence no longer blanks the page.** A page background panel

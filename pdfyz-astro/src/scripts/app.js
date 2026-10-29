@@ -1450,6 +1450,28 @@ async function renderAllPages(onProgress, onStructureReady) {
                     el.screenLineWidth = Math.max(1, (el.pdfLineWidth || 1) * _renderS());
                     el.originalViewX = el.x - ((el.dxPdf || 0) * vt[0] + (el.dyPdf || 0) * vt[2]);
                     el.originalViewY = el.y - ((el.dxPdf || 0) * vt[1] + (el.dyPdf || 0) * vt[3]);
+                } else if (el.type === 'pdf-image' && el.pdfX !== undefined && el.pdfY !== undefined) {
+                    // `pdfY` is the BOTTOM edge (that is what export/`drawImage`
+                    // expects), so the view position is the projected bottom minus
+                    // the height. Sharing the text branch used to give `y = NaN`
+                    // (no pdfFontSize) and an empty `top`: the image copy fell back
+                    // to the top of the page and duplicated the visual.
+                    const ddx = el.dxPdf || 0, ddy = el.dyPdf || 0;
+                    const cx = vt[0]*(el.pdfX + ddx) + vt[2]*(el.pdfY + ddy) + vt[4];
+                    const cy = vt[1]*(el.pdfX + ddx) + vt[3]*(el.pdfY + ddy) + vt[5];
+                    const _s2 = _renderS();
+                    const _pw = Math.abs(el.pdfW) || 0, _ph = Math.abs(el.pdfH) || 0;
+                    const oldS = (el.originalViewWidth && _pw) ? el.originalViewWidth / _pw : _s2;
+                    const k = oldS ? _s2 / oldS : 1;
+                    const w = Math.max(6, (el.width || _pw * _s2) * k);
+                    const h = Math.max(6, (el.height || _ph * _s2) * k);
+                    el.x = cx; el.y = cy - h;
+                    el.width = w; el.height = h;
+                    // Refresh the baked-in footprint used by the erase masks.
+                    el.originalViewX = vt[0]*el.pdfX + vt[2]*el.pdfY + vt[4];
+                    el.originalViewY = vt[1]*el.pdfX + vt[3]*el.pdfY + vt[5] - _ph * _s2;
+                    el.originalViewWidth = _pw * _s2;
+                    el.originalViewHeight = _ph * _s2;
                 } else if (el.extracted && el.pdfX !== undefined) {
                     // Apply any move delta recorded in modify mode so the block keeps
                     // its dragged position after a zoom / rebuild.
@@ -1885,7 +1907,11 @@ function placeElement(el, layer) {
         if (el.type === 'pdf-image') dom.classList.add('el-pdf-img');
         dom.style.cssText = `left:${el.x}px;top:${el.y}px;width:${el.width}px;height:${el.height}px;`;
         const img = document.createElement('img'); img.src = el.src; dom.appendChild(img);
-        if (el.opacity != null) img.style.opacity = el.opacity / 100;
+        // A `pdf-image` preview is a copy of the page raster: its visibility belongs
+        // to CSS (hover, selection, replaced). An inline opacity here overrode
+        // `.el-img.el-pdf-img img { opacity: 0 }` and painted a second copy of every
+        // picture — invisible only while it stayed pixel-aligned with the page.
+        if (el.opacity != null && el.type !== 'pdf-image') img.style.opacity = el.opacity / 100;
 
         addResizeHandles(dom, el);
 

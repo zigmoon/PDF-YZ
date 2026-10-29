@@ -373,7 +373,7 @@ clean folder with `PATH` reduced to `C:\Windows`: WebView2 started, kernel repor
 | Fedora / RHEL | [`.rpm`](https://github.com/zigmoon/PDF-YZ/releases/latest/download/PDF-YZ-Linux-x86_64.rpm) | `sudo dnf install ./PDF-YZ-*.rpm` |
 
 Those links follow the newest build. Each version is also archived under its tag —
-[`desktop-v0.6.1`](https://github.com/zigmoon/PDF-YZ/releases/tag/desktop-v0.6.1) —
+[`desktop-v0.6.2`](https://github.com/zigmoon/PDF-YZ/releases/tag/desktop-v0.6.2) —
 with a `SHA256SUMS` file beside the binaries.
 
 The bundles are **not signed or notarised**: there is no Apple certificate or

@@ -1,5 +1,5 @@
 // PDF-YZ Service Worker — Offline-first PWA
-const CACHE_NAME = 'pdfyz-v36-imposition-graphics';
+const CACHE_NAME = 'pdfyz-v37-image-fantome';
 const PRECACHE_URLS = [
   '/PDF-YZ/',
   '/PDF-YZ/index.html',
